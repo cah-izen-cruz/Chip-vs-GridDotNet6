@@ -65,7 +65,7 @@ namespace GRID
 
             InitializeComponent();
 
-            Log.Text = "Login to your existing account";
+            Log.Text = "Login to your existing account12";
             this.Height = 360;
             this.Title = grd.grdData.GridVersion;
 
