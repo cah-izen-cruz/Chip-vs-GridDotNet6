@@ -65,11 +65,11 @@ namespace GRID
 
             InitializeComponent();
 
-            Log.Text = "Login to your existing account12";
+            Log.Text = "Login to your existing account";
             this.Height = 360;
             this.Title = grd.grdData.GridVersion;
 
-            if (UserName == "izen.cruz1")
+            if (UserName == "izen.cruz")
             {
                 txtUserName.IsEnabled = true;
             }
