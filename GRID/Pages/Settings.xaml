@@ -1,0 +1,112 @@
+﻿<Page x:Class="GRID.Pages.Settings"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:GRID.Pages"
+      xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="Settings">
+
+    <Border Background="Transparent" CornerRadius="8" BorderThickness="0" VerticalAlignment="Top">
+        <Grid HorizontalAlignment="Left">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="45"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Orientation="Horizontal" Grid.Row="0">
+                <iconPacks:PackIconRemixIcon Kind="PaletteLine" Foreground="{DynamicResource PrimaryTextColor}" Height="24" Width="24" Margin="6 4 0 0"/>
+                <TextBlock Text="Settings" FontSize="24" Foreground="{DynamicResource PrimaryTextColor}" VerticalAlignment="Center" Margin="6 -10 0 0"/>
+                <Label Name="lblFileName" Content="----" Visibility="Hidden" FontSize="10" Foreground="{DynamicResource PrimaryTextColor}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5"/>
+
+            </StackPanel>
+
+            <Grid Grid.Row="1" Grid.ColumnSpan="1" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1"/>
+                    <RowDefinition Height="35"/>
+                    <RowDefinition Height="35"/>
+                    <RowDefinition Height="35"/>
+                    <RowDefinition Height="35"/>
+                    <RowDefinition Height="200"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition Width="200"/>
+                </Grid.ColumnDefinitions>
+
+
+
+                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0">
+                    <TextBlock Text="Configuration" FontSize="13" Foreground="{DynamicResource PrimaryTextColor}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="20,0,0,0"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"  Grid.Row="1" Grid.Column="1">
+                    <RadioButton x:Name="RadAuto" Content="Auto" Foreground="{DynamicResource PrimaryTextColor}" FontSize="13" HorizontalAlignment="Center" VerticalAlignment="Center" Checked="RadAuto_Checked"/>
+                    <RadioButton x:Name="RadUser" Content="User Defined" Foreground="{DynamicResource PrimaryTextColor}" FontSize="13" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20,0,0,0" Checked="RadUser_Checked"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0">
+                    <TextBlock Text="Display Mode" FontSize="13" Foreground="{DynamicResource PrimaryTextColor}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1">
+                    <Border x:Name="BoarderTheme" CornerRadius="15" Width="100" Height="30" Background="{DynamicResource TertiaryBackgroundColor}" VerticalAlignment="Center" HorizontalAlignment="Right">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Path Data="{DynamicResource sun}" Height="16" Width="16" Stretch="UniformToFill" Fill="{DynamicResource PrimaryYellowColor}" VerticalAlignment="Center"/>
+                            <ToggleButton x:Name="Themes"
+                                  IsChecked="False"
+                                  HorizontalAlignment="Right"
+                                  Style="{DynamicResource ToggleButtonStyle}"
+                                  Margin="10,5,10,0" VerticalAlignment="Top" Click="Themes_Click"/>
+                            <Path Data="{DynamicResource moon}" Height="16" Width="16" Stretch="UniformToFill" Fill="{DynamicResource PrimaryWhiteColor}" VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <!--<Border.BitmapEffect>
+                            <DropShadowBitmapEffect
+                                            ShadowDepth="1"
+                                            Direction="0"
+                                            Color="#5B8DEF"
+                                            Softness="0.4"/>
+                        </Border.BitmapEffect>-->
+
+                    </Border>
+
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0">
+                    <TextBlock Text="Image from background" FontSize="13" Foreground="{DynamicResource PrimaryTextColor}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"  Grid.Row="3" Grid.Column="1">
+                    <ComboBox x:Name="Cmb" HorizontalAlignment="Right" VerticalAlignment="Center" Height="27" Width="100" SelectionChanged="Cmb_SelectionChanged"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.ColumnSpan="2">
+                    <TextBlock Text="Upload Background Image" FontSize="13" Foreground="{DynamicResource PrimaryTextColor}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,0,0,0"/>
+                </StackPanel>
+                <StackPanel  Grid.Row="4" Grid.Column="1">
+                    <Button x:Name="btnBrowseBG" Content="Browse..." Width="100" Height="28" HorizontalAlignment="Left" Margin="0,4,0,0" />
+                </StackPanel>
+
+                <StackPanel x:Name="StackPreview" Grid.Row="5" Grid.ColumnSpan="2" Margin="0,4,0,0">
+
+                    <TextBlock Text="Image Preview" FontSize="13" Foreground="{DynamicResource PrimaryTextColor}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20,5,0,0"/>
+                    <Border x:Name="BrdPreview"  CornerRadius="10" Width="230" Height="130" Background="#0988D5" BorderThickness="1" BorderBrush="{DynamicResource PrimaryTextColor}"/>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button x:Name="btnSetBG" Content="Set as Background" Width="110" Height="30" Margin="0,10,0,0" HorizontalAlignment="Center" Click="btnSetBG_Click"/>
+                        <Button x:Name="btnCancel" Content="Cancel" Width="90" Height="30" Margin="5,10,0,0" HorizontalAlignment="Center"/>
+
+                    </StackPanel>
+
+                </StackPanel>
+
+
+            </Grid>
+
+
+        </Grid>
+
+    </Border>
+</Page>

@@ -1,0 +1,41 @@
+﻿<Page x:Class="GRID.Pages.Logout"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:GRID.Pages"
+            xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+       xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="Logout" FontFamily="Poppins">
+
+    <Border Background="Transparent" CornerRadius="10" BorderThickness="0" BorderBrush="{DynamicResource PrimaryTextColor}"  Width="780" Height="450" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="400*"/>
+                <RowDefinition Height="90*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="400"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <WrapPanel Orientation="Horizontal" Grid.Row="0" Grid.ColumnSpan="2" VerticalAlignment="Center">
+                <TextBlock Text="Random thoughts here..." 
+                           FontSize="50" Foreground="{DynamicResource PrimaryTextColor}" Padding="20" />
+            </WrapPanel>
+
+            <telerik:RadButton Grid.Row="1" Grid.Column="1" Name="btnLogout" BorderThickness="0" ToolTip="Click to Exit App"  
+                                                    CornerRadius="3" 
+                                                    Cursor="Hand" telerik:StyleManager.Theme="Transparent" Margin="4 0 0 0" Click="btnLogout_Click">
+
+                <StackPanel Orientation="Horizontal">
+                    <iconPacks:PackIconForkAwesome Kind="SignOut" Height="40" Width="40" Foreground="{DynamicResource PrimaryTextColor}"/>
+                    <TextBlock HorizontalAlignment="Right" Foreground="{DynamicResource PrimaryTextColor}" Margin="0 0 0 0" FontSize="40">&#160; Logout</TextBlock>
+                </StackPanel>
+            </telerik:RadButton>
+        </Grid>
+    
+    </Border>
+</Page>

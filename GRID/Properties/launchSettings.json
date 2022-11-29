@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GRID": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

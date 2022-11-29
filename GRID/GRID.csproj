@@ -1,0 +1,119 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <Company>CHIP</Company>
+    <Copyright>Copyright © 2022</Copyright>
+    <FileVersion>GRID™ ver1.0.0.0</FileVersion>
+    <UseWindowsForms>False</UseWindowsForms>
+    <ApplicationIcon>Prod100.ico</ApplicationIcon>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>True</Optimize>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Controls\UserPopup.xaml.cs~RF192d5947.TMP" />
+    <None Remove="Images\Icons\About.png" />
+    <None Remove="Images\UserImg.png" />
+    <None Remove="Pages\tii4rokd.ngo~" />
+    <None Remove="Resources\HamNav.png" />
+    <None Remove="Resources\Prod100.png" />
+    <None Remove="Resources\Prod1002.png" />
+    <None Remove="Themes\Dark\Dark1.jpg" />
+    <None Remove="Themes\Dark\Dark2.jpg" />
+    <None Remove="Themes\Dark\Dark3.jpg" />
+    <None Remove="Themes\Dark\Dark4.jpg" />
+    <None Remove="Themes\Dark\Dark5.jpg" />
+    <None Remove="Themes\Dark\Dark6.jpg" />
+    <None Remove="Themes\Dark\DefaultDark.jpg" />
+    <None Remove="Themes\Light\DefaultLight.jpg" />
+    <None Remove="Themes\Light\Light1.jpg" />
+    <None Remove="Themes\Light\Light2.jpg" />
+    <None Remove="Themes\Light\Light3.jpg" />
+    <None Remove="Themes\Light\Light4.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Prod100.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
+    <PackageReference Include="MahApps.Metro" Version="2.4.9" />
+    <PackageReference Include="MahApps.Metro.IconPacks" Version="4.11.0" />
+    <PackageReference Include="MaterialDesignThemes" Version="4.6.0" />
+    <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
+    <PackageReference Include="telerik.ui.for.wpf.netcore.xaml" Version="2021.1.325" />
+    <PackageReference Include="ToastNotifications" Version="2.5.1" />
+    <PackageReference Include="ToastNotifications.Messages" Version="2.5.1" />
+    <PackageReference Include="Woof.System" Version="2.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GRIDLibraries\GRIDLibraries.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\Icons\About.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\UserImg.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\HamNav.png" />
+    <Resource Include="Resources\Prod100.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Prod1002.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Themes\Dark\Dark1.jpg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Themes\Dark\Dark2.jpg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Themes\Dark\Dark3.jpg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Themes\Dark\Dark4.jpg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Themes\Dark\Dark5.jpg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Themes\Dark\Dark6.jpg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Themes\Dark\DefaultDark.jpg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Themes\Light\Light2.jpg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Themes\Light\Light1.jpg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Themes\Light\DefaultLight.jpg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Themes\Light\Light3.jpg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Themes\Light\Light4.jpg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+</Project>

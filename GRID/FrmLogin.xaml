@@ -1,0 +1,131 @@
+﻿<Window xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"  
+        x:Class="GRID.FrmLogin"
+        xmlns:matDes="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GRID"
+        mc:Ignorable="d"
+        Title="Login" Height="360" Width="300"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{x:Null}" WindowStartupLocation="CenterScreen" WindowStyle="None"
+        AllowsTransparency="True" ResizeMode="NoResize" MouseDown="FrmLogin_MouseDown"
+        FontFamily="CircularStd">
+
+    <!--<telerik:RadBusyIndicator Name="objBusyIndicator" IsBusy="False" Visibility="Visible" Panel.ZIndex="1" Grid.Row="1" Width="Auto" Height="Auto"/>-->
+    <!--{DynamicResource MaterialDesignPaper}-->
+
+
+    <matDes:Card UniformCornerRadius="15" Background="{DynamicResource MaterialDesignPaper}" matDes:ShadowAssist.ShadowDepth="Depth0">
+        <matDes:DialogHost x:Name="DialogHost" CloseOnClickAway="True" >
+
+            <telerik:RadBusyIndicator x:Name="objBusyIndicator" Height="Auto" Width="Auto" telerik:StyleManager.Theme="Windows8">
+                <!--<telerik:RadBusyIndicator.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="White"/>
+                        <GradientStop Color="#FFBFF432" Offset="1"/>
+                    </LinearGradientBrush>
+                </telerik:RadBusyIndicator.Background>-->
+
+                <StackPanel>
+
+                    <matDes:PopupBox HorizontalAlignment="Right" Margin="10" 
+                                 PlacementMode="BottomAndAlignRightEdges" StaysOpen="False"
+                                 Height="25">
+
+                        <StackPanel>
+
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Button Content="Display Mode" Cursor="Hand"/>
+
+                                <!--<ToggleButton x:Name="ThemeToggle" Cursor="Hand" 
+                                      ToolTip="Switch Dark Mode" 
+                                      Margin="12 0 8 0"
+                                      IsChecked="{Binding IsDarkTheme}" Click="ToggleTheme"/>-->
+
+                                <Border CornerRadius="15" Width="100" Height="30" Background="Transparent" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                        <Path Data="{DynamicResource sun}" Height="16" Width="16" Stretch="UniformToFill" Fill="{DynamicResource PrimaryYellowColor}" VerticalAlignment="Center"/>
+                                        <ToggleButton x:Name="Themes" Cursor="Hand" 
+                                                ToolTip="Switch Dark Mode" 
+                                                Margin="6 0 6 0"
+                                                IsChecked="{Binding IsDarkTheme}" Click="Themes_Click"/>
+                                        <Path Data="{DynamicResource moon}" Height="16" Width="16" Stretch="UniformToFill" Fill="{DynamicResource PrimaryWhiteColor}" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+
+
+                            </StackPanel>
+
+                            <Button ToolTip="Having trouble logging in?" Margin="0 8 0 0" Content="Help Me" Cursor="Hand"/>
+                            <Button x:Name="btnExit" ToolTip="Close Application" Content="Close Grid App" Cursor="Hand" Click="btnExit_Click"/>
+
+
+                        </StackPanel>
+
+                    </matDes:PopupBox>
+
+
+                    <Image Source="/Resources/Prod100.png" Margin="0 -20 0 5" Height="40"/>
+                    <TextBlock x:Name="Hey" Text="Hey! Welcome Back!" Margin="0 4 0 2" HorizontalAlignment="Center" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextColor}"/>
+                    <TextBlock x:Name="Log" Text="Login to your existing account" HorizontalAlignment="Center" FontSize="15" Foreground="{DynamicResource PrimaryTextColor}"/>
+
+                    <TextBox x:Name="txtUserName" Width="230" Margin="0 20 0 0" IsReadOnly="True"
+                         FontSize="16" matDes:HintAssist.Hint="Username" 
+                         BorderThickness="1" 
+                         BorderBrush="{DynamicResource MaterialDesignDivider}"
+                         Style="{StaticResource MaterialDesignOutlinedTextBox}" Foreground="{DynamicResource PrimaryTextColor}"/>
+
+                    <PasswordBox x:Name="txtPassword" Width="230" Margin="0 10 0 0" IsEnabled="False"
+                         FontSize="16"  matDes:HintAssist.Hint="Password" 
+                         BorderThickness="1"
+                         BorderBrush="{DynamicResource MaterialDesignDivider}"
+                         Style="{StaticResource MaterialDesignOutlinedPasswordBox}" Password="0123456789abcde" Foreground="{DynamicResource PrimaryTextColor}"/>
+
+                    <Button x:Name="btnLogin" Width="230" Margin="0 12 0 0"
+                         FontSize="16" Content="LOG IN TO GRID"
+                         Style="{StaticResource MaterialDesignFlatMidBgButton}"
+                         matDes:ButtonAssist.CornerRadius="10"
+                         matDes:ShadowAssist.ShadowDepth="Depth0"
+                         Height="43" Click="btnLogin_Click" BorderThickness="0"/>
+
+                    <Border x:Name="BrdShiftDate" Height="80" Margin="10 12 10 10">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="30"/>
+                            </Grid.RowDefinitions>
+
+                            <RichTextBox Name="txtShift" Margin="35,-15,0,0" Foreground="{DynamicResource PrimaryTextColor}" Grid.Row="0" HorizontalAlignment="Left"  HorizontalContentAlignment="Left" FontSize="11" Height="30" Width="270" Padding="2" VerticalScrollBarVisibility="Hidden" Background="Transparent" Panel.ZIndex="2" BorderBrush="Transparent" VerticalContentAlignment="Top" IsEnabled="False"/>
+
+                            <TextBlock Text="Select Shift Date" 
+                                           FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}"
+                                           HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Row="1" Margin="25,8,0,0"/>
+
+                            <StackPanel Grid.Row="2" Orientation="Horizontal">
+                                <ComboBox FontSize="12" Height="24" Margin="25,0,0,0"
+                                              HorizontalAlignment="Left" x:Name="cmbTransdate" HorizontalContentAlignment="Center"
+                                              VerticalAlignment="Bottom" Width="140"  BorderThickness="1.5" matDes:ThemeAssist.Theme="Inherit" />
+
+                                <Button x:Name="cmdSave" Content="SAVE" 
+                                            BorderThickness="0" Margin="8,4,0,0"
+                                            Height="26" Width="80" 
+                                            VerticalAlignment="Bottom" 
+                                            FontSize="11"
+                                            Style="{StaticResource MaterialDesignFlatMidBgButton}"
+                                            matDes:ButtonAssist.CornerRadius="7"
+                                            matDes:ShadowAssist.ShadowDepth="Depth0"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                </StackPanel>
+            </telerik:RadBusyIndicator>
+
+        </matDes:DialogHost>
+
+    </matDes:Card>
+
+</Window>
