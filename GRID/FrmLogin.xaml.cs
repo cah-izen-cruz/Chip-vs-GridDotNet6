@@ -69,7 +69,7 @@ namespace GRID
             this.Height = 360;
             this.Title = grd.grdData.GridVersion;
 
-            if (UserName == "izen.cruz")
+            if (UserName == "izen.cruz1")
             {
                 txtUserName.IsEnabled = true;
             }
