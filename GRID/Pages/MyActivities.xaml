@@ -198,24 +198,80 @@
                             </Grid>
                         </telerik:RadTabItem>
 
+                        <telerik:RadTabItem IsSelected="True" Header="QA Questions" x:Name="tabQA" Height="30" Foreground="White" FontFamily="Seogeo Ui" Width="100" Cursor="Hand">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <ListView ItemsSource="{Binding}"  Grid.Row="0" Grid.Column="0" Height="Auto" Width="Auto"  Name="lstQAForm"  Foreground="{DynamicResource PrimaryTextColor}" Background="{x:Null}"  Grid.ColumnSpan="2" Cursor="Hand" MouseDoubleClick="lstQAForm_MouseDoubleClick">
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn Width="Auto" Header="Id">
+                                                <GridViewColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <!--<Border Width="25" Height="25" CornerRadius="1" Margin="0 0 4 0" Background="{Binding BgColor}">
+                                                                <iconPacks:PackIconMaterial Kind="CheckboxBlank" Margin="-2 4 0 0" />
+                                                            </Border>-->
+
+                                                            <TextBlock Text="{Binding Id}" VerticalAlignment="Center" Margin="6 6 0 0"/>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </GridViewColumn.CellTemplate>
+                                            </GridViewColumn>
+
+                                            <GridViewColumn Width="Auto" Header="Question Form">
+                                                <GridViewColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Border Width="25" Height="25" CornerRadius="1" Margin="0 0 4 0" Background="{Binding BgColor}">
+                                                                <iconPacks:PackIconMaterial Kind="FileQuestion" Margin="-2 4 0 0" />
+                                                            </Border>
+
+                                                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Margin="-4 0 0 0"/>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </GridViewColumn.CellTemplate>
+                                            </GridViewColumn>
+
+                                        </GridView>
+                                    </ListView.View>
+                                </ListView>
+
+
+                            </Grid>
+                        </telerik:RadTabItem>
                     </telerik:RadTabControl>
                 </StackPanel>
             </StackPanel>
 
-            <!--<ScrollViewer CanContentScroll="True" HorizontalAlignment="Left" HorizontalScrollBarVisibility="Disabled" Name="ScrollViewer1" VerticalScrollBarVisibility="Hidden" Width="Auto" telerik:StyleManager.Theme="Fluent" HorizontalContentAlignment="Stretch">-->
-            <Border x:Name="GridDynamicObjects" Grid.Row="2" CornerRadius="10" BorderBrush="{DynamicResource PrimaryTextColor}" BorderThickness="0" Background="{DynamicResource SecundaryBackgroundColor}" Padding="12" Width="790" VerticalAlignment="Top" HorizontalAlignment="Left">
+          
+            <!--<StackPanel x:Name="GridDynamicObjects" Grid.Row="2" Background="{DynamicResource SecundaryBackgroundColor}">
+                
+            </StackPanel>-->
+
+            
+            <Border x:Name="GridDynamicObjects" Grid.Row="2" CornerRadius="10" BorderBrush="{DynamicResource PrimaryTextColor}" BorderThickness="0" Background="{DynamicResource SecundaryBackgroundColor}" Padding="10" VerticalAlignment="Top" HorizontalAlignment="Left" Width="Auto">
+                <ScrollViewer CanContentScroll="True" HorizontalAlignment="Left" HorizontalScrollBarVisibility="Disabled" Name="ScrollViewer1" VerticalScrollBarVisibility="Hidden" Width="Auto" telerik:StyleManager.Theme="Fluent" HorizontalContentAlignment="Stretch">
                 <Grid Width="Auto" VerticalAlignment="Top">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="380"/>
-                        <ColumnDefinition Width="380"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <WrapPanel Grid.Column="0" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="WrapPanelMain" Width="1"  />
-                    <WrapPanel Grid.Column="1" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="WrapPanelMain2" Width="1" />
+                    <WrapPanel Grid.Column="0" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="WrapPanelMain"/>
+                    <WrapPanel Grid.Column="1" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="WrapPanelMain2"/>
+
+                    <StackPanel Grid.Column="0" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="QAWrapPanelCol1"/>
+                    <StackPanel Grid.Column="1" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="QAWrapPanelCol2"/>
 
                 </Grid>
+                </ScrollViewer>
             </Border>
-            <!--</ScrollViewer>-->
+         
 
             <Grid x:Name="ActivityButtonsMyActs" Grid.Row="4" Margin="0 0 0 4">
                 <Grid.ColumnDefinitions>

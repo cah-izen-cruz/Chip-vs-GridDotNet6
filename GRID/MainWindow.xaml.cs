@@ -1131,7 +1131,7 @@ namespace GRID
             grd.grdData.CurrentActivity.TransDate2 = grd.grdData.CurrentUser.TransactionDate2;
             grd.grdData.TeamInfo.DBName = grd.grdData.TeamInfo.DBName;
 
-            grd.conString = "Data Source=WPEC5009GRDRP01;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
+            grd.conString = "Data Source=DESKTOP-A0R75AD;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
 
             idleCtr = 0;
             idleTotal = 0;
@@ -1242,11 +1242,21 @@ namespace GRID
 
             //QA Questionnaire Data
             try
+            {
+                grd.MIPopulateQAList();
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            try
             {  
                 grd.grdData.QuestionForm.dtLOB = grd.GetQALob();
                 grd.grdData.QuestionForm.dtQAQuestionnaire = grd.GetQAQuestionnaires();
                 grd.grdData.QuestionForm.dtQASelection = grd.GetQASelection();
                 grd.grdData.QuestionForm.dtQAMarkdownSelection = grd.GetQAMarkdown();
+                grd.grdData.QuestionForm.dtQAContainers = grd.GetQAContainers();
             }
             catch (Exception ex)
             {

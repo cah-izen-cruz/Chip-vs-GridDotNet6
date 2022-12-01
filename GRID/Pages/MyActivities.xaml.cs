@@ -1,28 +1,21 @@
 ﻿using GRIDLibraries.Libraries;
+using Microsoft.VisualBasic;
+using Microsoft.VisualBasic.CompilerServices;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using Microsoft.VisualBasic.CompilerServices;
-using System.Windows.Threading;
-using Microsoft.VisualBasic;
-using System;
-using Telerik.Windows.Controls;
 using System.Windows.Documents;
-using System.Windows.Media.Animation;
+using System.Windows.Threading;
+using Telerik.Windows.Controls;
 using ToastNotifications;
 using ToastNotifications.Lifetime;
-using ToastNotifications.Position;
-using SharpDX.Direct3D10;
 using ToastNotifications.Messages;
-using ToastNotifications.Core;
-using Telerik.Windows.Documents.Spreadsheet.Expressions.Functions;
-using SharpDX.Direct3D9;
-using Telerik.Windows.Diagrams.Core;
-using Convert = System.Convert;
-using System.Data;
-using System.Windows.Data;
+using ToastNotifications.Position;
 using static GRID.MessagesBox;
+using Convert = System.Convert;
 
 namespace GRID.Pages
 {
@@ -37,18 +30,21 @@ namespace GRID.Pages
 
         gridActivity curAct = default;
 
-        DataTable dtCompleted;
+        QAQuestionForm curQA = default;
+
+        public RadComboBox dd = new RadComboBox();
+        public RadComboBox mdd = new RadComboBox();
+
+        DataTable dt = new DataTable();
+        DataRow dr;
+
 
         private long PrevActId = 0L;
-
-        //public DispatcherTimer ActivityElapsedTimer;
 
         private DispatcherTimer ActivityElapsedTimer;
 
         public bool IsMyActivitiesActivated = false;
         public bool ReStartActivity = false;
-
-        long OvertimeCounter = 0L;
 
         public int idleCtr;
         public MyActivities()
@@ -66,14 +62,17 @@ namespace GRID.Pages
 
             grd.grdData.TeamInfo.DBName = grd.grdData.TeamInfo.DBName;
 
-            grd.conString = "Data Source=WPEC5009GRDRP01;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
+            grd.conString = "Data Source=DESKTOP-A0R75AD;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
 
             lvMyActivities.ItemsSource = null;
             GvProductivity.ItemsSource = null;
+            lstQAForm.ItemsSource = null;
 
             GvProductivity.ItemsSource = grd.grdData._lstProductivityOrig;
             lvMyActivities.ItemsSource = grd.grdData._lstMyActivitiesOrig;
 
+
+            this.PopulateQuestionForms();
             this.PopulateProcessAndSubProcessMyActivities();
             this.PopulateProcessAndSubProcessProductivity();
 
@@ -134,7 +133,7 @@ namespace GRID.Pages
                 parentWindow: Application.Current.MainWindow,
                 corner: Corner.TopRight,
                 offsetX: 10,
-                offsetY: 10);   
+                offsetY: 10);
 
             msg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
                 notificationLifetime: TimeSpan.FromSeconds(3),
@@ -142,7 +141,7 @@ namespace GRID.Pages
 
             msg.Dispatcher = Application.Current.Dispatcher;
 
-            
+
         });
 
         #region "Populate Process and Subprocess combo boxes"
@@ -185,6 +184,17 @@ namespace GRID.Pages
 
         }
 
+        #endregion
+
+        #region "Populate Question Forms"
+        private void PopulateQuestionForms()
+        {
+            lstQAForm.Items.Clear();
+            foreach (DataRow row in grd.grdData.QuestionForm.dtLOB.Rows)
+            {
+                lstQAForm.Items.Add(new { Id = row["Id"], Name = row["Name"] });
+            }
+        }
         #endregion
 
         #region "Event Handlers"
@@ -713,13 +723,13 @@ namespace GRID.Pages
             if (PrevActId > 0)
             {
                 //var ans2 = Interaction.MsgBox("Activity successfully saved!" + '\r' + '\r' + "Do you want to load the same activity?", Constants.vbYesNo, grd.AppName);
-                
+
 
 
                 //var ans2 = Interaction.MsgBox("Do you want to load the same activity?", Constants.vbYesNo, grd.AppName);
 
                 bool? Result = new MessagesBox("Do you want to work on the same activity?", MessageType.Confirmation, MessageButtons.YesNo).ShowDialog();
-           
+
                 if (Result.Value)
                 {
                     this.StartSameActivity();
@@ -845,7 +855,7 @@ namespace GRID.Pages
 
             grd.gridData.LOBProcess = "";
 
-      
+
 
             grd.grdData.CurrentActivity.TimeStart = Strings.Format(curPausePerf.TimeEnd2, "MM/dd/yyyy h:mm:ss tt").ToString();
             grd.grdData.CurrentActivity.TimeStart2 = curPausePerf.TimeEnd2;
@@ -892,9 +902,106 @@ namespace GRID.Pages
         {
 
         }
+
+
+        public void StartQAQuestion()
+        {
+            grd.grdData.MainWindowAction = "";
+
+            this.ClearWrapPanel();
+
+            idleCtr = 0;
+
+            var newPerf = new gridPerformance();
+
+            newPerf.Id = 1;
+            newPerf.UserId = grd.grdData.CurrentUser.EmpNo;
+            newPerf.TransDate = Convert.ToDateTime(grd.grdData.CurrentUser.TransactionDate2).ToString("MM/dd/yyyy");
+            newPerf.ActivityId = grd.grdData.CurrentActivity.ActivityId;
+            newPerf.TimeStart = Strings.Format(grd.grdData.CurrentActivity.TimeStart2, "MM/dd/yyyy h:mm:ss tt").ToString();
+            newPerf.TimeEnd = Strings.Format(grd.grdData.CurrentActivity.TimeEnd2, "MM/dd/yyyy h:mm:ss tt").ToString();
+            newPerf.TransDate2 = grd.grdData.CurrentUser.TransactionDate2; //grd.grdData.CurrentUser.TransactionDate2;
+            newPerf.TimeStart2 = grd.grdData.CurrentActivity.TimeStart2;
+            newPerf.TimeEnd2 = grd.grdData.CurrentActivity.TimeEnd2;
+            newPerf.TimeElapsed = Strings.LTrim(Strings.RTrim((string)MainScrn.lblTimeElapsed.Content));
+            newPerf.IdleTime = grd.grdData.CurrentActivity.IdleTime;
+            newPerf.Status = "0";
+            newPerf.IsPaused = false;
+            newPerf.ReferenceId = grd.grdData.CurrentActivity.ReferenceId;
+            newPerf.PerfStatus = 0;
+
+
+            if (!(grd.grdData.CurrentActivity.Activity.ConfigInfo == null))
+            {
+                if (grd.grdData.CurrentActivity.Activity.ConfigInfo.Count > 0)
+                {
+                    this.SetupDynamicConfigInfo();
+                }
+            }
+
+
+            newPerf.Id = grd.AddPerformanceInfo(newPerf);
+
+            if (newPerf.Id > 0)
+            {
+                try
+                {
+                    grd.grdData.PerformanceList.Add(newPerf);
+                }
+                catch (Exception ex)
+                {
+                }
+                this.WrapActivityList.Visibility = Visibility.Hidden;
+                this.btnCloseMyAct.Visibility = Visibility.Hidden;
+
+                this.GridDynamicObjects.Visibility = Visibility.Visible;
+                this.WrapPanelMain.Visibility = Visibility.Visible;
+                this.WrapPanelMain2.Visibility = Visibility.Visible;
+                this.WrapPanelMain.Width = 380;
+                this.WrapPanelMain2.Width = 380;
+
+            }
+
+            grd.grdData.CurrentActivity.Id = newPerf.Id;
+
+            MainScrn.lblActivityName.Content = grd.grdData.CurrentActivity.Activity.ActName;
+            MainScrn.lblAHT.Content = grd.grdData.CurrentActivity.Activity.AHT;
+            MainScrn.lblProcessName.Content = grd.grdData.CurrentActivity.Activity.Process;
+            MainScrn.lblStartTime.Content = grd.grdData.CurrentActivity.TimeStart2.ToLongTimeString();
+            MainScrn.MinuteTimer = 0;
+            idleCtr = 0;
+
+            notifier.ShowInformation("  Your Activity Started @ " + this.MainScrn.lblStartTime.Content);
+
+        }
         #endregion
 
         #region "Level4 SetupDynamicConfigInfo"
+
+        private void SetupQADynamicConfigInfo()
+        {
+            int loopCtr = 0;
+
+            for (int i = 0, loopTo = grd.grdData.QALists.Count - 1; i <= loopTo; i++)
+            {
+                loopCtr = loopCtr + 1;
+
+                var x = new WrapPanel();
+                x.Background = System.Windows.Media.Brushes.Transparent;
+                x.Height = 26;
+                x.Width = 380;
+                x.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+                x.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+                x.Margin = new Thickness(0, 1, 0, 0);
+                x.Orientation = System.Windows.Controls.Orientation.Horizontal;
+
+                var y = new System.Windows.Controls.Label();
+                y.Content = grd.grdData.QALists[i].Question;
+
+
+            }
+
+        }
 
         private void SetupDynamicConfigInfo()
         {
@@ -930,6 +1037,7 @@ namespace GRID.Pages
 
             int loopCtr = 0;
 
+
             for (int i = 0, loopTo = grd.grdData.CurrentActivity.Activity.ConfigInfo.Count - 1; i <= loopTo; i++)
             {
                 loopCtr = loopCtr + 1;
@@ -944,7 +1052,7 @@ namespace GRID.Pages
                 x.Orientation = System.Windows.Controls.Orientation.Horizontal;
 
                 var y = new System.Windows.Controls.Label();
-                y.Content = grd.grdData.CurrentActivity.Activity.ConfigInfo[i].FieldName;
+                y.Content = grd.grdData.CurrentActivity.Activity.ConfigInfo[i].FieldName; //grd.grdData.QALists[i].Question;
 
                 try
                 {
@@ -1273,47 +1381,7 @@ namespace GRID.Pages
                 }
 
 
-                //if (i == 0)
-                //{
-                //    if (grd.grdData.TeamInfo.ProjectId == 2)
-                //    {
 
-                //        if (grd.grdData.LOBProcess == "GMB" & grd.grdData.CurrentActivity.LOBItemId > 0)
-                //        {
-
-
-
-                //            var z5 = new Telerik.Windows.Controls.RadButton();
-
-                //            z5.Width = 90;
-                //            z5.Height = 27;
-                //            z5.FontSize = 11;
-                //            z5.Content = "Open Email";
-                //            z5.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Center;
-                //            z5.VerticalContentAlignment = System.Windows.VerticalAlignment.Center;
-                //            z5.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-                //            z5.Foreground = System.Windows.Media.Brushes.Black;
-                //            z5.Background = System.Windows.Media.Brushes.White;
-                //            z5.Margin = new Thickness(5, 1, 1, 1);
-                //            z5.BorderBrush = System.Windows.Media.Brushes.White;
-                //            z5.BorderThickness = new Thickness(1);
-                //            z5.Name = "btnOFOpenEmail";
-                //            z5.CornerRadius = new CornerRadius(2);
-
-                //            //z5.Click += btnOFOpenEmail_Click;
-
-
-                //            this.RegisterName(z5.Name, z5);
-
-                //            x.Children.Add(z5);
-
-
-                //        }
-
-                //    }
-
-
-                //}
 
                 if (loopCtr < 12)
                     this.WrapPanelMain.Children.Add(x);
@@ -1566,32 +1634,7 @@ namespace GRID.Pages
         private bool CheckDynamicConfigData()
         {
 
-            //if (grd.grdData.LOBProcess.ToUpper() == "AtHomeBillingDiabetesGMB".ToUpper() & grd.grdData.CurrentActivity.LOBId == 94 & grd.grdData.CurrentActivity.LOBItemId > 0)
-            //{
-            //    //if (!(grd.grdData.CurrentActivity.AtHomeBillingDiabetesGMBEmailItem == null))
-            //    //{
-            //    //    if (grd.grdData.CurrentActivity.Activity.Id == grd.grdData.CurrentActivity.AtHomeBillingDiabetesGMBEmailItem.ActId)
-            //    //    {
-            //    if (grd.grdData.CurrentActivity.Activity.Id == 3033)
-            //    {
-            //        for (int i = 0, loopTo = grd.grdData.CurrentActivity.Activity.ConfigInfo.Count - 1; i <= loopTo; i++)
-            //        {
-            //            if (grd.grdData.CurrentActivity.Activity.ConfigInfo[i].Id == 3957)
-            //            {
-            //                System.Windows.Controls.ComboBox tb = (ComboBox)this.FindName("objRF" + Strings.Format(Operators.AddObject(i, 1), "00"));
-            //                if (!(tb == null))
-            //                {
-            //                    if (tb.Text.ToUpper().Contains("Inquiry".ToUpper()))
-            //                    {
-            //                        return true;
-            //                    }
-            //                }
-            //            }
-            //        }
-            //    }
-            //    //    }
-            //    //}
-            //}
+
 
 
             for (int i = 0, loopTo1 = grd.grdData.CurrentActivity.Activity.ConfigInfo.Count - 1; i <= loopTo1; i++)
@@ -2233,8 +2276,6 @@ namespace GRID.Pages
 
         private void RichTexbox_LostFocus(object sender, RoutedEventArgs e)
         {
-
-
             //string str = new TextRange(sender.Document.ContentStart, sender.Document.ContentEnd).Text;
 
             //if (Strings.Len(str) > 1000)
@@ -2249,9 +2290,6 @@ namespace GRID.Pages
             //    sender.Document.Blocks.Add(new Paragraph(new Run(str)));
 
             //}
-
-
-
         }
 
         private string GetObjectName(int ctr)
@@ -2259,164 +2297,13 @@ namespace GRID.Pages
             return "objRF" + Strings.Format(ctr + 1, "00");
         }
 
+        private string GetObjectNameMd(int ctr)
+        {
+            return "objMD" + Strings.Format(ctr + 1, "00");
+        }
+
 
         #endregion
-
-        //#region "OpenCompletedActivities"
-        //private void LoadOpenActivity()
-        //{
-
-        //    MainScrn.lvOpenActivities.ItemsSource = null;
-
-        //    var AddRF = new List<string>();
-        //    int ActId = 0;
-
-        //    if (MainScrn.cmbOpenActName.SelectedIndex == 0)
-        //    {
-        //        AddRF = grd.GetConfigFieldName(0);
-        //    }
-        //    else
-        //    {
-        //        try
-        //        {
-        //            gridActivity act = (gridActivity)MainScrn.cmbOpenActName.SelectedItem;
-        //            ActId = act.Id;
-        //            AddRF = grd.GetConfigFieldName(act.Id);
-        //        }
-
-        //        catch (Exception ex)
-        //        {
-
-        //        }
-
-        //    }
-
-        //    var gView = new GridView();
-
-        //    //gView.AllowsColumnReorder = true;
-        //    gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "ID", DisplayMemberBinding = new Binding("Id"), Width = 0 });
-        //    gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "ActId", DisplayMemberBinding = new Binding("Activity.Id"), Width = 0 });
-        //    gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Activity Name", DisplayMemberBinding = new Binding("Activity.ActName") });
-        //    gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Time Started", DisplayMemberBinding = new Binding("TimeStart") });
-        //    gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Duration", DisplayMemberBinding = new Binding("TimeElapsed") });
-        //    gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Type", DisplayMemberBinding = new Binding("Activity.Type") });
-        //    gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Process", DisplayMemberBinding = new Binding("Activity.Process") });
-        //    gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Ref No.", DisplayMemberBinding = new Binding("ReferenceId") });
-        //    gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Item Id", DisplayMemberBinding = new Binding("LOBItemId"), Width = 0 });
-
-
-        //    if (!(AddRF == null))
-        //    {
-        //        if (AddRF.Count > 0)
-        //        {
-
-        //            for (int i = 0, loopTo = AddRF.Count - 1; i <= loopTo; i++)
-        //                gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = AddRF[i].ToString(), DisplayMemberBinding = new Binding("PerfConfigData.RF" + Strings.Format(i + 1, "00")), Width = 100 });
-
-        //        }
-        //    }
-
-        //    MainScrn.lvOpenActivities.View = gView;
-
-        //    MainScrn.lvOpenActivities.ItemsSource = grd.GetPerformances(ActId, 1);
-
-
-
-        //    MainScrn.TabItem1.Header = "(" + MainScrn.lvOpenActivities.Items.Count + ") " + " Open";
-
-        //}
-
-        //private void LoadCompletedActivity()
-        //{
-
-
-        //    dtCompleted = new DataTable();
-
-        //    MainScrn.lvClosedActivities.ItemsSource = null;
-
-        //    //lblTotalAudit.Visibility = Visibility.Hidden;
-        //    //btnExportCompleted.Visibility = Visibility.Hidden;
-        //    var AddRF = new List<string>();
-
-        //    int ActId = 0;
-        //    if (MainScrn.cmbCompletedActName.SelectedIndex == 0)
-        //    {
-        //        AddRF = grd.GetConfigFieldName(0);
-        //    }
-        //    else
-        //    {
-        //        try
-        //        {
-        //            gridActivity act = (gridActivity)MainScrn.cmbCompletedActName.SelectedItem;
-        //            ActId = act.Id;
-        //            AddRF = grd.GetConfigFieldName(act.Id);
-        //        }
-        //        catch (Exception ex)
-        //        {
-
-        //        }
-
-        //    }
-
-        //    var gView = new GridView();
-
-        //    dtCompleted.Columns.Add("ID");
-        //    dtCompleted.Columns.Add("Activity.ActName");
-        //    dtCompleted.Columns.Add("Activity.Type");
-        //    dtCompleted.Columns.Add("Activity.Process");
-        //    dtCompleted.Columns.Add("TimeStart");
-        //    dtCompleted.Columns.Add("TimeEnd");
-        //    dtCompleted.Columns.Add("TimeElapsed");
-        //    dtCompleted.Columns.Add("ReferenceId");
-
-
-        //    gView.AllowsColumnReorder = true;
-        //    gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "ID", DisplayMemberBinding = new Binding("Id"), Width = 0 });
-        //    gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Activity Name", DisplayMemberBinding = new Binding("Activity.ActName") });
-        //    gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Type", DisplayMemberBinding = new Binding("Activity.Type") });
-        //    gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Process", DisplayMemberBinding = new Binding("Activity.Process") });
-        //    gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Time Started", DisplayMemberBinding = new Binding("TimeStart") });
-        //    gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Time Ended", DisplayMemberBinding = new Binding("TimeEnd") });
-        //    gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Duration", DisplayMemberBinding = new Binding("TimeElapsed") });
-        //    gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Ref No.", DisplayMemberBinding = new Binding("ReferenceId") });
-
-
-
-        //    if (!(AddRF == null))
-        //    {
-        //        if (AddRF.Count > 0)
-        //        {
-
-        //            for (int i = 0, loopTo = AddRF.Count - 1; i <= loopTo; i++)
-        //            {
-        //                try
-        //                {
-        //                    dtCompleted.Columns.Add(AddRF[i].ToString());
-        //                }
-        //                catch (Exception ex)
-        //                {
-
-        //                }
-
-
-        //                gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = AddRF[i].ToString(), DisplayMemberBinding = new Binding("PerfConfigData.RF" + Strings.Format(i + 1, "00")), Width = 100 });
-        //            }
-
-        //        }
-        //    }
-
-
-
-        //    MainScrn.lvClosedActivities.View = gView;
-
-        //    MainScrn.lvClosedActivities.ItemsSource = grd.GetPerformances(ActId, 2);
-
-        //    MainScrn.tabItem2.Header = "(" + MainScrn.lvClosedActivities.Items.Count + ")" + " Completed";
-        //}
-
-        //#endregion
-
-
 
         private void ElapsedTimer_Tick(object sender, EventArgs e)
         {
@@ -2641,6 +2528,7 @@ namespace GRID.Pages
             bool IsActivityStarted = false;
             int LOBItemId = 0;
 
+
             if (_ctr == 1)
             {
 
@@ -2698,6 +2586,221 @@ namespace GRID.Pages
             }
             else if (_ctr == 3)
             {
+
+                grd.grdData.QuestionForm.dtObjContainer.Columns.Add("Name");
+                grd.grdData.QuestionForm.dtObjContainer.Columns.Add("QID");
+                grd.grdData.QuestionForm.dtObjContainer.Columns.Add("Question");
+                grd.grdData.QuestionForm.dtObjContainer.Columns.Add("Value");
+                grd.grdData.QuestionForm.dtObjContainer.Columns.Add("Score");
+        
+
+                for (int i = lstQAForm.SelectedItems.Count - 1; i >= 0; i -= 1)
+                {
+                    var obj = lstQAForm.SelectedItems[i];
+                    var id = obj.GetType().GetProperties().First(o => o.Name == "Id").GetValue(obj, null);
+
+                    if (id.ToString() != "")
+                    {
+                        DataRow[] result = grd.grdData.QuestionForm.dtQAQuestionnaire.Select("Id = '" + id + "'");
+                        //grd.grdData.QuestionForm.dtQAContainers
+
+                        foreach (DataRow row in result)
+                        {
+                            if (dt.Rows.Count == 0)
+                            {
+                                dt.Columns.Add("QID");
+                                dt.Columns.Add("Question");
+                                dt.Columns.Add("ObjectType");
+
+                                dr = dt.NewRow();
+                                dr["QID"] = row["FormId"];
+                                dr["Question"] = row["Question"];
+                                dr["ObjectType"] = row["ObjectType"];
+                                dt.Rows.Add(dr);
+                            }
+                            else
+                            {
+                                dr = dt.NewRow();
+                                dr["QID"] = row["FormId"];
+                                dr["Question"] = row["Question"];
+                                dr["ObjectType"] = row["ObjectType"];
+                                dt.Rows.Add(dr);
+
+                            }
+
+                            dt.AcceptChanges();
+
+                        }
+                    }
+
+                    int loopCtr = 1;
+                    int loopMd = 1;
+
+                    var col1 = new System.Windows.Controls.Label();
+                    col1.FontWeight = FontWeights.Bold;
+                    col1.Content = "Questions";
+
+                    var col2 = new System.Windows.Controls.Label();
+                    col2.Margin = new Thickness(12, 1, 0, 0);
+                    col2.FontWeight = FontWeights.Bold;
+                    col2.Content = "Markdown";
+
+                    this.QAWrapPanelCol1.Children.Add(col1);
+                    this.QAWrapPanelCol2.Children.Add(col2);
+
+                    foreach (DataRow row1 in dt.Rows)
+                    {
+                        grd.grdData.QuestionForm.QID = Convert.ToInt32(row1["QID"]);
+
+                        var x = new StackPanel();
+                        x.Background = System.Windows.Media.Brushes.Transparent;
+                        x.Height = 26;
+                        x.Width = 300;
+                        x.VerticalAlignment = VerticalAlignment.Center;
+                        x.HorizontalAlignment = HorizontalAlignment.Left;
+                        x.Margin = new Thickness(0, 1, 0, 0);
+                        x.Orientation = Orientation.Horizontal;
+
+                        var y = new TextBlock();
+                        y.Text = row1["Question"].ToString();
+                        y.TextWrapping = TextWrapping.Wrap;                        
+                        y.Width = 100;
+                        y.Height = 26;
+                        y.FontSize = 11;
+                        
+                        y.HorizontalAlignment = HorizontalAlignment.Left;
+                        y.Foreground = System.Windows.Media.Brushes.White;
+                        y.Margin = new Thickness(0, 0, 0, 0);
+                        y.VerticalAlignment = VerticalAlignment.Center;
+
+
+                        var m = new StackPanel();
+                        m.Background = System.Windows.Media.Brushes.Transparent;
+                        m.Height = 26;
+                        m.Width = 300;
+                        m.VerticalAlignment = VerticalAlignment.Center;
+                        m.HorizontalAlignment = HorizontalAlignment.Left;
+                        m.Margin = new Thickness(0, 1, 0, 0);
+                        m.Orientation = Orientation.Horizontal;
+
+                        //var d = new System.Windows.Controls.Label();
+                        //d.Content = "Type";
+
+                        //d.Width = 100;
+                        //d.Height = 30;
+                        //d.FontSize = 11;
+                        //d.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Left;
+                        //d.Foreground = System.Windows.Media.Brushes.White;
+                        //d.Margin = new Thickness(10, 0, 0, 0);
+                        //d.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+
+
+
+                        switch (row1["ObjectType"].ToString().ToUpper())
+                        {
+                            #region "DropDown"
+                            case "DROPDOWNLIST":
+
+                                dd = new RadComboBox();
+                                dd.Width = 100;
+                                dd.Height = 25;
+                                dd.FontSize = 11;
+                                dd.HorizontalContentAlignment = HorizontalAlignment.Left;
+                                dd.VerticalContentAlignment = VerticalAlignment.Center;
+                                dd.VerticalAlignment = VerticalAlignment.Center;
+                                dd.Foreground = System.Windows.Media.Brushes.Black;
+                                dd.Margin = new Thickness(-10, 1, 1, 1);
+                                dd.IsEditable = false;
+                                dd.SelectedValuePath = "Score";
+                                dd.DisplayMemberPath = "Value";
+
+                                dd.Name = GetObjectName(loopCtr);
+                                this.RegisterName(dd.Name, dd);
+
+                                x.Children.Add(y);
+                                x.Children.Add(dd);
+
+
+
+
+
+
+                                mdd = new RadComboBox();
+                                mdd.Width = 100;
+                                mdd.Height = 25;
+                                mdd.FontSize = 11;
+                                mdd.HorizontalContentAlignment = HorizontalAlignment.Left;
+                                mdd.VerticalContentAlignment = VerticalAlignment.Center;
+                                mdd.VerticalAlignment = VerticalAlignment.Center;
+                                mdd.Foreground = System.Windows.Media.Brushes.Black;
+                                mdd.Margin = new Thickness(12, 1, 1, 1);
+                                mdd.IsEditable = false;
+                                mdd.SelectedValuePath = "Id";
+                                mdd.DisplayMemberPath = "Value";
+
+                                mdd.Name = GetObjectNameMd(loopMd);
+                                this.RegisterName(mdd.Name, mdd);
+
+                                //m.Children.Add(d);
+                                m.Children.Add(mdd);
+
+                                DataRow[] resMd = grd.grdData.QuestionForm.dtQAMarkdownSelection.Select("QID = '" + grd.grdData.QuestionForm.QID + "'");
+                                foreach (DataRow row in resMd)
+                                {
+                                    mdd.Items.Add(new { Value = row["Value"], Id = row["Id"] });
+                                }
+
+                                DataRow[] res = grd.grdData.QuestionForm.dtQASelection.Select("FormId = '" + row1["QID"] + "'");
+
+
+                                grd.grdData.QuestionForm.QID = Convert.ToInt32(row1["QID"]);
+
+                                foreach (DataRow row in res)
+                                {
+                                    dd.Items.Add(new { Value = row["Value"], Score = row["Score"] });
+
+                                    grd.grdData.QuestionForm.drObjContainer = grd.grdData.QuestionForm.dtObjContainer.NewRow();
+                                    grd.grdData.QuestionForm.drObjContainer["Name"] = dd.Name;
+                                    grd.grdData.QuestionForm.drObjContainer["QID"] = row["FormId"];
+                                    grd.grdData.QuestionForm.drObjContainer["Question"] = row["Question"];
+                                    grd.grdData.QuestionForm.drObjContainer["Value"] = row["Value"];
+                                    grd.grdData.QuestionForm.drObjContainer["Score"] = row["Score"];
+
+                                    grd.grdData.QuestionForm.dtObjContainer.Rows.Add(grd.grdData.QuestionForm.drObjContainer);
+                                }
+
+
+                                grd.grdData.QuestionForm.dtObjContainer.AcceptChanges();
+
+                                break;
+                                #endregion
+                        }
+
+
+                        this.QAWrapPanelCol1.Children.Add(x);
+                        this.QAWrapPanelCol2.Children.Add(m);
+
+                        if (loopCtr == dt.Rows.Count)
+                        {
+                            this.WrapActivityList.Visibility = Visibility.Hidden;
+                            this.btnCloseMyAct.Visibility = Visibility.Hidden;
+
+                            this.GridDynamicObjects.Visibility = Visibility.Visible;
+                            this.QAWrapPanelCol1.Visibility = Visibility.Visible;
+                            this.QAWrapPanelCol2.Visibility = Visibility.Visible;
+                            //this.QAWrapPanelCol1.Width = 380;
+                            //this.QAWrapPanelCol2.Width = 380;
+
+                            grd.grdData.CurrentActivity.Started = true;
+                            return;
+                        }
+
+                        loopCtr = loopCtr + 1;
+                        loopMd = loopMd + 1;
+                    }
+
+
+                }
             }
 
 
@@ -2721,6 +2824,10 @@ namespace GRID.Pages
                 withBlock.ActivityId = curAct.Id;
                 withBlock.LOBId = curAct.LOBId;
                 withBlock.LOBItemId = 0;
+
+
+
+
 
                 if (IsActivityStarted)
                     this.MainWindowActivated();
@@ -2768,7 +2875,7 @@ namespace GRID.Pages
                     if (grd.grdData.ScrContent.IsBreakStarted)
                         grd.grdData.ScrContent.IsBreakStarted = false;
 
-                
+
 
                     notifier.ShowWarning("Current activity paused.");
 
@@ -2952,7 +3059,44 @@ namespace GRID.Pages
 
         private void btnChange_Click(object sender, RoutedEventArgs e)
         {
-            notifier.ShowError("Error");
+            //notifier.ShowError(objRF01.SelectedValue.ToString());
+
+
+            //for (int i = grd.grdData.QuestionForm.dtObjContainer.Rows.Count - 1; i >= 0; i--)
+            //{
+            //    DataRow dr = grd.grdData.QuestionForm.dtObjContainer.Rows[i];
+            //    if (dr["Name"] == row1["Name"].ToString())
+            //        dr.Delete();
+            //}
+            //grd.grdData.QuestionForm.dtObjContainer.AcceptChanges();
+
+            dt = new DataTable();
+
+            dt.Columns.Add("QID");
+            dt.Columns.Add("Question");
+            dt.Columns.Add("Value");
+            dt.Columns.Add("Score");
+            dt.Columns.Add("Markdown");
+
+            foreach (DataRow row in grd.grdData.QuestionForm.dtObjContainer.Rows)
+            {
+                DataRow[] fQ = dt.Select("Question = '" + row["Question"].ToString() + "'");
+                RadComboBox cb = (RadComboBox)this.FindName(row["Name"].ToString());
+                RadComboBox mb = (RadComboBox)this.FindName(row["Name"].ToString());
+
+                if (fQ.Length == 0)
+                {
+                    dr = dt.NewRow();
+                    dr["QID"] = Convert.ToInt32(row["QID"]);
+                    dr["Question"] = row["Question"].ToString();
+                    dr["Value"] = cb.Text;
+                    dr["Score"] = Convert.ToInt32(cb.SelectedValue);
+                    dt.Rows.Add(dr);
+                    dt.AcceptChanges();
+                }
+
+            }
+
         }
 
         private void cmbProcess_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -2967,6 +3111,16 @@ namespace GRID.Pages
                 lvMyActivities.ItemsSource = q;
 
             }
+        }
+
+        private void lstQAForm_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            this.StartActivity(3);
+            btnStop.Visibility = Visibility.Visible;
+            btnPause.Visibility = Visibility.Visible;
+            btnChange.Visibility = Visibility.Visible;
+            grd.grdData.ScrContent.IsActivityRunning = true;
+            grd.grdData.ScrContent.IsMyDataChanged = true;
         }
     }
 }

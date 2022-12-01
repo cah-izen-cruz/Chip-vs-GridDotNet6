@@ -9,36 +9,36 @@ using System.Windows.Controls;
 using System.Reflection;
 using System.Windows.Controls.Primitives;
 using System.Security.Cryptography;
+using System.Diagnostics;
 
 namespace GRIDLibraries.Libraries
 {
     
     partial class GridLib
     {
-       
-        //public List<gridQAQuestionnaireForm> GetQALob1()
-        //{
-        //    var temp = new List<gridQAQuestionnaireForm>();
 
-        //    if (this.OpenMainAHSQAConnection())
-        //    {
-        //        SqlDataReader dr;
-        //        this.gridMainDbCommand.CommandText = "SELECT * FROM dbo.[tblLOB_V1] WHERE [Id] NOT IN (1, 2, 4);";
+        public List<QAQuestionForm> MIGetQAList()
+        {
+            var tempQAList = new List<QAQuestionForm>();
 
 
-        //        dr = this.gridMainDbCommand.ExecuteReader();
+            if (this.OpenMainAHSQAConnection())
+            {
+                SqlDataReader dr;
+                this.gridMainDbCommand.CommandText = "SELECT * FROM [dbo].[vQuery_QA_Questionnaire];";
+
+                dr = this.gridMainDbCommand.ExecuteReader();
+
+                while (dr.Read())
+                    tempQAList.Add(new QAQuestionForm() { LOBId = (int)dr["Id"], Name = (string)dr["Name"], QID = (int)dr["FormId"], Question = (string)dr["Question"], ObjectType = (string)dr["ObjectType"], Remarks = (string)dr["Remarks"], SelId = (int)dr["SId"], SelectionValue = (string)dr["Value"], Score = (double)dr["Score"] });
+                dr.Close();
+                this.CloseDbConnection();
+            }
 
 
-        //        while (dr.Read())
-        //            temp.Add(new gridQAQuestionnaireForm() { Id = (int)dr["Id"], LOBName = (string)dr["LineOfBusinessValue"] });
-        //        dr.Close();
-        //        this.CloseDbConnection();
-        //    }
+            return tempQAList;
 
-
-        //    return temp;
-
-        //}
+        }
 
         public DataTable GetQALob()
         {
@@ -46,7 +46,7 @@ namespace GRIDLibraries.Libraries
 
             var da = new SqlDataAdapter();
 
-            da = new SqlDataAdapter("SELECT * FROM dbo.[tblQAForm];", conStringAHS_QA);
+            da = new SqlDataAdapter("SELECT * FROM dbo.[tblQAForm] Order By Id;", conStringAHS_QA);
             da.SelectCommand.CommandTimeout = 1000;
             try
             {
@@ -84,6 +84,24 @@ namespace GRIDLibraries.Libraries
             var da = new SqlDataAdapter();
 
             da = new SqlDataAdapter("SELECT * FROM[dbo].[vQuery_QA_Questionnaire];", conStringAHS_QA);
+            da.SelectCommand.CommandTimeout = 1000;
+            try
+            {
+                da.Fill(temp);
+            }
+            catch (Exception ex)
+            {
+            }
+            return temp;
+        }
+
+
+        public DataTable GetQAContainers()
+        {
+            var temp = new DataTable();
+            var da = new SqlDataAdapter();
+
+            da = new SqlDataAdapter("SELECT * FROM[dbo].[vQuery_QA_Container];", conStringAHS_QA);
             da.SelectCommand.CommandTimeout = 1000;
             try
             {

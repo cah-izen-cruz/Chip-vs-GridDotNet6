@@ -64,7 +64,7 @@ namespace GRIDLibraries.Libraries
         {
             List<gridActivity> lstActivityMnt = new List<gridActivity>();
 
-            this.grdMutexx.WaitOne();
+            //this.grdMutexx.WaitOne();
 
             if (this.OpenMainDbConnection())
             {
@@ -109,7 +109,7 @@ namespace GRIDLibraries.Libraries
                 this.CloseMainDbConnection();
             }
 
-            this.grdMutexx.ReleaseMutex();
+            //this.grdMutexx.ReleaseMutex();
 
 
             return lstActivityMnt;

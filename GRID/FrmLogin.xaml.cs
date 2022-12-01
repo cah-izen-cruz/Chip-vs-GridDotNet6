@@ -58,18 +58,18 @@ namespace GRID
         public FrmLogin()
         {
             grd = new GridLib();
-            UserName = Environment.UserName; //DESKTOP-A0R75AD //WPEC5009GRDRP01 //WPPHL039SQL01 //WPEC5009GRDRP01 //"izen.cruz"; 
+            UserName = "izen.cruz"; //Environment.UserName; //DESKTOP-A0R75AD //WPEC5009GRDRP01 //WPPHL039SQL01 //WPEC5009GRDRP01 //"izen.cruz"; 
 
             //ImgUser.ImageSource = new BitmapImage(new Uri(SysInfo.GetUserPicturePath(UserName)));
             //grd.grdData.ScrContent.IsDark = true;
 
             InitializeComponent();
 
-            Log.Text = "Login to your existing account12";
+            Log.Text = "Login to your existing account";
             this.Height = 360;
             this.Title = grd.grdData.GridVersion;
 
-            if (UserName == "izen.cruz1")
+            if (UserName == "izen.cruz")
             {
                 txtUserName.IsEnabled = true;
             }
@@ -212,115 +212,118 @@ namespace GRID
                 return;
             }
 
-            try
-            {
+            //+++++++++++++++++ COMMENTED NOV 29 2022 ++++++++++++++++++++++++++++++++++++++
+            //try
+            //{
 
-                if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).ToString() + @"\Automation"))
-                {
-                    Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).ToString() + @"\Automation");
-                }
+            //    if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).ToString() + @"\Automation"))
+            //    {
+            //        Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).ToString() + @"\Automation");
+            //    }
 
-                if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).ToString() + @"\Automation\GRID"))
-                {
-                    Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).ToString() + @"\Automation\GRID");
-                }
-            }
-            catch (Exception ex)
-            {
+            //    if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).ToString() + @"\Automation\GRID"))
+            //    {
+            //        Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).ToString() + @"\Automation\GRID");
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
 
-            }
+            //}
 
-            try
-            {
-                if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).ToString() + @"\Automation\GRID\CSSProofing"))
-                {
-                    Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).ToString() + @"\Automation\GRID\CSSProofing");
-                }
-            }
-            catch (Exception ex)
-            {
+            //try
+            //{
+            //    if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).ToString() + @"\Automation\GRID\CSSProofing"))
+            //    {
+            //        Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).ToString() + @"\Automation\GRID\CSSProofing");
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
 
-            }
+            //}
 
-            try
-            {
-                _installPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).ToString() + @"\Automation\GRID";
-            }
-            catch (Exception ex)
-            {
+            //try
+            //{
+            //    _installPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).ToString() + @"\Automation\GRID";
+            //}
+            //catch (Exception ex)
+            //{
 
-            }
+            //}
 
-            if (_installPath != "")
-            {
-                if (Directory.Exists(_installPath))
-                {
+            //if (_installPath != "")
+            //{
+            //    if (Directory.Exists(_installPath))
+            //    {
 
-                    if (!File.Exists(_installPath + @"\local.mdb"))
-                    {
+            //        if (!File.Exists(_installPath + @"\local.mdb"))
+            //        {
 
-                        byte[] tmpdb;
-                        tmpdb = null;
-                        try
-                        {
-                            tmpdb = grd.GetLocalDb();
-                        }
-                        catch (Exception ex)
-                        {
+            //            byte[] tmpdb;
+            //            tmpdb = null;
+            //            try
+            //            {
+            //                tmpdb = grd.GetLocalDb();
+            //            }
+            //            catch (Exception ex)
+            //            {
 
-                            txtShift.Document.Blocks.Clear();
-                            txtShift.Document.Blocks.Add(new Paragraph(new Run(ex.Message)));
-                            btnLogin.IsEnabled = false;
+            //                txtShift.Document.Blocks.Clear();
+            //                txtShift.Document.Blocks.Add(new Paragraph(new Run(ex.Message)));
+            //                btnLogin.IsEnabled = false;
 
-                            objBusyIndicator.IsBusy = false;
-                            return;
+            //                objBusyIndicator.IsBusy = false;
+            //                return;
 
-                        }
+            //            }
 
 
-                        if (!(tmpdb == null))
-                        {
-                            try
-                            {
-                                File.WriteAllBytes(_installPath + @"\local.mdb", tmpdb);
-                            }
-                            catch (Exception ex)
-                            {
+            //            if (!(tmpdb == null))
+            //            {
+            //                try
+            //                {
+            //                    File.WriteAllBytes(_installPath + @"\local.mdb", tmpdb);
+            //                }
+            //                catch (Exception ex)
+            //                {
 
-                                txtShift.Document.Blocks.Clear();
-                                txtShift.Document.Blocks.Add(new Paragraph(new Run(ex.Message)));
-                                btnLogin.IsEnabled = false;
+            //                    txtShift.Document.Blocks.Clear();
+            //                    txtShift.Document.Blocks.Add(new Paragraph(new Run(ex.Message)));
+            //                    btnLogin.IsEnabled = false;
 
-                                objBusyIndicator.IsBusy = false;
-                                return;
+            //                    objBusyIndicator.IsBusy = false;
+            //                    return;
 
-                            }
-                        }
-                    }
-                }
+            //                }
+            //            }
+            //        }
+            //    }
 
-                else
-                {
-                    txtShift.Document.Blocks.Clear();
-                    txtShift.Document.Blocks.Add(new Paragraph(new Run("Cannot locate path/folder: for local db")));
-                    btnLogin.IsEnabled = false;
-                    objBusyIndicator.IsBusy = false;
-                    return;
-                }
-            }
+            //    else
+            //    {
+            //        txtShift.Document.Blocks.Clear();
+            //        txtShift.Document.Blocks.Add(new Paragraph(new Run("Cannot locate path/folder: for local db")));
+            //        btnLogin.IsEnabled = false;
+            //        objBusyIndicator.IsBusy = false;
+            //        return;
+            //    }
+            //}
 
-            else
-            {
-                txtShift.Document.Blocks.Clear();
-                txtShift.Document.Blocks.Add(new Paragraph(new Run("Cannot locate path/folder: for local db")));
+            //else
+            //{
+            //    txtShift.Document.Blocks.Clear();
+            //    txtShift.Document.Blocks.Add(new Paragraph(new Run("Cannot locate path/folder: for local db")));
 
-                btnLogin.IsEnabled = false;
-                objBusyIndicator.IsBusy = false;
+            //    btnLogin.IsEnabled = false;
+            //    objBusyIndicator.IsBusy = false;
 
-                return;
-            }
+            //    return;
+            //}
 
-            grd.grdData.ApplicationDirectory = _installPath;
+            //grd.grdData.ApplicationDirectory = _installPath;
+            //+++++++++++++++++
+
 
             HostName = Environment.MachineName.Length > 20 ? Strings.Mid(Environment.MachineName, 1, 20) : Environment.MachineName;
             HostName = Strings.Trim(HostName);

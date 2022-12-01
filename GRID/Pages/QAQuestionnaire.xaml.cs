@@ -411,8 +411,6 @@ namespace GRID.Pages
                     this.grd.grdData.QuestionForm.MarkId = Convert.ToInt32(id.ToString());
                     MarkId = true;
                 }
-
-
             }
 
             if (MarkId)
@@ -434,7 +432,7 @@ namespace GRID.Pages
 
                 if (IsEdit)
                 {
-                    grd.AddScore(this.grd.grdData.QuestionForm.QID, qAQuestionForm.SelectionValue, qAQuestionForm.Score);
+                    grd.AddScore(this.grd.grdData.QuestionForm.QID, qAQuestionForm.SelectionValue, (int)qAQuestionForm.Score);
                 }
                 else
                 {

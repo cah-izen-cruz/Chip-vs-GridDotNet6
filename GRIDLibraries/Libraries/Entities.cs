@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -145,6 +141,8 @@ namespace GRIDLibraries.Libraries
        
         public gridPerfInfo PerfConfigData { get; set; }
         public gridActivity Activity { get; set; }
+
+    
         public DateTime idleTimeDate { get; set; }
         public long Id { get; set; }
         public string UserId { get; set; }
@@ -443,23 +441,24 @@ namespace GRIDLibraries.Libraries
 
     }
 
-    public partial class gridQAQuestionnaireForm
-    {
-        public int Id { get; set; } // 
-        public string LOBName { get; set; }
-    }
-
     public class QAQuestionForm
     {
-        public List<QAQuestionForm>? ListOfQA { get; set; }
+        public List<QAPerfConfig>? ListOfQA { get; set; }
 
         public DataTable dtLOB = new DataTable();
         public DataTable dtQAQuestionnaire = new DataTable();
         public DataTable dtQASelection = new DataTable();
         public DataTable dtQAMarkdownSelection = new DataTable();
+
+        public DataTable dtQAContainers = new DataTable();
+
+        public DataTable dtObjContainer = new DataTable();
+        public DataRow drObjContainer;
+
+
         public QAQuestionForm()
         {
-            ListOfQA = new List<QAQuestionForm>();
+            ListOfQA = new List<QAPerfConfig>();
 
             //DataTable dtLOB;
             //DataTable dtQAQuestionnaire;
@@ -468,16 +467,55 @@ namespace GRIDLibraries.Libraries
         }
 
         public int LOBId { get; set; }
+        public string Name { get; set; }
+        public int QID { get; set; }
+        public string Question { get; set; }
+        public string ObjectType { get; set; }
+        public string Remarks { get; set; }
+           
         public int MaxLOBId { get; set; }
         public int MaxQID { get; set; }
-        public int QID { get; set; }
+        
         public int SelId { get; set; }
         public int MarkId { get; set; }
         public string SelectionValue { get; set; }
-        public int Score { get; set; }
+        public double Score { get; set; }
         public string MarkdownType { get; set; }
 
+    }
 
+
+    public class QAPerfConfig
+    {
+        public List<gridQAPerfConfigItem> QAConfigItem { get; set; }
+
+        public QAPerfConfig()
+        {
+            QAConfigItem = new List<gridQAPerfConfigItem>();
+        }
+
+        public int Id { get; set; }
+        public int ActivityId { get; set; }
+        public string FieldName { get; set; }
+        public string DataType { get; set; }
+        public string ObjectType { get; set; }
+        public bool IsRequired { get; set; }
+        public string Desc { get; set; }
+        public bool WithItem { get; set; }
+        public bool Status { get; set; }
+
+        public bool UseCurrentDate { get; set; }
+        public int Sequence { get; set; }
+
+        
+    }
+
+
+    public class gridQAPerfConfigItem
+    {
+        public int Id { get; set; }
+        public int PerfConfigId { get; set; }
+        public string Item { get; set; }
     }
 
 
