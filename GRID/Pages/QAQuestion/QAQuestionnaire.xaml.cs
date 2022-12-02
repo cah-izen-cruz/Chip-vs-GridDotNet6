@@ -1,4 +1,5 @@
-﻿using GRIDLibraries.Libraries;
+﻿using GRID.Pages.QAQuestion;
+using GRIDLibraries.Libraries;
 using LiveCharts;
 using Microsoft.VisualBasic;
 using System;
@@ -8,8 +9,6 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using Telerik.Windows.Documents.Spreadsheet.Expressions.Functions;
 using ToastNotifications;
 using ToastNotifications.Lifetime;
 using ToastNotifications.Messages;
@@ -47,6 +46,8 @@ namespace GRID.Pages
 
         private readonly BackgroundWorker bw = new BackgroundWorker();
 
+
+
         long maxQID;
         string strQAForm;
 
@@ -64,8 +65,7 @@ namespace GRID.Pages
             btnUpdate.Visibility = Visibility.Collapsed;
             btnSave.Visibility = Visibility.Collapsed;
 
-            btnCancelQA.Visibility = Visibility.Collapsed;
-            btnSaveQA.Visibility = Visibility.Collapsed;
+            btnEditlQA.Visibility = Visibility.Visible;
 
             objBusyIndicator.BusyContent = "Getting Questions...";
             objBusyIndicator.IsBusy = true;
@@ -189,61 +189,10 @@ namespace GRID.Pages
 
         private void btnAddQForm_Click(object sender, RoutedEventArgs e)
         {
-            cmbQuestionnaire.Text = "Type New Questionnaire Form Here";
-            cmbQuestionnaire.IsEditable = true;
-            cmbQuestionnaire.Focus();
-            btnCancelQA.Visibility = Visibility.Visible;
-            btnAddQForm.Visibility = Visibility.Collapsed;
-            btnSaveQA.Visibility = Visibility.Visible;
+            QAFormMainte aFormMainte = new QAFormMainte(0,cmbQuestionnaire.Text, Convert.ToInt32(cmbQuestionnaire.SelectedValue));
+            aFormMainte.ShowDialog();          
         }
 
-        private void btnSaveQA_Click(object sender, RoutedEventArgs e)
-        {
-            if (cmbQuestionnaire.Text != "")
-            {
-                bool? Result = new MessagesBox("Are all entries final?", MessageType.Confirmation, MessageButtons.YesNo).ShowDialog();
-                if (Result.Value)
-                {
-                    try
-                    {
-                        grd.AddQAForm(cmbQuestionnaire.Text);
-
-                        grd.grdData.QuestionForm.dtLOB = grd.GetQALob();
-                        cmbQuestionnaire.ItemsSource = grd.grdData.QuestionForm.dtLOB.DefaultView;
-                        cmbQuestionnaire.IsEditable = false;
-                        cmbQuestionnaire.Focus();
-
-                        btnCancelQA.Visibility = Visibility.Collapsed;
-                        btnAddQForm.Visibility = Visibility.Visible;
-                        btnSaveQA.Visibility = Visibility.Collapsed;
-                    }
-                    catch (Exception)
-                    {
-                    }
-                    notifier.ShowSuccess(cmbQuestionnaire.Text + " has been Added.");
-
-                    grpConfig.IsEnabled = false;
-
-                    cmbQuestionnaire.Text = "";
-
-                    //bool? Result2 = new MessagesBox("Do you want to Add Questions to the Form?", MessageType.Confirmation, MessageButtons.YesNo).ShowDialog();
-
-                    //if (Result2.Value)
-                    //{
-                    //    grpConfig.IsEnabled = true;
-                    //    txtQuestion.Focus();
-                    //}
-                    //else
-                    //    grpConfig.IsEnabled = false;
-                }
-
-            }
-            else
-            {
-                new MessagesBox("Please enter Questionnaire Form Name.", MessageType.Error, MessageButtons.Ok).ShowDialog();
-                cmbQuestionnaire.Focus();
-            }
-        }
 
         private void btnCancelQA_Click(object sender, RoutedEventArgs e)
         {
@@ -252,9 +201,7 @@ namespace GRID.Pages
             cmbQuestionnaire.Text = "";
             cmbQuestionnaire.IsEditable = false;
             cmbQuestionnaire.Focus();
-            btnCancelQA.Visibility = Visibility.Collapsed;
             btnAddQForm.Visibility = Visibility.Visible;
-            btnSaveQA.Visibility = Visibility.Collapsed;
         }
 
         private void btnEditQA_Click(object sender, RoutedEventArgs e)
@@ -659,6 +606,18 @@ namespace GRID.Pages
             }
             else
             { return; }
+
+        }
+
+        private void btnEditlQA_Click(object sender, RoutedEventArgs e)
+        {
+            if(cmbQuestionnaire.Text == "")
+            {
+                new MessagesBox("Please select a Question form to Edit.", MessageType.Error, MessageButtons.Ok).ShowDialog();
+                return;
+            }
+            QAFormMainte aFormMainte = new QAFormMainte(1,cmbQuestionnaire.Text, Convert.ToInt32(cmbQuestionnaire.SelectedValue));
+            aFormMainte.ShowDialog();
 
         }
     }

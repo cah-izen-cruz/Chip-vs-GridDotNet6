@@ -18,6 +18,7 @@
         FontFamily="{DynamicResource MaterialDesignFont}">
 
 
+    <Border CornerRadius="12">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200*"/>
@@ -29,18 +30,18 @@
             </Grid.RowDefinitions>
 
             <!--Background="{DynamicResource SecundaryBackgroundColor}"-->
-            <matDes:Card x:Name="CardHeader" Grid.Row="0" Padding="5" matDes:ShadowAssist.ShadowDepth="Depth5" 
+            <matDes:Card x:Name="CardHeader" Grid.Row="0" Padding="5" matDes:ShadowAssist.ShadowDepth="Depth5" Margin="0 4 0 0"
                      Background="{DynamicResource SecundaryBackgroundColor}"
                      Foreground="{DynamicResource PrimaryTextColor}"
                      Visibility="Visible" 
-                     Grid.ColumnSpan="2" HorizontalAlignment="Left" Width="500">
+                     Grid.ColumnSpan="2" HorizontalAlignment="Center" Width="500">
 
                 <StackPanel>
-                    <TextBlock x:Name="txtMessageTitle" HorizontalAlignment="Center" VerticalAlignment="Stretch" Style="{DynamicResource MaterialDesignTextBlock}" FontSize="14">Message Title</TextBlock>
+                    <TextBlock x:Name="txtMessageTitle" HorizontalAlignment="Center" VerticalAlignment="Stretch" Style="{DynamicResource MaterialDesignTextBlock}" FontSize="20">Message Title</TextBlock>
                 </StackPanel>
             </matDes:Card>
 
-            <StackPanel HorizontalAlignment="Right" Margin="0 5 8 0" VerticalAlignment="Top" Grid.Column="1">
+            <StackPanel HorizontalAlignment="Right" Margin="0 12 8 0" VerticalAlignment="Top" Grid.Column="1">
                 <Button x:Name="btnCloseMessage" Width="24" Height="24" Background="White" Foreground="{DynamicResource PrimaryHueDarkBrush}" Style="{StaticResource MaterialDesignFloatingActionDarkButton}" Click="btnCloseMessage_Click">
                     <matDes:PackIcon Kind="Close"/>
                 </Button>
@@ -72,7 +73,7 @@
 
                     </Grid>
 
-                    <Grid Grid.Row="1" Margin="0 20 0 5">
+                    <Grid Grid.Row="1" Margin="0 10 0 5">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
@@ -88,5 +89,7 @@
                 </Grid>
             </Grid>
         </Grid>
+    </Border>   
+   
 
 </Window>

@@ -130,7 +130,7 @@ namespace GRIDLibraries.Libraries
             return temp;
         }
 
-        public bool AddQAForm(string _OALOBName)
+        public bool AddQAForm(string _OALOBName, int _Formula, int _Target)
         {
             
 
@@ -151,16 +151,60 @@ namespace GRIDLibraries.Libraries
 
                     this.gridMainDbCommand.Parameters.Clear();
                     this.gridMainDbCommand.Parameters.AddWithValue("@Name", _OALOBName);
+                    this.gridMainDbCommand.Parameters.AddWithValue("@Formula", _Formula);
+                    this.gridMainDbCommand.Parameters.AddWithValue("@Target", _Target);
                     this.gridMainDbCommand.Parameters.AddWithValue("@ModifiedBy", this.grdData.CurrentUser.EID);
                     this.gridMainDbCommand.Parameters.AddWithValue("@ModifiedDate", this.ConvertTimeZone(this.grdData.TeamInfo.OffSet));
                     this.gridMainDbCommand.Parameters.AddWithValue("@Status", true);
 
-                    this.gridMainDbCommand.CommandText = "INSERT INTO [dbo].[tblQAForm] ([Name],[ModifiedBy],[ModifiedDate],[Status]) VALUES (@Name,@ModifiedBy,@ModifiedDate,@Status);";
+                    this.gridMainDbCommand.CommandText = "INSERT INTO [dbo].[tblQAForm] ([Name],[Formula],[Target],[ModifiedBy],[ModifiedDate],[Status]) VALUES (@Name,@Formula,@Target,@ModifiedBy,@ModifiedDate,@Status);";
 
                     try
                     {
                       if (this.gridMainDbCommand.ExecuteNonQuery() > 0)
                                temp = true;
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+                catch (Exception ex)
+                {
+                }
+                this.CloseMainDbConnection();
+            }
+            this.grdMutexx.ReleaseMutex();
+
+            return temp;
+
+        }
+
+        public bool UpdateQAForm(int _Id, string _OALOBName, int _Formula, int _Target)
+        {
+
+            bool temp = false;
+            this.grdMutexx.WaitOne();
+
+            if (this.OpenMainAHSQAConnection())
+            {
+                try
+                {
+                    this.gridMainDbCommand.Parameters.Clear();
+                    this.gridMainDbCommand.Parameters.AddWithValue("@Id", _Id);
+                    this.gridMainDbCommand.Parameters.AddWithValue("@Name", _OALOBName);
+                    this.gridMainDbCommand.Parameters.AddWithValue("@Formula", _Formula);
+                    this.gridMainDbCommand.Parameters.AddWithValue("@Target", _Target);
+                    this.gridMainDbCommand.Parameters.AddWithValue("@ModifiedBy", this.grdData.CurrentUser.EID);
+                    this.gridMainDbCommand.Parameters.AddWithValue("@ModifiedDate", this.ConvertTimeZone(grdData.TeamInfo.OffSet));
+                    this.gridMainDbCommand.Parameters.AddWithValue("@Status", true);
+
+                    this.gridMainDbCommand.CommandText = "UPDATE [dbo].[tblQAForm] SET [Name]=@Name,[Formula]=@Formula,[Target]=@Target," +
+                                "[ModifiedBy]=@ModifiedBy,[ModifiedDate]=ModifiedDate,[Status]=@Status WHERE [Id]=@Id;";
+
+                    try
+                    {
+                        if (this.gridMainDbCommand.ExecuteNonQuery() > 0)
+                            temp = true;
                     }
                     catch (Exception)
                     {

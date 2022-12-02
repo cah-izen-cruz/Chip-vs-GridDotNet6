@@ -1256,7 +1256,7 @@ namespace GRID
                 grd.grdData.QuestionForm.dtQAQuestionnaire = grd.GetQAQuestionnaires();
                 grd.grdData.QuestionForm.dtQASelection = grd.GetQASelection();
                 grd.grdData.QuestionForm.dtQAMarkdownSelection = grd.GetQAMarkdown();
-                grd.grdData.QuestionForm.dtQAContainers = grd.GetQAContainers();
+                //grd.grdData.QuestionForm.dtQAContainers = grd.GetQAContainers();
             }
             catch (Exception ex)
             {

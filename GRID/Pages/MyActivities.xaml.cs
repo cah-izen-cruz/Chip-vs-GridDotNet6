@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Threading;
 using Telerik.Windows.Controls;
+using Telerik.Windows.Documents.Spreadsheet.Expressions.Functions;
 using ToastNotifications;
 using ToastNotifications.Lifetime;
 using ToastNotifications.Messages;
@@ -38,6 +39,7 @@ namespace GRID.Pages
         DataTable dt = new DataTable();
         DataRow dr;
 
+        private int _ConfigCtr = 0;
 
         private long PrevActId = 0L;
 
@@ -58,7 +60,7 @@ namespace GRID.Pages
             //notifier.ShowWarning("Warning");
             //notifier.ShowError("Error");
 
-            MainScrn.ActivityElapsedTimer.Start();
+            this.MainScrn.ActivityElapsedTimer.Start();
 
             grd.grdData.TeamInfo.DBName = grd.grdData.TeamInfo.DBName;
 
@@ -88,22 +90,9 @@ namespace GRID.Pages
 
                 if (grd.grdData.ScrContent.IsBreakStarted)
                 {
-
-                    this.GridDynamicObjects.Visibility = Visibility.Collapsed;
-                    this.WrapPanelMain.Visibility = Visibility.Collapsed;
-                    this.WrapPanelMain2.Visibility = Visibility.Collapsed;
+                    this.ClearWrapPanel();
                     btnCloseMyAct.Visibility = Visibility.Collapsed;
-                    WrapActivityList.Visibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    btnCloseMyAct.Visibility = Visibility.Collapsed;
-                    WrapActivityList.Visibility = Visibility.Collapsed;
-
-                    this.GridDynamicObjects.Visibility = Visibility.Collapsed;
-                    this.WrapPanelMain.Visibility = Visibility.Collapsed;
-                    this.WrapPanelMain2.Visibility = Visibility.Collapsed;
-                }
+                }            
             }
             else
             {
@@ -113,12 +102,11 @@ namespace GRID.Pages
                 btnPause.Visibility = Visibility.Collapsed;
                 btnChange.Visibility = Visibility.Collapsed;
 
-                this.GridDynamicObjects.Visibility = Visibility.Collapsed;
-                this.WrapPanelMain.Visibility = Visibility.Collapsed;
-                this.WrapPanelMain2.Visibility = Visibility.Collapsed;
+                this.ClearWrapPanel();
 
                 btnCloseMyAct.Visibility = Visibility.Collapsed;
-                WrapActivityList.Visibility = Visibility.Collapsed;
+               
+
             }
 
             ActivityElapsedTimer = new DispatcherTimer();
@@ -2517,10 +2505,18 @@ namespace GRID.Pages
         }
         public void ClearWrapPanel()
         {
+            this.GridDynamicObjects.Visibility = Visibility.Collapsed;
+            this.WrapActivityList.Visibility = Visibility.Collapsed;
+    
             this.WrapPanelMain.Visibility = Visibility.Collapsed;
             this.WrapPanelMain2.Visibility = Visibility.Collapsed;
             this.WrapPanelMain.Children.Clear();
             this.WrapPanelMain2.Children.Clear();
+
+            this.QAWrapPanelCol1.Visibility = Visibility.Collapsed;
+            this.QAWrapPanelCol2.Visibility = Visibility.Collapsed;
+            this.QAWrapPanelCol1.Children.Clear();
+            this.QAWrapPanelCol2.Children.Clear();
         }
 
         private void StartActivity(int _ctr)
@@ -2586,6 +2582,8 @@ namespace GRID.Pages
             }
             else if (_ctr == 3)
             {
+                grd.grdData.QuestionForm.dtObjContainer = new DataTable();
+                dt = new DataTable();
 
                 grd.grdData.QuestionForm.dtObjContainer.Columns.Add("Name");
                 grd.grdData.QuestionForm.dtObjContainer.Columns.Add("QID");
@@ -2602,7 +2600,6 @@ namespace GRID.Pages
                     if (id.ToString() != "")
                     {
                         DataRow[] result = grd.grdData.QuestionForm.dtQAQuestionnaire.Select("Id = '" + id + "'");
-                        //grd.grdData.QuestionForm.dtQAContainers
 
                         foreach (DataRow row in result)
                         {
@@ -2633,20 +2630,10 @@ namespace GRID.Pages
                         }
                     }
 
+                    _ConfigCtr = dt.Rows.Count;
+
                     int loopCtr = 1;
                     int loopMd = 1;
-
-                    var col1 = new System.Windows.Controls.Label();
-                    col1.FontWeight = FontWeights.Bold;
-                    col1.Content = "Questions";
-
-                    var col2 = new System.Windows.Controls.Label();
-                    col2.Margin = new Thickness(12, 1, 0, 0);
-                    col2.FontWeight = FontWeights.Bold;
-                    col2.Content = "Markdown";
-
-                    this.QAWrapPanelCol1.Children.Add(col1);
-                    this.QAWrapPanelCol2.Children.Add(col2);
 
                     foreach (DataRow row1 in dt.Rows)
                     {
@@ -2804,6 +2791,8 @@ namespace GRID.Pages
             }
 
 
+
+
             if (!(curAct == null))
             {
                 grd.grdData.CurrentActivity.Started = true;
@@ -2945,16 +2934,30 @@ namespace GRID.Pages
         private void GvProductivity_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             this.StartActivity(2);
-            btnStop.Visibility = Visibility.Visible;
-            btnPause.Visibility = Visibility.Visible;
-            btnChange.Visibility = Visibility.Visible;
-            grd.grdData.ScrContent.IsActivityRunning = true;
-            grd.grdData.ScrContent.IsMyDataChanged = true;
+            if (_ConfigCtr == 0)
+            {
+                new MessagesBox("You have selected a Question Form with no Configuration yet.", MessageType.Error, MessageButtons.Ok).ShowDialog();
+                return;
+            }
+            else
+            {
+                btnStop.Visibility = Visibility.Visible;
+                btnPause.Visibility = Visibility.Visible;
+                btnChange.Visibility = Visibility.Visible;
+                grd.grdData.ScrContent.IsActivityRunning = true;
+                grd.grdData.ScrContent.IsMyDataChanged = true;
+            }
+           
         }
 
         private void lvMyActivities_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             this.StartActivity(1);
+            if (_ConfigCtr == 0)
+            {
+                new MessagesBox("You have selected a Question Form with no Configuration yet.", MessageType.Error, MessageButtons.Ok).ShowDialog();
+                return;
+            }
             btnStop.Visibility = Visibility.Visible;
             btnPause.Visibility = Visibility.Visible;
             btnChange.Visibility = Visibility.Visible;
@@ -3046,15 +3049,21 @@ namespace GRID.Pages
 
         private void btnCloseMyAct_Click(object sender, RoutedEventArgs e)
         {
+            //if activity started, close is prohibited.
+
+            MainScrn.btnMyActivities.IsChecked = false;
+            
             this.WrapActivityList.Visibility = Visibility.Collapsed;
 
-            btnStart.Visibility = Visibility.Visible;
+            btnStart.Visibility = Visibility.Collapsed;
             btnStop.Visibility = Visibility.Collapsed;
             btnPause.Visibility = Visibility.Collapsed;
             btnChange.Visibility = Visibility.Collapsed;
 
             btnCloseMyAct.Visibility = Visibility.Collapsed;
             grd.grdData.ScrContent.IsStartClicked = false;
+
+            this.ClearWrapPanel();
         }
 
         private void btnChange_Click(object sender, RoutedEventArgs e)
@@ -3113,14 +3122,22 @@ namespace GRID.Pages
             }
         }
 
+        [Obsolete]
         private void lstQAForm_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             this.StartActivity(3);
+            if (_ConfigCtr == 0)
+            {
+                new MessagesBox("You have selected a Question Form" + Constants.vbNewLine + "with no Configuration.", MessageType.Error, MessageButtons.Ok).ShowDialog();
+                return;
+            }
             btnStop.Visibility = Visibility.Visible;
             btnPause.Visibility = Visibility.Visible;
             btnChange.Visibility = Visibility.Visible;
-            grd.grdData.ScrContent.IsActivityRunning = true;
-            grd.grdData.ScrContent.IsMyDataChanged = true;
+            //grd.grdData.ScrContent.IsActivityRunning = true;
+            //grd.grdData.ScrContent.IsMyDataChanged = true;
+
+            btnCloseMyAct.Visibility = Visibility.Visible;
         }
     }
 }
