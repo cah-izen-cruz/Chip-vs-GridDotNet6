@@ -65,7 +65,7 @@ namespace GRIDLibraries.Libraries
 
             var da = new SqlDataAdapter();
 
-            da = new SqlDataAdapter("SELECT DISTINCT Id,FormId,Question,ObjectType,Remarks FROM [dbo].[vQuery_QA_Questionnaire];", conStringAHS_QA);
+            da = new SqlDataAdapter("SELECT DISTINCT Id,Name,FormId,Question,ObjectType,Remarks,Category FROM [dbo].[vQuery_QA_Questionnaire];", conStringAHS_QA);
             da.SelectCommand.CommandTimeout = 1000;
             try
             {
@@ -139,15 +139,15 @@ namespace GRIDLibraries.Libraries
 
             if (this.OpenMainAHSQAConnection())
             {
-                this.gridMainDbCommand.CommandText = "SELECT COALESCE(MAX(ID)+1,1) AS MAXID FROM [dbo].[tblQAForm];";
-                try
-                {
-                    SqlDataReader dr = this.gridMainDbCommand.ExecuteReader();
-                    while (dr.Read())
-                    {                      
-                        this.grdData.QuestionForm.MaxLOBId = Convert.ToInt32(dr["MAXID"]);                       
-                    }
-                    dr.Close();
+                //this.gridMainDbCommand.CommandText = "SELECT COALESCE(MAX(ID)+1,1) AS MAXID FROM [dbo].[tblQAForm];";
+                //try
+                //{
+                    //SqlDataReader dr = this.gridMainDbCommand.ExecuteReader();
+                    //while (dr.Read())
+                    //{                      
+                    //    this.grdData.QuestionForm.MaxLOBId = Convert.ToInt32(dr["MAXID"]);                       
+                    //}
+                    //dr.Close();
 
                     this.gridMainDbCommand.Parameters.Clear();
                     this.gridMainDbCommand.Parameters.AddWithValue("@Name", _OALOBName);
@@ -167,10 +167,10 @@ namespace GRIDLibraries.Libraries
                     catch (Exception)
                     {
                     }
-                }
-                catch (Exception ex)
-                {
-                }
+                //}
+                //catch (Exception ex)
+                //{
+                //}
                 this.CloseMainDbConnection();
             }
             this.grdMutexx.ReleaseMutex();

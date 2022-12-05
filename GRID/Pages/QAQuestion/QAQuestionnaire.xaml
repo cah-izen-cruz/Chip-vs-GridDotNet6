@@ -171,12 +171,6 @@
                             <ScrollViewer Grid.Row="0">
                                 <StackPanel Orientation="Vertical">
 
-                                    <TextBox x:Name="txtQuestion"  Margin="2 6 0 0" HorizontalAlignment="Left"
-                                                    FontSize="12" matDes:HintAssist.Hint="Question" 
-                                                    HorizontalContentAlignment="Stretch"
-                                                    BorderThickness="1" Width="320" Padding="10"
-                                                    BorderBrush="{DynamicResource MaterialDesignDivider}" 
-                                                    Style="{StaticResource MaterialDesignOutlinedTextBox}" Foreground="{DynamicResource PrimaryTextColor}"/>
 
                                     <TextBox x:Name="txtCategory"  Margin="2 6 0 0" HorizontalAlignment="Left"
                                                     FontSize="12" matDes:HintAssist.Hint="Category" 
@@ -185,6 +179,14 @@
                                                     BorderBrush="{DynamicResource MaterialDesignDivider}" 
                                                     Style="{StaticResource MaterialDesignOutlinedTextBox}" Foreground="{DynamicResource PrimaryTextColor}"/>
                                     <!--BorderBrush="{DynamicResource MaterialDesignDivider}"-->
+
+                                    <TextBox x:Name="txtQuestion"  Margin="2 6 0 0" HorizontalAlignment="Left"
+                                                    FontSize="12" matDes:HintAssist.Hint="Question" 
+                                                    HorizontalContentAlignment="Stretch"
+                                                    BorderThickness="1" Width="320" Padding="10"
+                                                    BorderBrush="{DynamicResource MaterialDesignDivider}" 
+                                                    Style="{StaticResource MaterialDesignOutlinedTextBox}" Foreground="{DynamicResource PrimaryTextColor}"/>
+
                                     
                                     <ComboBox x:Name="cmbType"
                                               matDes:HintAssist.Hint="Choose Question Type" 

@@ -30,217 +30,156 @@
             <StackPanel Name="WrapMainContainer" Grid.Row="2">
                 <StackPanel Name="WrapActivityList" Visibility="Visible">
                     <telerik:RadTabControl Name="MainTab" Background="Transparent" BorderThickness="0" HeaderBackground="{DynamicResource SecundaryBackgroundColor}">
+                        
                         <telerik:RadTabItem IsSelected="True" Header="My Favorites" x:Name="tabMyActivities" Foreground="White" Height="30" Width="100">
-                            <Grid>
+                            <GroupBox Margin="0 3 0 0" Header="Select Process">
+                                <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="35"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
+                         
+                                <StackPanel Orientation="Horizontal" Grid.Row="0">
 
-                                <ListView ItemsSource="{Binding}"  Grid.Row="1" Grid.Column="0" Height="auto" Width="auto"  Name="lvMyActivities" Foreground="{DynamicResource PrimaryTextColor}" Background="{x:Null}" BorderBrush="DodgerBlue" Grid.ColumnSpan="2" Cursor="Hand" MouseDoubleClick="lvMyActivities_MouseDoubleClick">
+                                    <telerik:RadComboBox Name="cmbProcess"  Width="200" Height="23" BorderBrush="White" BorderThickness=".5" telerik:StyleManager.Theme="Office" FontSize="12" SelectionChanged="cmbProcess_SelectionChanged"/>
+                                        <Button Name="cmdMyFilter" BorderThickness="0" Style="{StaticResource AddButtonQForm}" Margin="6 0 0 0" Click="cmdMyFilter_Click">
+                                            <StackPanel Orientation="Horizontal">
+                                                <iconPacks:PackIconMaterial Kind="FilterOff" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                                                <TextBlock Text="Clear Filter"/>
+                                            </StackPanel>
+                                        </Button>
 
-                                    <ListView.Resources>
-                                        <Style TargetType="{x:Type ListViewItem}">
-                                            <Style.Resources>
-                                                <SolidColorBrush x:Key="SelectedBackgroundBrush" Color="DarkCyan" />
-                                            </Style.Resources>
-                                            <Style.Triggers>
-                                                <Trigger Property="IsSelected" Value="true">
-                                                    <Setter Property="Background" Value="Red"/>
-                                                </Trigger>
+                                        <Button Name="btnDeleteFromFav" BorderThickness="0" Style="{StaticResource AddButtonQForm}" Margin="6 0 0 0" Click="btnDeleteFromFav_Click">
+                                            <StackPanel Orientation="Horizontal">
+                                                <iconPacks:PackIconMaterial Kind="Delete" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                                                <TextBlock Text="Delete"/>
+                                            </StackPanel>
+                                        </Button>
 
-                                            </Style.Triggers>
-                                        </Style>
+                                    </StackPanel>
 
+                          
 
-
-                                    </ListView.Resources>
-
-                                    <ListView.View>
-                                        <GridView  x:Name="gv1"  >
-
-                                            <GridViewColumn Width="80"  DisplayMemberBinding="{Binding Id}" >
-                                                <GridViewColumnHeader Content="Id" Foreground="{DynamicResource PrimaryTextColor}"/>
-                                            </GridViewColumn>
-
-                                            <GridViewColumn Width="300" DisplayMemberBinding="{Binding ActName}" >
-                                                <GridViewColumnHeader Content="Name" Foreground="{DynamicResource PrimaryTextColor}"/>
-                                            </GridViewColumn>
-
-                                            <GridViewColumn Width="100"  DisplayMemberBinding="{Binding Type}">
-                                                <GridViewColumnHeader  Content="Type" Foreground="{DynamicResource PrimaryTextColor}"/>
-                                            </GridViewColumn>
-
-                                            <GridViewColumn Width="100" DisplayMemberBinding="{Binding AHT}">
-                                                <GridViewColumnHeader Content="AHT" Foreground="{DynamicResource PrimaryTextColor}"/>
-                                            </GridViewColumn>
-
-                                            <GridViewColumn Width="150"  DisplayMemberBinding="{Binding Process}">
-                                                <GridViewColumnHeader  Content="Process" Foreground="{DynamicResource PrimaryTextColor}"/>
-                                            </GridViewColumn>
-
-                                        </GridView>
-                                    </ListView.View>
+                                <ListView Name="lvMyActivities" ItemsSource="{Binding}" Grid.Row="1" 
+                                          Height="Auto" Width="Auto"  Cursor="Hand" 
+                                          MouseDoubleClick="lvMyActivities_MouseDoubleClick">
+                                        <ListView.View>
+                                            <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
+                                                <GridView.Columns>
+                                                    <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}" Width="50"/>
+                                                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding ActName}" Width="300"/>
+                                                    <GridViewColumn Header="Type" DisplayMemberBinding="{Binding Type}" Width="100"/>
+                                                    <GridViewColumn Header="AHT" DisplayMemberBinding="{Binding AHT}" Width="100"/>
+                                                    <GridViewColumn Header="Process" DisplayMemberBinding="{Binding Process}" Width="150"/>
+                                                </GridView.Columns>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
 
 
-                                </ListView>
-
-                                <StackPanel Orientation="Horizontal">
-
-                                    <Label Content="Process : " Height="28" Name="Label1" Foreground="{DynamicResource PrimaryTextColor}" />
-
-                                    <telerik:RadComboBox Name="cmbProcess"  Width="260" Height="23" BorderBrush="White" BorderThickness=".5" telerik:StyleManager.Theme="Office" FontSize="12" SelectionChanged="cmbProcess_SelectionChanged"/>
-                                    <telerik:RadButton Name="cmdMyFilter" BorderThickness="0" ToolTip="Click to Clear Filter" Width="100" Height="28" 
-                                                    HorizontalAlignment="Left" VerticalAlignment="Center"
-                                                    CornerRadius="3" 
-                                                    Cursor="Hand" telerik:StyleManager.Theme="Transparent" Margin="4 0 0 0" Click="cmdMyFilter_Click">
-
-                                        <StackPanel Orientation="Horizontal">
-                                            <iconPacks:PackIconMaterial Kind="FilterOff" Foreground="{DynamicResource PrimaryTextColor}"/>
-                                            <TextBlock HorizontalAlignment="Right" Foreground="{DynamicResource PrimaryTextColor}" Margin="0 1 0 0">&#160; Clear Filter</TextBlock>
-                                        </StackPanel>
-                                    </telerik:RadButton>
-
-                                    <telerik:RadButton Name="btnDeleteFromFav" Grid.Column="0" BorderThickness="0" ToolTip="Click to Delete from Favorites" Width="150" Height="28" 
-                                                    HorizontalAlignment="Left" VerticalAlignment="Center"
-                                                    CornerRadius="3" 
-                                                    Cursor="Hand" telerik:StyleManager.Theme="Transparent" Click="btnDeleteFromFav_Click">
-
-                                        <StackPanel Orientation="Horizontal">
-                                            <iconPacks:PackIconVaadinIcons Kind="Eraser" Foreground="{DynamicResource PrimaryTextColor}"/>
-                                            <TextBlock HorizontalAlignment="Right" Foreground="{DynamicResource PrimaryTextColor}" Margin="0 1 0 0">&#160; Delete from Favorites</TextBlock>
-                                        </StackPanel>
-                                    </telerik:RadButton>
-
-                                </StackPanel>
+                               
 
 
                             </Grid>
+                            </GroupBox>
                         </telerik:RadTabItem>
 
-                        <telerik:RadTabItem IsSelected="True" Header="Activity List" x:Name="tabProductive" Height="30" Foreground="White" FontFamily="Seogeo Ui" Width="100" Cursor="Hand">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="35"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
+                        <telerik:RadTabItem IsSelected="True" Header="My Favorites" x:Name="tabProductive" Foreground="White" Height="30" Width="100">
+                            <GroupBox Margin="0 3 0 0" Header="Select Process">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="35"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
 
-                                <ListView ItemsSource="{Binding}"  Grid.Row="1" Grid.Column="0" Height="Auto" Width="Auto"  Name="GvProductivity"  Foreground="{DynamicResource PrimaryTextColor}" Background="{x:Null}"  Grid.ColumnSpan="2" Cursor="Hand" MouseDoubleClick="GvProductivity_MouseDoubleClick">
-                                    <ListView.Resources>
-                                        <Style TargetType="{x:Type ListViewItem}">
-                                            <Style.Resources>
-                                                <SolidColorBrush x:Key="SelectedBackgroundBrush" Color="DarkCyan" />
-                                            </Style.Resources>
-                                            <Style.Triggers>
-                                                <Trigger Property="IsSelected" Value="true">
-                                                    <Setter Property="Background" Value="Red"/>
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </ListView.Resources>
+                                    <StackPanel Orientation="Horizontal" Grid.Row="0">
+                                        <telerik:RadComboBox Name="cmbProcessProd" Height="23" Width="200" BorderBrush="White" BorderThickness=".5" FontSize="12" SelectionChanged="cmbProcessProd_SelectionChanged"/>
 
-                                    <ListView.View>
-                                        <GridView  x:Name="gv2">
+                                        <Button Name="btnClearFilterProd" BorderThickness="0" Style="{StaticResource AddButtonQForm}" Margin="6 0 0 0" Click="btnClearFilterProd_Click">
+                                            <StackPanel Orientation="Horizontal">
+                                                <iconPacks:PackIconMaterial Kind="FilterOff" VerticalAlignment="Center" Margin="0 1 6 0" Width="11" Height="11"/>
+                                                <TextBlock Text="Clear Filter"/>
+                                            </StackPanel>
+                                        </Button>
 
-                                            <GridViewColumn  Width="80" DisplayMemberBinding="{Binding Id}" >
-                                                <GridViewColumnHeader Content="Id" Foreground="{DynamicResource PrimaryTextColor}"/>
-                                            </GridViewColumn>
+                                        <Button Name="btnProductivityAddtoFav" BorderThickness="0" Style="{StaticResource AddButtonQForm}" Margin="6 0 0 0" Click="btnProductivityAddtoFav_Click">
+                                            <StackPanel Orientation="Horizontal">
+                                                <iconPacks:PackIconMaterial Kind="Plus" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                                                <TextBlock Text="Favorites"/>
+                                            </StackPanel>
+                                        </Button>
 
-                                            <GridViewColumn Width="150" DisplayMemberBinding="{Binding ActName}" >
-                                                <GridViewColumnHeader Content="Name" Foreground="{DynamicResource PrimaryTextColor}"/>
-                                            </GridViewColumn>
+                                    </StackPanel>
 
-                                            <GridViewColumn Width="90" DisplayMemberBinding="{Binding AHT}">
-                                                <GridViewColumnHeader  Content="AHT" Foreground="{DynamicResource PrimaryTextColor}" />
-                                            </GridViewColumn>
+                                    <ListView ItemsSource="{Binding}"  Grid.Row="1" Height="Auto" Width="Auto" Name="GvProductivity" Cursor="Hand" MouseDoubleClick="GvProductivity_MouseDoubleClick">
+                                        <ListView.View>
+                                            <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
+                                                <GridView.Columns>
+                                                    <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}" Width="50"/>
+                                                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding ActName}" Width="300"/>
+                                                    <GridViewColumn Header="Type" DisplayMemberBinding="{Binding Type}" Width="100"/>
+                                                    <GridViewColumn Header="AHT" DisplayMemberBinding="{Binding AHT}" Width="100"/>
+                                                    <GridViewColumn Header="Process" DisplayMemberBinding="{Binding Process}" Width="150"/>
+                                                </GridView.Columns>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
 
-                                            <GridViewColumn Width="120" DisplayMemberBinding="{Binding Type}">
-                                                <GridViewColumnHeader  Content="Type" Foreground="{DynamicResource PrimaryTextColor}"/>
-                                            </GridViewColumn>
 
-                                            <GridViewColumn Width="250" DisplayMemberBinding="{Binding Process}">
-                                                <GridViewColumnHeader Content="Process" Foreground="{DynamicResource PrimaryTextColor}"/>
-                                            </GridViewColumn>
-                                        </GridView>
-                                    </ListView.View>
-                                </ListView>
 
-                                <StackPanel Orientation="Horizontal">
-
-                                    <Label Content="Process : " Height="28" Name="Label1Prod"  Foreground="{DynamicResource PrimaryTextColor}" />
-
-                                    <telerik:RadComboBox Name="cmbProcessProd"  Width="260" Height="23" BorderBrush="White" BorderThickness=".5" telerik:StyleManager.Theme="Office" FontSize="12" SelectionChanged="cmbProcessProd_SelectionChanged"/>
-
-                                    <telerik:RadButton Name="btnClearFilterProd" Grid.Column="0" BorderThickness="0" ToolTip="Click to Clear Filter" Width="100" Height="28" 
-                                                    HorizontalAlignment="Left" VerticalAlignment="Center"
-                                                    CornerRadius="3" 
-                                                    Cursor="Hand" telerik:StyleManager.Theme="Transparent" Margin="10 0 0 0" Click="btnClearFilterProd_Click">
-
-                                        <StackPanel Orientation="Horizontal">
-                                            <iconPacks:PackIconMaterial Kind="FilterOff" Foreground="{DynamicResource PrimaryTextColor}"/>
-                                            <TextBlock HorizontalAlignment="Right" Foreground="{DynamicResource PrimaryTextColor}" Margin="0 1 0 0">&#160; Clear Filter</TextBlock>
-                                        </StackPanel>
-                                    </telerik:RadButton>
-
-                                    <telerik:RadButton Name="btnProductivityAddtoFav" Grid.Column="0" BorderThickness="0" ToolTip="Click to Add to Favorites" Width="120" Height="28" 
-                                                    HorizontalAlignment="Left" VerticalAlignment="Center"
-                                                    CornerRadius="3" 
-                                                    Cursor="Hand" telerik:StyleManager.Theme="Transparent" Click="btnProductivityAddtoFav_Click">
-
-                                        <StackPanel Orientation="Horizontal">
-                                            <iconPacks:PackIconMaterial Kind="BookPlusMultiple" Foreground="{DynamicResource PrimaryTextColor}"/>
-                                            <TextBlock HorizontalAlignment="Right" Foreground="{DynamicResource PrimaryTextColor}" Margin="0 1 0 0">&#160; Add to Favorites</TextBlock>
-                                        </StackPanel>
-                                    </telerik:RadButton>
-
-                                </StackPanel>
-
-                            </Grid>
+                                </Grid>
+                            </GroupBox>
                         </telerik:RadTabItem>
 
-                        <telerik:RadTabItem IsSelected="True" Header="QA Questions" x:Name="tabQA" Height="30" Foreground="White" FontFamily="Seogeo Ui" Width="100" Cursor="Hand">
-                            <Grid>
+                        <telerik:RadTabItem IsSelected="True" Header="QA Questions" x:Name="tabQA" Foreground="White" Height="30" Width="100">
+                            <GroupBox Header="Double click an Item to start" Margin="0 3 0 0">
+                                <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
 
-                                <ListView ItemsSource="{Binding}"  Grid.Row="0" Grid.Column="0" Height="Auto" Width="Auto"  Name="lstQAForm"  Foreground="{DynamicResource PrimaryTextColor}" Background="{x:Null}"  Grid.ColumnSpan="2" Cursor="Hand" MouseDoubleClick="lstQAForm_MouseDoubleClick">
-                                    <ListView.View>
-                                        <GridView>
-                                            <GridViewColumn Width="Auto" Header="Id">
-                                                <GridViewColumn.CellTemplate>
-                                                    <DataTemplate>
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <!--<Border Width="25" Height="25" CornerRadius="1" Margin="0 0 4 0" Background="{Binding BgColor}">
+                             
+                                    <ListView ItemsSource="{Binding}"  Grid.Row="0" Grid.Column="0" Height="Auto" Width="Auto"  Name="lstQAForm"  Foreground="{DynamicResource PrimaryTextColor}" Background="{x:Null}"  Grid.ColumnSpan="2" Cursor="Hand" MouseDoubleClick="lstQAForm_MouseDoubleClick">
+                                        <ListView.View>
+                                            <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
+                                                <GridViewColumn Width="Auto" Header="Id">
+                                                    <GridViewColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <!--<Border Width="25" Height="25" CornerRadius="1" Margin="0 0 4 0" Background="{Binding BgColor}">
                                                                 <iconPacks:PackIconMaterial Kind="CheckboxBlank" Margin="-2 4 0 0" />
                                                             </Border>-->
 
-                                                            <TextBlock Text="{Binding Id}" VerticalAlignment="Center" Margin="6 6 0 0"/>
-                                                        </StackPanel>
-                                                    </DataTemplate>
-                                                </GridViewColumn.CellTemplate>
-                                            </GridViewColumn>
+                                                                <TextBlock Text="{Binding Id}" VerticalAlignment="Center"/>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </GridViewColumn.CellTemplate>
+                                                </GridViewColumn>
 
-                                            <GridViewColumn Width="Auto" Header="Question Form">
-                                                <GridViewColumn.CellTemplate>
-                                                    <DataTemplate>
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <Border Width="25" Height="25" CornerRadius="1" Margin="0 0 4 0" Background="{Binding BgColor}">
-                                                                <iconPacks:PackIconMaterial Kind="FileQuestion" Margin="-2 4 0 0" />
-                                                            </Border>
+                                                <GridViewColumn Width="250" Header="Question Form">
+                                                    <GridViewColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Border Width="25" Height="25" CornerRadius="1" Background="{Binding BgColor}">
+                                                                    <iconPacks:PackIconMaterial Kind="FileQuestion" Margin="6 2 0 0" />
+                                                                </Border>
 
-                                                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Margin="-4 0 0 0"/>
-                                                        </StackPanel>
-                                                    </DataTemplate>
-                                                </GridViewColumn.CellTemplate>
-                                            </GridViewColumn>
+                                                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Margin="4 -6 0 0"/>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </GridViewColumn.CellTemplate>
+                                                </GridViewColumn>
 
-                                        </GridView>
-                                    </ListView.View>
-                                </ListView>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
 
+                             
+
+                        
 
                             </Grid>
+                            </GroupBox>
                         </telerik:RadTabItem>
                     </telerik:RadTabControl>
                 </StackPanel>
@@ -254,19 +193,20 @@
             
             <Border x:Name="GridDynamicObjects" Grid.Row="2" CornerRadius="10" BorderBrush="{DynamicResource PrimaryTextColor}" BorderThickness="0" Background="{DynamicResource SecundaryBackgroundColor}" Padding="10" VerticalAlignment="Top" HorizontalAlignment="Left" Width="Auto">
                 <ScrollViewer CanContentScroll="True" HorizontalAlignment="Left" HorizontalScrollBarVisibility="Disabled" Name="ScrollViewer1" VerticalScrollBarVisibility="Hidden" Width="Auto" telerik:StyleManager.Theme="Fluent" HorizontalContentAlignment="Stretch">
-                <Grid Width="Auto" VerticalAlignment="Top">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+                    <Grid Width="Auto" VerticalAlignment="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                    <WrapPanel Grid.Column="0" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="WrapPanelMain"/>
-                    <WrapPanel Grid.Column="1" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="WrapPanelMain2"/>
 
-                    <StackPanel Grid.Column="0" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="QAWrapPanelCol1"/>
-                    <StackPanel Grid.Column="1" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="QAWrapPanelCol2"/>
+                        <WrapPanel Grid.Column="0" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="WrapPanelMain"/>
+                        <WrapPanel Grid.Column="1" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="WrapPanelMain2"/>
+
+
+                        <StackPanel Grid.Column="0" Grid.ColumnSpan="3" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="QAWrapPanelCol1"/>
+                        <StackPanel Grid.Column="0" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="QAWrapPanelCol2" Visibility="Collapsed"/>
 
                 </Grid>
                 </ScrollViewer>

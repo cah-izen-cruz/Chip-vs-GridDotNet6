@@ -481,16 +481,17 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type GridViewColumnHeader}">
-                            <Border BorderThickness="0" BorderBrush="Transparent" Background="Transparent">
-                                <TextBlock x:Name="ContentHeader" Text="{TemplateBinding Content}" Padding="10 12 4 12" Width="{TemplateBinding Width}" TextAlignment="Center" />
+                            <Border BorderThickness="1" BorderBrush="Transparent" Background="Transparent">
+                                <TextBlock x:Name="ContentHeader" Text="{TemplateBinding Content}" Padding="2 8 0 0" Width="{TemplateBinding Width}" TextAlignment="Center" />
                             </Border>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
-                <Setter Property="OverridesDefaultStyle" Value="True" />
-                <Setter Property="Foreground" Value="#69717D" />
-                <Setter Property="Height" Value="40" />
-                <!--<Setter Property="FontFamily" Value="Segoe UI" />-->
+                <Setter Property="OverridesDefaultStyle" Value="False"/>
+                <Setter Property="Foreground" Value="{DynamicResource PrimaryTextColor}" /> <!--#69717D-->
+                <Setter Property="Height" Value="35" />
+                <Setter Property="FontFamily" Value="Segoe UI" />
+                <Setter Property="FontSize" Value="11" />
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                 <Setter Property="Background" Value="Transparent" />
          

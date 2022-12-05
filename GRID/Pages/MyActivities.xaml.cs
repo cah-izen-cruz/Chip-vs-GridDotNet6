@@ -10,13 +10,13 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Threading;
 using Telerik.Windows.Controls;
-using Telerik.Windows.Documents.Spreadsheet.Expressions.Functions;
 using ToastNotifications;
 using ToastNotifications.Lifetime;
 using ToastNotifications.Messages;
 using ToastNotifications.Position;
 using static GRID.MessagesBox;
 using Convert = System.Convert;
+
 
 namespace GRID.Pages
 {
@@ -35,6 +35,8 @@ namespace GRID.Pages
 
         public RadComboBox dd = new RadComboBox();
         public RadComboBox mdd = new RadComboBox();
+        public RadWatermarkTextBox tb = new RadWatermarkTextBox();
+        public TextBlock lb = new TextBlock();
 
         DataTable dt = new DataTable();
         DataRow dr;
@@ -52,9 +54,6 @@ namespace GRID.Pages
         public MyActivities()
         {
             InitializeComponent();
-
-
-
             //notifier.ShowInformation("Info");
             //notifier.ShowSuccess("Success");
             //notifier.ShowWarning("Warning");
@@ -92,7 +91,7 @@ namespace GRID.Pages
                 {
                     this.ClearWrapPanel();
                     btnCloseMyAct.Visibility = Visibility.Collapsed;
-                }            
+                }
             }
             else
             {
@@ -105,7 +104,7 @@ namespace GRID.Pages
                 this.ClearWrapPanel();
 
                 btnCloseMyAct.Visibility = Visibility.Collapsed;
-               
+
 
             }
 
@@ -2290,6 +2289,11 @@ namespace GRID.Pages
             return "objMD" + Strings.Format(ctr + 1, "00");
         }
 
+        private string GetObjectNameCol2(int ctr)
+        {
+            return "objTB" + Strings.Format(ctr + 1, "00");
+        }
+
 
         #endregion
 
@@ -2507,7 +2511,7 @@ namespace GRID.Pages
         {
             this.GridDynamicObjects.Visibility = Visibility.Collapsed;
             this.WrapActivityList.Visibility = Visibility.Collapsed;
-    
+
             this.WrapPanelMain.Visibility = Visibility.Collapsed;
             this.WrapPanelMain2.Visibility = Visibility.Collapsed;
             this.WrapPanelMain.Children.Clear();
@@ -2590,7 +2594,6 @@ namespace GRID.Pages
                 grd.grdData.QuestionForm.dtObjContainer.Columns.Add("Question");
                 grd.grdData.QuestionForm.dtObjContainer.Columns.Add("Value");
                 grd.grdData.QuestionForm.dtObjContainer.Columns.Add("Score");
-        
 
                 for (int i = lstQAForm.SelectedItems.Count - 1; i >= 0; i -= 1)
                 {
@@ -2605,28 +2608,35 @@ namespace GRID.Pages
                         {
                             if (dt.Rows.Count == 0)
                             {
+                                dt.Columns.Add("Name");
                                 dt.Columns.Add("QID");
                                 dt.Columns.Add("Question");
                                 dt.Columns.Add("ObjectType");
+                                dt.Columns.Add("Category");
+                                dt.Columns.Add("Remarks");
 
                                 dr = dt.NewRow();
+                                dr["Name"] = row["Name"];
                                 dr["QID"] = row["FormId"];
                                 dr["Question"] = row["Question"];
                                 dr["ObjectType"] = row["ObjectType"];
+                                dr["Category"] = row["Category"];
+                                dr["Remarks"] = row["Remarks"];
                                 dt.Rows.Add(dr);
                             }
                             else
                             {
                                 dr = dt.NewRow();
+                                dr["Name"] = row["Name"];
                                 dr["QID"] = row["FormId"];
                                 dr["Question"] = row["Question"];
                                 dr["ObjectType"] = row["ObjectType"];
+                                dr["Category"] = row["Category"];
+                                dr["Remarks"] = row["Remarks"];
                                 dt.Rows.Add(dr);
-
                             }
 
                             dt.AcceptChanges();
-
                         }
                     }
 
@@ -2634,6 +2644,7 @@ namespace GRID.Pages
 
                     int loopCtr = 1;
                     int loopMd = 1;
+                    int loopTb = 1;                 
 
                     foreach (DataRow row1 in dt.Rows)
                     {
@@ -2642,7 +2653,7 @@ namespace GRID.Pages
                         var x = new StackPanel();
                         x.Background = System.Windows.Media.Brushes.Transparent;
                         x.Height = 26;
-                        x.Width = 300;
+                        x.Width = 770;
                         x.VerticalAlignment = VerticalAlignment.Center;
                         x.HorizontalAlignment = HorizontalAlignment.Left;
                         x.Margin = new Thickness(0, 1, 0, 0);
@@ -2650,36 +2661,35 @@ namespace GRID.Pages
 
                         var y = new TextBlock();
                         y.Text = row1["Question"].ToString();
-                        y.TextWrapping = TextWrapping.Wrap;                        
-                        y.Width = 100;
+                        y.TextWrapping = TextWrapping.Wrap;
+                        y.Width = 200;
                         y.Height = 26;
                         y.FontSize = 11;
-                        
                         y.HorizontalAlignment = HorizontalAlignment.Left;
                         y.Foreground = System.Windows.Media.Brushes.White;
                         y.Margin = new Thickness(0, 0, 0, 0);
                         y.VerticalAlignment = VerticalAlignment.Center;
 
+                        var z = new TextBlock();
+                        z.Text = row1["Category"].ToString();
+                        z.TextWrapping = TextWrapping.Wrap;
+                        z.Width = 100;
+                        z.Height = 26;
+                        z.FontSize = 11;
+                        z.HorizontalAlignment = HorizontalAlignment.Left;
+                        z.Foreground = System.Windows.Media.Brushes.White;
+                        z.Margin = new Thickness(0, 0, 0, 0);
+                        z.VerticalAlignment = VerticalAlignment.Center;
 
-                        var m = new StackPanel();
-                        m.Background = System.Windows.Media.Brushes.Transparent;
-                        m.Height = 26;
-                        m.Width = 300;
-                        m.VerticalAlignment = VerticalAlignment.Center;
-                        m.HorizontalAlignment = HorizontalAlignment.Left;
-                        m.Margin = new Thickness(0, 1, 0, 0);
-                        m.Orientation = Orientation.Horizontal;
 
-                        //var d = new System.Windows.Controls.Label();
-                        //d.Content = "Type";
 
-                        //d.Width = 100;
-                        //d.Height = 30;
-                        //d.FontSize = 11;
-                        //d.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Left;
-                        //d.Foreground = System.Windows.Media.Brushes.White;
-                        //d.Margin = new Thickness(10, 0, 0, 0);
-                        //d.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+
+
+
+
+
+
+
 
 
 
@@ -2696,20 +2706,16 @@ namespace GRID.Pages
                                 dd.VerticalContentAlignment = VerticalAlignment.Center;
                                 dd.VerticalAlignment = VerticalAlignment.Center;
                                 dd.Foreground = System.Windows.Media.Brushes.Black;
-                                dd.Margin = new Thickness(-10, 1, 1, 1);
+                                dd.Margin = new Thickness(1, 1, 1, 1);
                                 dd.IsEditable = false;
                                 dd.SelectedValuePath = "Score";
                                 dd.DisplayMemberPath = "Value";
-
                                 dd.Name = GetObjectName(loopCtr);
                                 this.RegisterName(dd.Name, dd);
 
+                                x.Children.Add(z);
                                 x.Children.Add(y);
                                 x.Children.Add(dd);
-
-
-
-
 
 
                                 mdd = new RadComboBox();
@@ -2720,16 +2726,37 @@ namespace GRID.Pages
                                 mdd.VerticalContentAlignment = VerticalAlignment.Center;
                                 mdd.VerticalAlignment = VerticalAlignment.Center;
                                 mdd.Foreground = System.Windows.Media.Brushes.Black;
-                                mdd.Margin = new Thickness(12, 1, 1, 1);
+                                mdd.Margin = new Thickness(1, 1, 1, 1);
                                 mdd.IsEditable = false;
                                 mdd.SelectedValuePath = "Id";
                                 mdd.DisplayMemberPath = "Value";
-
                                 mdd.Name = GetObjectNameMd(loopMd);
                                 this.RegisterName(mdd.Name, mdd);
+                                x.Children.Add(mdd);
 
-                                //m.Children.Add(d);
-                                m.Children.Add(mdd);
+                                tb = new RadWatermarkTextBox();
+                                tb.Text = row1["Remarks"].ToString();
+                                tb.Width = 300;
+                                tb.Height = 25;
+                                tb.FontSize = 11;
+                                tb.HorizontalContentAlignment = HorizontalAlignment.Left;
+                                tb.VerticalContentAlignment = VerticalAlignment.Center;
+                                tb.VerticalAlignment = VerticalAlignment.Center;
+                                tb.Foreground = System.Windows.Media.Brushes.Black;
+                                tb.Margin = new Thickness(1, 1, 1, 1);
+                                tb.Name = GetObjectNameCol2(loopTb);
+                                this.RegisterName(tb.Name, tb);
+                                x.Children.Add(tb);
+                              
+
+
+
+
+                               
+
+
+
+
 
                                 DataRow[] resMd = grd.grdData.QuestionForm.dtQAMarkdownSelection.Select("QID = '" + grd.grdData.QuestionForm.QID + "'");
                                 foreach (DataRow row in resMd)
@@ -2753,6 +2780,7 @@ namespace GRID.Pages
                                     grd.grdData.QuestionForm.drObjContainer["Value"] = row["Value"];
                                     grd.grdData.QuestionForm.drObjContainer["Score"] = row["Score"];
 
+
                                     grd.grdData.QuestionForm.dtObjContainer.Rows.Add(grd.grdData.QuestionForm.drObjContainer);
                                 }
 
@@ -2764,8 +2792,9 @@ namespace GRID.Pages
                         }
 
 
+
                         this.QAWrapPanelCol1.Children.Add(x);
-                        this.QAWrapPanelCol2.Children.Add(m);
+                        //this.QAWrapPanelCol2.Children.Add(m);
 
                         if (loopCtr == dt.Rows.Count)
                         {
@@ -2784,6 +2813,7 @@ namespace GRID.Pages
 
                         loopCtr = loopCtr + 1;
                         loopMd = loopMd + 1;
+                        loopTb = loopTb + 1;
                     }
 
 
@@ -2947,7 +2977,7 @@ namespace GRID.Pages
                 grd.grdData.ScrContent.IsActivityRunning = true;
                 grd.grdData.ScrContent.IsMyDataChanged = true;
             }
-           
+
         }
 
         private void lvMyActivities_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -3052,7 +3082,7 @@ namespace GRID.Pages
             //if activity started, close is prohibited.
 
             MainScrn.btnMyActivities.IsChecked = false;
-            
+
             this.WrapActivityList.Visibility = Visibility.Collapsed;
 
             btnStart.Visibility = Visibility.Collapsed;

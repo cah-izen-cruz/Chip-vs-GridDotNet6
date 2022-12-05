@@ -221,6 +221,7 @@ namespace GRID.Pages
 
                     foreach (DataRow row in result)
                     {
+                        txtCategory.Text = row["Category"].ToString();
                         txtQuestion.Text = row["Question"].ToString();
                         cmbType.Text = row["ObjectType"].ToString();
                         txtRemarks.Text = row["Remarks"].ToString();
@@ -248,7 +249,7 @@ namespace GRID.Pages
                 btnUpdate.Visibility = Visibility.Visible;
                 btnSave.Visibility = Visibility.Collapsed;
                 BrdButtons.Visibility = Visibility.Visible;
-                txtQuestion.Focus();
+                txtCategory.Focus();
 
                 IsEdit = true;
             }
@@ -327,7 +328,7 @@ namespace GRID.Pages
                 btnUpdate.Visibility = Visibility.Collapsed;
                 btnSave.Visibility = Visibility.Visible;
                 grpConfig.IsEnabled = true;
-                txtQuestion.Focus();
+                txtCategory.Focus();
 
 
                 dtSelection = new DataTable();
