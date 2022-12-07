@@ -107,7 +107,7 @@
                                         </DataGridTemplateColumn>
                                         <DataGridTextColumn Header="Type" Binding="{Binding QObject}" IsReadOnly="True" Width="115"/>
                                         <DataGridTextColumn Header="Category" Binding="{Binding QCategory}" IsReadOnly="True" Width="*"  Visibility="Collapsed"/>
-                                        <DataGridTextColumn Header="Remarks" Binding="{Binding QRemarks}" IsReadOnly="True" Width="*"/>
+                                        <DataGridTextColumn Header="Description" Binding="{Binding QDescription}" IsReadOnly="True" Width="*"/>
 
                                         <DataGridTemplateColumn Header="" IsReadOnly="True" Width="100">
                                             <DataGridTemplateColumn.CellTemplate>
@@ -306,8 +306,8 @@
                                         </StackPanel>
                                     </Grid>
 
-                                    <TextBox x:Name="txtRemarks"  Margin="2 10 2 10" HorizontalAlignment="Left"
-                                                            FontSize="12" matDes:HintAssist.Hint="Remarks" 
+                                    <TextBox x:Name="txtDescription"  Margin="2 10 2 10" HorizontalAlignment="Left"
+                                                            FontSize="12" matDes:HintAssist.Hint="Description" 
                                                             SpellCheck.IsEnabled="True"
                                                             VerticalScrollBarVisibility="Auto"
                                                             HorizontalContentAlignment="Stretch"

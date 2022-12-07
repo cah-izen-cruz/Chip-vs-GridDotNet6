@@ -74,7 +74,7 @@
                                                 </GridView.Columns>
                                             </GridView>
                                         </ListView.View>
-                                    </ListView>
+                                 </ListView>
 
 
                                
@@ -199,14 +199,18 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
 
                         <WrapPanel Grid.Column="0" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="WrapPanelMain"/>
                         <WrapPanel Grid.Column="1" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="WrapPanelMain2"/>
 
-
-                        <StackPanel Grid.Column="0" Grid.ColumnSpan="3" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="QAWrapPanelCol1"/>
-                        <StackPanel Grid.Column="0" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="QAWrapPanelCol2" Visibility="Collapsed"/>
+                        <StackPanel Grid.Row="0" Grid.Column="0" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="QAWrapPanelCategory"/>
+                        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="QAWrapPanelCol1"/>
+                      
 
                 </Grid>
                 </ScrollViewer>

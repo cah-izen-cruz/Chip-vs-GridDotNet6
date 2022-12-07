@@ -65,7 +65,7 @@ namespace GRIDLibraries.Libraries
 
             var da = new SqlDataAdapter();
 
-            da = new SqlDataAdapter("SELECT DISTINCT Id,Name,FormId,Question,ObjectType,Remarks,Category FROM [dbo].[vQuery_QA_Questionnaire];", conStringAHS_QA);
+            da = new SqlDataAdapter("SELECT DISTINCT Id,Name,FormId,Question,ObjectType,Description,Category FROM [dbo].[vQuery_QA_Questionnaire];", conStringAHS_QA);
             da.SelectCommand.CommandTimeout = 1000;
             try
             {
@@ -221,7 +221,7 @@ namespace GRIDLibraries.Libraries
 
         }
 
-        public bool AddQATemplate(int _FormId, string _Category, string _QAQuestion, string _QAObjType, string _QARemarks, DataTable dt1, DataTable dt2)
+        public bool AddQATemplate(int _FormId, string _Category, string _QAQuestion, string _QAObjType, string _QADescription, DataTable dt1, DataTable dt2)
         {
             bool temp = false;
             this.grdMutexx.WaitOne();
@@ -244,13 +244,13 @@ namespace GRIDLibraries.Libraries
                     this.gridMainDbCommand.Parameters.AddWithValue("@Category", _Category);
                     this.gridMainDbCommand.Parameters.AddWithValue("@Question", _QAQuestion);
                     this.gridMainDbCommand.Parameters.AddWithValue("@ObjType", _QAObjType);
-                    this.gridMainDbCommand.Parameters.AddWithValue("@Remarks", _QARemarks);
+                    this.gridMainDbCommand.Parameters.AddWithValue("@Description", _QADescription);
                     this.gridMainDbCommand.Parameters.AddWithValue("@ModifiedBy", this.grdData.CurrentUser.EID);
                     this.gridMainDbCommand.Parameters.AddWithValue("@ModifiedDate", this.ConvertTimeZone(grdData.TeamInfo.OffSet));
                     this.gridMainDbCommand.Parameters.AddWithValue("@Status", true);
 
-                    this.gridMainDbCommand.CommandText = "INSERT INTO [dbo].[tblQAQuestions] ([Id],[FormId],[Category],[Question],[ObjectType],[Remarks],[ModifiedBy],[ModifiedDate],[Status])" +
-                                " VALUES (@Id,@FormId,@Category,@Question,@ObjType,@Remarks,@ModifiedBy,@ModifiedDate,@Status);";
+                    this.gridMainDbCommand.CommandText = "INSERT INTO [dbo].[tblQAQuestions] ([Id],[FormId],[Category],[Question],[ObjectType],[Description],[ModifiedBy],[ModifiedDate],[Status])" +
+                                " VALUES (@Id,@FormId,@Category,@Question,@ObjType,@Description,@ModifiedBy,@ModifiedDate,@Status);";
                     try
                     {
                         if (this.gridMainDbCommand.ExecuteNonQuery() > 0)
@@ -302,7 +302,7 @@ namespace GRIDLibraries.Libraries
             return temp;
         }
 
-        public bool UpdateQATemplate(int _LOBId, string _Category, string _QAQuestion, string _QAObjType, string _QARemarks)
+        public bool UpdateQATemplate(int _LOBId, string _Category, string _QAQuestion, string _QAObjType, string _QADescription)
         {
             bool temp = false;
             this.grdMutexx.WaitOne();
@@ -317,13 +317,13 @@ namespace GRIDLibraries.Libraries
                     this.gridMainDbCommand.Parameters.AddWithValue("@Category", _Category);
                     this.gridMainDbCommand.Parameters.AddWithValue("@Question", _QAQuestion);
                     this.gridMainDbCommand.Parameters.AddWithValue("@ObjType", _QAObjType);
-                    this.gridMainDbCommand.Parameters.AddWithValue("@Remarks", _QARemarks);
+                    this.gridMainDbCommand.Parameters.AddWithValue("@Description", _QADescription);
                     this.gridMainDbCommand.Parameters.AddWithValue("@ModifiedBy", this.grdData.CurrentUser.EID);
                     this.gridMainDbCommand.Parameters.AddWithValue("@ModifiedDate", this.ConvertTimeZone(grdData.TeamInfo.OffSet));
                     this.gridMainDbCommand.Parameters.AddWithValue("@Status", true);
 
                     this.gridMainDbCommand.CommandText = "UPDATE [dbo].[tblQAQuestions] SET [Category]=@Category,[Question]=@Question,[ObjectType]=@ObjType," +
-                                "[Remarks]=@Remarks,[ModifiedBy]=@ModifiedBy,[ModifiedDate]=ModifiedDate,[Status]=@Status WHERE [Id]=@Id AND FormId=@FormId;";
+                                "[Description]=@Description,[ModifiedBy]=@ModifiedBy,[ModifiedDate]=ModifiedDate,[Status]=@Status WHERE [Id]=@Id AND FormId=@FormId;";
 
                     try
                     {

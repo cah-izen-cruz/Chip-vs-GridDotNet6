@@ -10,60 +10,41 @@
 
     <Border Background="Transparent" CornerRadius="8" BorderThickness="0" VerticalAlignment="Top">
         <!--<Label Content="Activity List for break" FontSize="50" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextColor}" HorizontalAlignment="Center" VerticalAlignment="Center"/>-->
+        <GroupBox Margin="0 3 0 0" Header="Double Click an Item to Start">
+            <Grid x:Name="GridBreakList">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-        <Grid x:Name="GridBreakList">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-
-            <StackPanel Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top" Height="30" Orientation="Horizontal" FlowDirection="RightToLeft" Width="50" Grid.RowSpan="2">
-                <Button x:Name="btnCloseMyBreak" Style="{StaticResource IconButtonsStyle}" Content="{DynamicResource close}" Tag="IsCloseButton" ToolTip="Close My Activities" Panel.ZIndex="2" Click="btnCloseMyBreak_Click"/>
-            </StackPanel>
-
-            <ListView Grid.Row="1" Name="lvBreak" Background="{x:Null}" Foreground="{DynamicResource PrimaryTextColor}" BorderBrush="DodgerBlue" MouseDoubleClick="lvBreak_MouseDoubleClick">
-
-                <ListView.Resources>
-                    <Style TargetType="{x:Type ListViewItem}">
-                        <Style.Resources>
-                            <SolidColorBrush x:Key="SelectedBackgroundBrush" Color="DarkCyan" />
-                        </Style.Resources>
-                        <Style.Triggers>
-                            <Trigger Property="IsSelected" Value="true">
-                                <Setter Property="Background" Value="Red"/>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </ListView.Resources>
-
-                <ListView.View>
-                    <GridView  x:Name="gv3">
-                        <GridViewColumn Width="100"  DisplayMemberBinding="{Binding Id}" >
-                            <GridViewColumnHeader  Content="Id"/>
-                        </GridViewColumn>
-                        <GridViewColumn Width="200" DisplayMemberBinding="{Binding ActName}">
-                            <GridViewColumnHeader  Content="Activity Name"/>
-                        </GridViewColumn>
-
-                        <GridViewColumn Width="100" DisplayMemberBinding="{Binding AHT}">
-                            <GridViewColumnHeader  Content="AHT"/>
-                        </GridViewColumn>
-
-                        <GridViewColumn Width="200"  DisplayMemberBinding="{Binding Process}">
-                            <GridViewColumnHeader  Content="Process"/>
-                        </GridViewColumn>
-
-                    </GridView>
-                </ListView.View>
-            </ListView>
+                <StackPanel Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top" Height="30" Orientation="Horizontal" FlowDirection="RightToLeft" Width="50" Grid.RowSpan="2">
+                    <Button x:Name="btnCloseMyBreak" Style="{StaticResource IconButtonsStyle}" Content="{DynamicResource close}" Tag="IsCloseButton" ToolTip="Close My Activities" Panel.ZIndex="2" Click="btnCloseMyBreak_Click"/>
+                </StackPanel>
 
 
-        </Grid>
+                <ListView Name="lvBreak" ItemsSource="{Binding}" Grid.Row="1" 
+                                          Height="Auto" Width="Auto"  Cursor="Hand" 
+                                          MouseDoubleClick="lvBreak_MouseDoubleClick">
+                    <ListView.View>
+                        <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
+                            <GridView.Columns>
+                                <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}" Width="50"/>
+                                <GridViewColumn Header="Name" DisplayMemberBinding="{Binding ActName}" Width="300"/>
+                                <!--<GridViewColumn Header="Type" DisplayMemberBinding="{Binding Type}" Width="100"/>-->
+                                <GridViewColumn Header="AHT" DisplayMemberBinding="{Binding AHT}" Width="100"/>
+                                <!--<GridViewColumn Header="Process" DisplayMemberBinding="{Binding Process}" Width="150"/>-->
+                            </GridView.Columns>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
 
 
+            </Grid>
+
+        </GroupBox>
     </Border>
 </Page>

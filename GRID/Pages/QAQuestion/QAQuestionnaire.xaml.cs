@@ -132,7 +132,7 @@ namespace GRID.Pages
         {
             txtQuestion.Text = "";
             txtCategory.Text = "";
-            txtRemarks.Text = "";
+            txtDescription.Text = "";
 
             lstSelection.Items.Clear();
             txtValueSelection.Text = "";
@@ -175,7 +175,7 @@ namespace GRID.Pages
 
                 foreach (DataRow row in result)
                 {
-                    lstQuestions.Items.Add(new { QQuestionName = row["Question"], QObject = row["ObjectType"], QRemarks = row["Remarks"], Id = row["Id"], FormId = row["FormId"] });
+                    lstQuestions.Items.Add(new { QQuestionName = row["Question"], QObject = row["ObjectType"], QDescription = row["Description"], Id = row["Id"], FormId = row["FormId"] });
                 }
 
                 this.grd.grdData.QuestionForm.LOBId = (int)cmbQuestionnaire.SelectedValue;
@@ -224,7 +224,7 @@ namespace GRID.Pages
                         txtCategory.Text = row["Category"].ToString();
                         txtQuestion.Text = row["Question"].ToString();
                         cmbType.Text = row["ObjectType"].ToString();
-                        txtRemarks.Text = row["Remarks"].ToString();
+                        txtDescription.Text = row["Description"].ToString();
 
                         lstSelection.Items.Add(new { Id = row["SId"].ToString(), Value = row["Value"].ToString(), Score = row["Score"].ToString() });
                     }
@@ -523,7 +523,7 @@ namespace GRID.Pages
             {
                 try
                 {
-                    grd.UpdateQATemplate(grd.grdData.QuestionForm.LOBId, txtCategory.Text, txtQuestion.Text, (string)cmbType.SelectedItem, txtRemarks.Text);
+                    grd.UpdateQATemplate(grd.grdData.QuestionForm.LOBId, txtCategory.Text, txtQuestion.Text, (string)cmbType.SelectedItem, txtDescription.Text);
                     this.QAMutex.WaitOne();
 
                     grd.grdData.QuestionForm.dtLOB = grd.GetQALob();
@@ -572,7 +572,7 @@ namespace GRID.Pages
 
                     this.QAMutex.WaitOne();
 
-                    grd.AddQATemplate(grd.grdData.QuestionForm.LOBId, txtCategory.Text, txtQuestion.Text, (string)cmbType.SelectedItem, txtRemarks.Text, dtSelection, dtMarkdown);
+                    grd.AddQATemplate(grd.grdData.QuestionForm.LOBId, txtCategory.Text, txtQuestion.Text, (string)cmbType.SelectedItem, txtDescription.Text, dtSelection, dtMarkdown);
 
                     grd.grdData.QuestionForm.dtLOB = grd.GetQALob();
                     grd.grdData.QuestionForm.dtQAQuestionnaire = grd.GetQAQuestionnaires();

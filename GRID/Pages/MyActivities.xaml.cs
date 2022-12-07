@@ -38,6 +38,8 @@ namespace GRID.Pages
         public RadWatermarkTextBox tb = new RadWatermarkTextBox();
         public TextBlock lb = new TextBlock();
 
+        public string Question;
+
         DataTable dt = new DataTable();
         DataRow dr;
 
@@ -2518,9 +2520,9 @@ namespace GRID.Pages
             this.WrapPanelMain2.Children.Clear();
 
             this.QAWrapPanelCol1.Visibility = Visibility.Collapsed;
-            this.QAWrapPanelCol2.Visibility = Visibility.Collapsed;
+            this.QAWrapPanelCategory.Visibility = Visibility.Collapsed;
             this.QAWrapPanelCol1.Children.Clear();
-            this.QAWrapPanelCol2.Children.Clear();
+            this.QAWrapPanelCategory.Children.Clear();
         }
 
         private void StartActivity(int _ctr)
@@ -2613,7 +2615,7 @@ namespace GRID.Pages
                                 dt.Columns.Add("Question");
                                 dt.Columns.Add("ObjectType");
                                 dt.Columns.Add("Category");
-                                dt.Columns.Add("Remarks");
+                                dt.Columns.Add("Description");
 
                                 dr = dt.NewRow();
                                 dr["Name"] = row["Name"];
@@ -2621,7 +2623,7 @@ namespace GRID.Pages
                                 dr["Question"] = row["Question"];
                                 dr["ObjectType"] = row["ObjectType"];
                                 dr["Category"] = row["Category"];
-                                dr["Remarks"] = row["Remarks"];
+                                dr["Description"] = row["Description"];
                                 dt.Rows.Add(dr);
                             }
                             else
@@ -2632,7 +2634,7 @@ namespace GRID.Pages
                                 dr["Question"] = row["Question"];
                                 dr["ObjectType"] = row["ObjectType"];
                                 dr["Category"] = row["Category"];
-                                dr["Remarks"] = row["Remarks"];
+                                dr["Description"] = row["Description"];
                                 dt.Rows.Add(dr);
                             }
 
@@ -2644,59 +2646,59 @@ namespace GRID.Pages
 
                     int loopCtr = 1;
                     int loopMd = 1;
-                    int loopTb = 1;                 
+                    int loopTb = 1;
+                    int cat;
 
-                    foreach (DataRow row1 in dt.Rows)
+                    for (int k = 0; k < dt.Rows.Count; k++)
                     {
-                        grd.grdData.QuestionForm.QID = Convert.ToInt32(row1["QID"]);
-
-                        var x = new StackPanel();
-                        x.Background = System.Windows.Media.Brushes.Transparent;
-                        x.Height = 26;
-                        x.Width = 770;
-                        x.VerticalAlignment = VerticalAlignment.Center;
-                        x.HorizontalAlignment = HorizontalAlignment.Left;
-                        x.Margin = new Thickness(0, 1, 0, 0);
-                        x.Orientation = Orientation.Horizontal;
-
-                        var y = new TextBlock();
-                        y.Text = row1["Question"].ToString();
-                        y.TextWrapping = TextWrapping.Wrap;
-                        y.Width = 200;
-                        y.Height = 26;
-                        y.FontSize = 11;
-                        y.HorizontalAlignment = HorizontalAlignment.Left;
-                        y.Foreground = System.Windows.Media.Brushes.White;
-                        y.Margin = new Thickness(0, 0, 0, 0);
-                        y.VerticalAlignment = VerticalAlignment.Center;
-
+                        cat = k + 1;
+                        grd.grdData.QuestionForm.QID = Convert.ToInt32(dt.Rows[k]["QID"]);
+                        FontWeight Bold;
                         var z = new TextBlock();
-                        z.Text = row1["Category"].ToString();
+                        z.Text = "Category " + cat + ": " + dt.Rows[k]["Category"].ToString();
                         z.TextWrapping = TextWrapping.Wrap;
-                        z.Width = 100;
+                        z.Width = 400;
                         z.Height = 26;
                         z.FontSize = 11;
+                        z.FontWeight = FontWeights.Bold;
                         z.HorizontalAlignment = HorizontalAlignment.Left;
-                        z.Foreground = System.Windows.Media.Brushes.White;
+                        z.Foreground = System.Windows.Media.Brushes.YellowGreen;
                         z.Margin = new Thickness(0, 0, 0, 0);
                         z.VerticalAlignment = VerticalAlignment.Center;
 
+              
+                        this.QAWrapPanelCol1.Orientation = Orientation.Vertical;
+                        this.QAWrapPanelCol1.Children.Add(z);
 
+                        Question = dt.Rows[k]["Question"].ToString();
+                        int Q;
 
-
-
-
-
-
-
-
-
-
-
-                        switch (row1["ObjectType"].ToString().ToUpper())
+                        for (int r = 0; r < dt.Rows.Count; r++)
                         {
-                            #region "DropDown"
-                            case "DROPDOWNLIST":
+                            Q = r + 1;
+                            if (Question.ToString() == dt.Rows[r]["Question"].ToString())
+                            {
+                                var x = new StackPanel();
+                                x.Background = System.Windows.Media.Brushes.Transparent;
+                                x.Height = 26;
+                                x.Width = 770;
+                                x.VerticalAlignment = VerticalAlignment.Center;
+                                x.HorizontalAlignment = HorizontalAlignment.Left;
+                                x.Margin = new Thickness(0, 1, 0, 0);
+                                x.Orientation = Orientation.Horizontal;
+                               
+
+                                var y = new TextBlock();
+                                y.Text = "Q" + Q + ": " + dt.Rows[r]["Question"].ToString();
+                                y.TextWrapping = TextWrapping.Wrap;
+                                y.Width = 200;
+                                y.Height = 26;
+                                y.FontSize = 12;
+                                y.HorizontalAlignment = HorizontalAlignment.Left;
+                                y.Foreground = System.Windows.Media.Brushes.White;
+                                y.Margin = new Thickness(0, 0, 0, 0);
+                                y.VerticalAlignment = VerticalAlignment.Center;
+                         
 
                                 dd = new RadComboBox();
                                 dd.Width = 100;
@@ -2713,15 +2715,13 @@ namespace GRID.Pages
                                 dd.Name = GetObjectName(loopCtr);
                                 this.RegisterName(dd.Name, dd);
 
-                                x.Children.Add(z);
                                 x.Children.Add(y);
                                 x.Children.Add(dd);
-
 
                                 mdd = new RadComboBox();
                                 mdd.Width = 100;
                                 mdd.Height = 25;
-                                mdd.FontSize = 11;
+                                mdd.FontSize = 11;                               
                                 mdd.HorizontalContentAlignment = HorizontalAlignment.Left;
                                 mdd.VerticalContentAlignment = VerticalAlignment.Center;
                                 mdd.VerticalAlignment = VerticalAlignment.Center;
@@ -2734,8 +2734,9 @@ namespace GRID.Pages
                                 this.RegisterName(mdd.Name, mdd);
                                 x.Children.Add(mdd);
 
+
                                 tb = new RadWatermarkTextBox();
-                                tb.Text = row1["Remarks"].ToString();
+                                tb.Text = "Puta remarks here..."; /*dt.Rows[r]["Description"].ToString();*/
                                 tb.Width = 300;
                                 tb.Height = 25;
                                 tb.FontSize = 11;
@@ -2747,16 +2748,8 @@ namespace GRID.Pages
                                 tb.Name = GetObjectNameCol2(loopTb);
                                 this.RegisterName(tb.Name, tb);
                                 x.Children.Add(tb);
-                              
 
-
-
-
-                               
-
-
-
-
+                                this.QAWrapPanelCol1.Children.Add(x);
 
                                 DataRow[] resMd = grd.grdData.QuestionForm.dtQAMarkdownSelection.Select("QID = '" + grd.grdData.QuestionForm.QID + "'");
                                 foreach (DataRow row in resMd)
@@ -2764,11 +2757,8 @@ namespace GRID.Pages
                                     mdd.Items.Add(new { Value = row["Value"], Id = row["Id"] });
                                 }
 
-                                DataRow[] res = grd.grdData.QuestionForm.dtQASelection.Select("FormId = '" + row1["QID"] + "'");
-
-
-                                grd.grdData.QuestionForm.QID = Convert.ToInt32(row1["QID"]);
-
+                                DataRow[] res = grd.grdData.QuestionForm.dtQASelection.Select("FormId = '" + dt.Rows[k]["QID"] + "'");
+  
                                 foreach (DataRow row in res)
                                 {
                                     dd.Items.Add(new { Value = row["Value"], Score = row["Score"] });
@@ -2780,43 +2770,69 @@ namespace GRID.Pages
                                     grd.grdData.QuestionForm.drObjContainer["Value"] = row["Value"];
                                     grd.grdData.QuestionForm.drObjContainer["Score"] = row["Score"];
 
-
                                     grd.grdData.QuestionForm.dtObjContainer.Rows.Add(grd.grdData.QuestionForm.drObjContainer);
                                 }
 
 
                                 grd.grdData.QuestionForm.dtObjContainer.AcceptChanges();
 
-                                break;
-                                #endregion
+                                loopCtr = loopCtr + 1;
+                                loopMd = loopMd + 1;
+                                loopTb = loopTb + 1;
+
+                            }
+
+
+                        
+
                         }
 
 
+                        var l = new TextBlock();
+                        l.Text = "Description: " + dt.Rows[k]["Description"].ToString();
+                        l.TextWrapping = TextWrapping.Wrap;
+                        l.Width = 400;
+                        l.Height = 26;
+                        l.FontSize = 11;
+                        //l.FontWeight = FontWeights.Bold;
+                        l.HorizontalAlignment = HorizontalAlignment.Left;
+                        l.Foreground = System.Windows.Media.Brushes.Gold;
+                        l.Margin = new Thickness(0, 0, 0, 0);
+                        l.VerticalAlignment = VerticalAlignment.Center;
 
-                        this.QAWrapPanelCol1.Children.Add(x);
-                        //this.QAWrapPanelCol2.Children.Add(m);
+                        this.QAWrapPanelCol1.Children.Add(l);
 
-                        if (loopCtr == dt.Rows.Count)
-                        {
-                            this.WrapActivityList.Visibility = Visibility.Hidden;
-                            this.btnCloseMyAct.Visibility = Visibility.Hidden;
 
-                            this.GridDynamicObjects.Visibility = Visibility.Visible;
-                            this.QAWrapPanelCol1.Visibility = Visibility.Visible;
-                            this.QAWrapPanelCol2.Visibility = Visibility.Visible;
-                            //this.QAWrapPanelCol1.Width = 380;
-                            //this.QAWrapPanelCol2.Width = 380;
 
-                            grd.grdData.CurrentActivity.Started = true;
-                            return;
-                        }
-
-                        loopCtr = loopCtr + 1;
-                        loopMd = loopMd + 1;
-                        loopTb = loopTb + 1;
                     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    this.GridDynamicObjects.Visibility = Visibility.Visible;
+                    this.WrapActivityList.Visibility = Visibility.Hidden;
+                    this.QAWrapPanelCol1.Visibility = Visibility.Visible;
+                    this.QAWrapPanelCategory.Visibility = Visibility.Visible;
                 }
             }
 
