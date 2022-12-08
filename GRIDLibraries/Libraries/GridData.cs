@@ -24,8 +24,6 @@ namespace GRIDLibraries.Libraries
 
         public gridMainScrContent ScrContent { get; set; } = new gridMainScrContent();
 
-        public gridComboBoxes grdCombo { get; set; } = new gridComboBoxes();
-
         public gridTeam TeamInfo { get; set; } = new gridTeam();
 
         public gridUserInfo CurrentUser { get; set; } = new gridUserInfo();

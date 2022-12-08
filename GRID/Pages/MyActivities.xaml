@@ -17,13 +17,13 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
-                <RowDefinition Height="20"/>
+                <RowDefinition Height="10"/>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
 
-            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Height="20" Width="20" Margin="0,45,0,0" Grid.RowSpan="2">
+            <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Height="20" Width="20" Margin="0,40,0,0" Grid.RowSpan="2">
                 <Button x:Name="btnCloseMyAct" Style="{StaticResource IconButtonsStyle}" Content="{DynamicResource close}" Tag="IsCloseButton" ToolTip="Close My Activities" Height="20" Width="20" Click="btnCloseMyAct_Click" />
             </StackPanel>
 
@@ -138,10 +138,24 @@
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
 
-                             
-                                    <ListView ItemsSource="{Binding}"  Grid.Row="0" Grid.Column="0" Height="Auto" Width="Auto"  Name="lstQAForm"  Foreground="{DynamicResource PrimaryTextColor}" Background="{x:Null}"  Grid.ColumnSpan="2" Cursor="Hand" MouseDoubleClick="lstQAForm_MouseDoubleClick">
+
+                                    <ListView x:Name="lstQAForm" ItemsSource="{Binding}" Grid.Row="0" Grid.Column="0" Height="Auto" Width="Auto" Foreground="{DynamicResource PrimaryTextColor}" Background="{x:Null}"  Grid.ColumnSpan="2" Cursor="Hand" MouseDoubleClick="lstQAForm_MouseDoubleClick">
                                         <ListView.View>
                                             <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
+                                                <!--<GridViewColumn>
+                                                    <GridViewColumn.Header>
+                                                        <GridViewColumnHeader>
+                                                            <GridViewColumnHeader.Content>
+                                                                <StackPanel Orientation="Horizontal">
+                                                                    <iconPacks:PackIconMaterial Kind="FileQuestion" Margin="6 2 0 0" />
+                                                                    <TextBlock Text="DATE"/>
+                                                                </StackPanel>
+                                                            </GridViewColumnHeader.Content>
+                                                        </GridViewColumnHeader>
+                                                    </GridViewColumn.Header>
+                                                </GridViewColumn>-->
+                                               
+                                                
                                                 <GridViewColumn Width="Auto" Header="Id">
                                                     <GridViewColumn.CellTemplate>
                                                         <DataTemplate>
@@ -170,6 +184,35 @@
                                                     </GridViewColumn.CellTemplate>
                                                 </GridViewColumn>
 
+
+                                                <GridViewColumn Width="200" Header="Formula">
+                                                    <GridViewColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Border Width="25" Height="25" CornerRadius="1" Margin="0 0 4 0" Background="{Binding BgColor}">
+                                                                    <iconPacks:PackIconMaterial Kind="Star" Margin="-2 4 0 0" />
+                                                                </Border>
+
+                                                                <TextBlock Text="{Binding Formula}" VerticalAlignment="Center"/>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </GridViewColumn.CellTemplate>
+                                                </GridViewColumn>
+
+                                                <GridViewColumn Width="100" Header="Target">
+                                                    <GridViewColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <Border Width="25" Height="25" CornerRadius="1" Margin="0 0 4 0" Background="{Binding BgColor}">
+                                                                    <iconPacks:PackIconMaterial Kind="Target" Margin="-2 4 0 0" />
+                                                                </Border>
+
+                                                                <TextBlock Text="{Binding Target}" VerticalAlignment="Center"/>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </GridViewColumn.CellTemplate>
+                                                </GridViewColumn>
+
                                             </GridView>
                                         </ListView.View>
                                     </ListView>
@@ -190,32 +233,23 @@
                 
             </StackPanel>-->
 
-            
-            <Border x:Name="GridDynamicObjects" Grid.Row="2" CornerRadius="10" BorderBrush="{DynamicResource PrimaryTextColor}" BorderThickness="0" Background="{DynamicResource SecundaryBackgroundColor}" Padding="10" VerticalAlignment="Top" HorizontalAlignment="Left" Width="Auto">
-                <ScrollViewer CanContentScroll="True" HorizontalAlignment="Left" HorizontalScrollBarVisibility="Disabled" Name="ScrollViewer1" VerticalScrollBarVisibility="Hidden" Width="Auto" telerik:StyleManager.Theme="Fluent" HorizontalContentAlignment="Stretch">
+           
+                <Border x:Name="GridDynamicObjects" Grid.Row="2" CornerRadius="10" BorderBrush="{DynamicResource PrimaryTextColor}" BorderThickness="0" Background="{DynamicResource SecundaryBackgroundColor}" Padding="4" VerticalAlignment="Top" HorizontalAlignment="Left" Width="Auto" Margin="0 0 0 10">
+                <ScrollViewer Margin="0 0 0 0">
                     <Grid Width="Auto" VerticalAlignment="Top">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
+                                                
+                            <WrapPanel Grid.Column="0" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="WrapPanelMain"/>
+                            <WrapPanel Grid.Column="1" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="WrapPanelMain2"/>
 
-
-                        <WrapPanel Grid.Column="0" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="WrapPanelMain"/>
-                        <WrapPanel Grid.Column="1" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="WrapPanelMain2"/>
-
-                        <StackPanel Grid.Row="0" Grid.Column="0" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="QAWrapPanelCategory"/>
-                        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="QAWrapPanelCol1"/>
-                      
-
-                </Grid>
+                            <WrapPanel x:Name="QAWrapPanel" Grid.Column="0" Grid.ColumnSpan="3" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Orientation="Vertical"  />
+                    </Grid>
                 </ScrollViewer>
             </Border>
-         
+          
 
             <Grid x:Name="ActivityButtonsMyActs" Grid.Row="4" Margin="0 0 0 4">
                 <Grid.ColumnDefinitions>

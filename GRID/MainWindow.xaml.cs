@@ -1132,6 +1132,7 @@ namespace GRID
             grd.grdData.TeamInfo.DBName = grd.grdData.TeamInfo.DBName;
 
             grd.conString = "Data Source=DESKTOP-A0R75AD;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
+            //grd.conString = "Data Source=DESKTOP-A0R75AD;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
 
             idleCtr = 0;
             idleTotal = 0;

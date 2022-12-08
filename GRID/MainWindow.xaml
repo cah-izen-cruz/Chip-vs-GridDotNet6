@@ -285,7 +285,7 @@
                 <!-- End My Data-->
 
                 <!-- Dash My Activities-->
-                <Border Grid.Column="2" Grid.RowSpan="2" x:Name="DashMyActivities" HorizontalAlignment="Left" Width="Auto" VerticalAlignment="Top" Margin="10 50 0 0" Height="50" Visibility="Collapsed">
+                <Border Grid.Column="2" Grid.RowSpan="2" x:Name="DashMyActivities" HorizontalAlignment="Left" Width="Auto" VerticalAlignment="Top" Margin="10 45 0 0" Height="50" Visibility="Collapsed">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="50"/>

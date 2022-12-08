@@ -33,10 +33,14 @@ namespace GRID.Pages
 
         QAQuestionForm curQA = default;
 
+
         public RadComboBox dd = new RadComboBox();
         public RadComboBox mdd = new RadComboBox();
         public RadWatermarkTextBox tb = new RadWatermarkTextBox();
         public TextBlock lb = new TextBlock();
+
+        public WrapPanel xx = new WrapPanel();
+        DispatcherTimer ScoreResultTimer;
 
         public string Question;
 
@@ -44,6 +48,7 @@ namespace GRID.Pages
         DataRow dr;
 
         private int _ConfigCtr = 0;
+        public int _ScoreAverage { get; set; }
 
         private long PrevActId = 0L;
 
@@ -65,6 +70,7 @@ namespace GRID.Pages
 
             grd.grdData.TeamInfo.DBName = grd.grdData.TeamInfo.DBName;
 
+            //grd.conString = "Data Source=WPEC5009GRDRP01;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
             grd.conString = "Data Source=DESKTOP-A0R75AD;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
 
             lvMyActivities.ItemsSource = null;
@@ -113,6 +119,10 @@ namespace GRID.Pages
             ActivityElapsedTimer = new DispatcherTimer();
             ActivityElapsedTimer.Tick += ElapsedTimer_Tick;
             ActivityElapsedTimer.Interval = new TimeSpan(0, 0, 1);
+
+            ScoreResultTimer = new DispatcherTimer();
+            ScoreResultTimer.Tick += ScoreResultTimer_Tick;
+            ScoreResultTimer.Interval = new TimeSpan(0, 0, 1);
 
         }
 
@@ -179,9 +189,15 @@ namespace GRID.Pages
         private void PopulateQuestionForms()
         {
             lstQAForm.Items.Clear();
+            string _Formula;
             foreach (DataRow row in grd.grdData.QuestionForm.dtLOB.Rows)
             {
-                lstQAForm.Items.Add(new { Id = row["Id"], Name = row["Name"] });
+                if (Convert.ToInt32(row["Formula"].ToString()) == 1)
+                    _Formula = "Sum";
+                else
+                    _Formula = "Average";
+
+                lstQAForm.Items.Add(new { Id = row["Id"], Name = row["Name"], Formula = _Formula, Target = row["Target"] });
             }
         }
         #endregion
@@ -969,26 +985,8 @@ namespace GRID.Pages
 
         private void SetupQADynamicConfigInfo()
         {
-            int loopCtr = 0;
-
-            for (int i = 0, loopTo = grd.grdData.QALists.Count - 1; i <= loopTo; i++)
-            {
-                loopCtr = loopCtr + 1;
-
-                var x = new WrapPanel();
-                x.Background = System.Windows.Media.Brushes.Transparent;
-                x.Height = 26;
-                x.Width = 380;
-                x.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-                x.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
-                x.Margin = new Thickness(0, 1, 0, 0);
-                x.Orientation = System.Windows.Controls.Orientation.Horizontal;
-
-                var y = new System.Windows.Controls.Label();
-                y.Content = grd.grdData.QALists[i].Question;
 
 
-            }
 
         }
 
@@ -2286,28 +2284,27 @@ namespace GRID.Pages
             return "objRF" + Strings.Format(ctr + 1, "00");
         }
 
-        private string GetObjectNameMd(int ctr)
+        private string QAGetObjectNameScore(int ctr)
         {
-            return "objMD" + Strings.Format(ctr + 1, "00");
+            return "objScore" + Strings.Format(ctr + 1, "00");
         }
 
-        private string GetObjectNameCol2(int ctr)
+        private string QAGetObjectNameMd(int ctr)
         {
-            return "objTB" + Strings.Format(ctr + 1, "00");
+            return "objMd" + Strings.Format(ctr + 1, "00");
         }
 
+        private string QAGetObjectNameRem(int ctr)
+        {
+            return "objRemarks" + Strings.Format(ctr + 1, "00");
+        }
 
         #endregion
 
         private void ElapsedTimer_Tick(object sender, EventArgs e)
         {
-
             DateTime timeEndNow = Conversions.ToDate(Strings.Format(grd.ConvertTimeZone(grd.grdData.TeamInfo.OffSet), "MM/dd/yyyy h:mm:ss tt"));
-
             //lblCurrentDateTime.Content = Strings.Format(timeEndNow, "MMM. dd - h:mm tt");
-
-            //if (grd.grdData.CurrentUser.ActualTagging | Conversion.Val(lblCompletedActivity.Content) == 0 & Conversion.Val(lblOpenActivity.Content) == 0)
-            //{
 
             if (grd.grdData.CurrentActivity.Id <= 0)
             {
@@ -2369,7 +2366,6 @@ namespace GRID.Pages
 
         }
 
-
         private void _eMsgBox(params string[] errorMsg)
         {
             string msg = string.Format("Unhandled error has been found. " + "Please contact your system administrator. Error:{0}{0}{1}", Constants.vbNewLine, Strings.Join(errorMsg, ""));
@@ -2388,127 +2384,8 @@ namespace GRID.Pages
         public void changelblbg()
         {
             MainScrn.BorderTotalTime.Background = System.Windows.Media.Brushes.Transparent;
-            //txtActName.Foreground = Brushes.White;
-            //lblActName.Foreground = Brushes.White;
-            //txtCurrentTime.Foreground = Brushes.White;
-            //lblCurrentTime.Foreground = Brushes.White;
-            //txtProcess.Foreground = Brushes.White;
-            //lblProcess.Foreground = Brushes.White;
-            //txtActType.Foreground = Brushes.White;
-            //lblActType.Foreground = Brushes.White;
-            //txtAHT.Foreground = Brushes.White;
-            //lblAHT.Foreground = Brushes.White;
-            //txtTimeStart.Foreground = Brushes.White;
-            //lblTimeStart.Foreground = Brushes.White;
-            //// txtTimeElapsed.Foreground = Brushes.White
-            //// lblTimeElapsed.Foreground = Brushes.White
-
-
-
-            //switch (txtActType.Text.ToUpper)
-            //{
-
-
-            //    case "PRODUCTIVE":
-            //        {
-
-            //            radButtonActName.Background = Brushes.Green; // G_Green
-            //            radButtonActType.Background = Brushes.Green; // G_Green
-            //            radButtonAHT.Background = Brushes.Green; // G_Green
-            //            radButtonTimeStart.Background = Brushes.Green; // G_Green
-            //            radButtonProcess.Background = Brushes.Green; // G_Green
-            //            btnCurrentTime.Background = Brushes.Green; // G_Green
-            //            break;
-            //        }
-
-            //    case "SHRINKAGE":
-            //        {
-
-            //            radButtonActName.Background = Brushes.Orange; // G_Orange
-            //            radButtonActType.Background = Brushes.Orange; // G_Orange
-            //            radButtonAHT.Background = Brushes.Orange; // G_Orange
-            //            radButtonTimeStart.Background = Brushes.Orange; // G_Orange
-            //            radButtonProcess.Background = Brushes.Orange; // G_Orange
-            //            btnCurrentTime.Background = Brushes.Orange; // G_Orange
-
-            //            txtActName.Foreground = Brushes.Black;
-            //            lblActName.Foreground = Brushes.Black;
-            //            txtCurrentTime.Foreground = Brushes.Black;
-            //            lblCurrentTime.Foreground = Brushes.Black;
-            //            txtProcess.Foreground = Brushes.Black;
-            //            lblProcess.Foreground = Brushes.Black;
-            //            txtActType.Foreground = Brushes.Black;
-            //            lblActType.Foreground = Brushes.Black;
-            //            txtAHT.Foreground = Brushes.Black;
-            //            lblAHT.Foreground = Brushes.Black;
-            //            txtTimeStart.Foreground = Brushes.Black;
-            //            lblTimeStart.Foreground = Brushes.Black;
-            //            break;
-            //        }
-
-            //    case "BREAK":
-            //        {
-            //            radButtonActName.Background = Brushes.Orange; // G_Orange
-            //            radButtonActType.Background = Brushes.Orange; // G_Orange
-            //            radButtonAHT.Background = Brushes.Orange; // G_Orange
-            //            radButtonTimeStart.Background = Brushes.Orange; // G_Orange
-            //            radButtonProcess.Background = Brushes.Orange; // G_Orange
-            //            btnCurrentTime.Background = Brushes.Orange; // G_Orange
-
-            //            txtActName.Foreground = Brushes.Black;
-            //            lblActName.Foreground = Brushes.Black;
-            //            txtCurrentTime.Foreground = Brushes.Black;
-            //            lblCurrentTime.Foreground = Brushes.Black;
-            //            txtProcess.Foreground = Brushes.Black;
-            //            lblProcess.Foreground = Brushes.Black;
-            //            txtActType.Foreground = Brushes.Black;
-            //            lblActType.Foreground = Brushes.Black;
-            //            txtAHT.Foreground = Brushes.Black;
-            //            lblAHT.Foreground = Brushes.Black;
-            //            txtTimeStart.Foreground = Brushes.Black;
-            //            lblTimeStart.Foreground = Brushes.Black;
-            //            break;
-            //        }
-
-
-            //    case "ADMIN":
-            //        {
-
-            //            radButtonActName.Background = Brushes.Blue; // G_Purple
-            //            radButtonActType.Background = Brushes.Blue; // G_Purple
-            //            radButtonAHT.Background = Brushes.Blue; // G_Purple
-            //            radButtonTimeStart.Background = Brushes.Blue; // G_Purple
-            //            radButtonProcess.Background = Brushes.Blue; // G_Purple
-            //            btnCurrentTime.Background = Brushes.Blue; // G_Purple
-            //            break;
-            //        }
-
-            //    case "PILOT":
-            //        {
-
-            //            radButtonActName.Background = Brushes.Green; // G_Green
-            //            radButtonActType.Background = Brushes.Green; // G_Green
-            //            radButtonAHT.Background = Brushes.Green; // G_Green
-            //            radButtonTimeStart.Background = Brushes.Green; // G_Green
-            //            radButtonProcess.Background = Brushes.Green; // G_Green
-            //            btnCurrentTime.Background = Brushes.Green; // G_Green
-            //            break;
-            //        }
-
-            //    default:
-            //        {
-            //            radButtonActName.Background = Brushes.Transparent;
-            //            radButtonActType.Background = Brushes.Transparent;
-            //            radButtonAHT.Background = Brushes.Transparent;
-            //            radButtonTimeStart.Background = Brushes.Transparent;
-            //            radButtonProcess.Background = Brushes.Transparent;
-            //            btnCurrentTime.Background = Brushes.Transparent;
-            //            break;
-            //        }
-
-            //}
-
         }
+
         public void ClearWrapPanel()
         {
             this.GridDynamicObjects.Visibility = Visibility.Collapsed;
@@ -2519,10 +2396,8 @@ namespace GRID.Pages
             this.WrapPanelMain.Children.Clear();
             this.WrapPanelMain2.Children.Clear();
 
-            this.QAWrapPanelCol1.Visibility = Visibility.Collapsed;
-            this.QAWrapPanelCategory.Visibility = Visibility.Collapsed;
-            this.QAWrapPanelCol1.Children.Clear();
-            this.QAWrapPanelCategory.Children.Clear();
+            this.QAWrapPanel.Visibility = Visibility.Collapsed;
+            this.QAWrapPanel.Children.Clear();
         }
 
         private void StartActivity(int _ctr)
@@ -2588,24 +2463,33 @@ namespace GRID.Pages
             }
             else if (_ctr == 3)
             {
-                grd.grdData.QuestionForm.dtObjContainer = new DataTable();
+     
                 dt = new DataTable();
-
+                grd.grdData.QuestionForm.dtObjContainer = new DataTable();
                 grd.grdData.QuestionForm.dtObjContainer.Columns.Add("Name");
                 grd.grdData.QuestionForm.dtObjContainer.Columns.Add("QID");
+                grd.grdData.QuestionForm.dtObjContainer.Columns.Add("Category");
                 grd.grdData.QuestionForm.dtObjContainer.Columns.Add("Question");
-                grd.grdData.QuestionForm.dtObjContainer.Columns.Add("Value");
-                grd.grdData.QuestionForm.dtObjContainer.Columns.Add("Score");
+                grd.grdData.QuestionForm.dtObjContainer.Columns.Add("DDNameSel");
+                grd.grdData.QuestionForm.dtObjContainer.Columns.Add("DDNameMD");
+                grd.grdData.QuestionForm.dtObjContainer.Columns.Add("Remarks");
 
                 for (int i = lstQAForm.SelectedItems.Count - 1; i >= 0; i -= 1)
                 {
                     var obj = lstQAForm.SelectedItems[i];
                     var id = obj.GetType().GetProperties().First(o => o.Name == "Id").GetValue(obj, null);
+                    var Name = obj.GetType().GetProperties().First(o => o.Name == "Name").GetValue(obj, null);
+                    var Formula = obj.GetType().GetProperties().First(o => o.Name == "Formula").GetValue(obj, null);
+                    var Target = obj.GetType().GetProperties().First(o => o.Name == "Target").GetValue(obj, null);
+
+                    grd.grdData.QuestionForm.Name = Name.ToString();
+                    grd.grdData.QuestionForm.Formula = Formula.ToString();
+                    grd.grdData.QuestionForm.Target = Convert.ToInt32(Target);
+
 
                     if (id.ToString() != "")
                     {
                         DataRow[] result = grd.grdData.QuestionForm.dtQAQuestionnaire.Select("Id = '" + id + "'");
-
                         foreach (DataRow row in result)
                         {
                             if (dt.Rows.Count == 0)
@@ -2641,203 +2525,178 @@ namespace GRID.Pages
                             dt.AcceptChanges();
                         }
                     }
+                }
 
-                    _ConfigCtr = dt.Rows.Count;
+                _ConfigCtr = dt.Rows.Count;
 
-                    int loopCtr = 1;
-                    int loopMd = 1;
-                    int loopTb = 1;
-                    int cat;
+                int loopCtr = 0;
+                int loopMd = 0;
+                int loopTb = 0;
 
-                    for (int k = 0; k < dt.Rows.Count; k++)
+                for (int k = 0; k < dt.Rows.Count; k++)
+                {
+
+                    grd.grdData.QuestionForm.drObjContainer = grd.grdData.QuestionForm.dtObjContainer.NewRow();
+                    grd.grdData.QuestionForm.drObjContainer["Name"] = dt.Rows[k]["Name"];
+                    grd.grdData.QuestionForm.drObjContainer["QID"] = dt.Rows[k]["QID"];
+                    grd.grdData.QuestionForm.drObjContainer["Category"] = dt.Rows[k]["Category"];
+
+                    grd.grdData.QuestionForm.QID = Convert.ToInt32(dt.Rows[k]["QID"]);
+
+                    var z = new TextBlock();
+                    z.Text = dt.Rows[k]["Category"].ToString();
+                    z.TextWrapping = TextWrapping.Wrap;
+                    z.Width = 400;
+                    z.Height = 24;
+                    z.FontSize = 13;
+                    z.FontWeight = FontWeights.Bold;
+                    z.HorizontalAlignment = HorizontalAlignment.Left;
+                    z.Foreground = System.Windows.Media.Brushes.YellowGreen;
+                    z.Margin = new Thickness(4, 2, 0, 0);
+                    z.VerticalAlignment = VerticalAlignment.Top;
+
+                    this.QAWrapPanel.Children.Add(z);
+
+                    Question = dt.Rows[k]["Question"].ToString();
+                    int Q;
+
+                    for (int r = 0; r < dt.Rows.Count; r++)
                     {
-                        cat = k + 1;
-                        grd.grdData.QuestionForm.QID = Convert.ToInt32(dt.Rows[k]["QID"]);
-                        FontWeight Bold;
-                        var z = new TextBlock();
-                        z.Text = "Category " + cat + ": " + dt.Rows[k]["Category"].ToString();
-                        z.TextWrapping = TextWrapping.Wrap;
-                        z.Width = 400;
-                        z.Height = 26;
-                        z.FontSize = 11;
-                        z.FontWeight = FontWeights.Bold;
-                        z.HorizontalAlignment = HorizontalAlignment.Left;
-                        z.Foreground = System.Windows.Media.Brushes.YellowGreen;
-                        z.Margin = new Thickness(0, 0, 0, 0);
-                        z.VerticalAlignment = VerticalAlignment.Center;
-
-              
-                        this.QAWrapPanelCol1.Orientation = Orientation.Vertical;
-                        this.QAWrapPanelCol1.Children.Add(z);
-
-                        Question = dt.Rows[k]["Question"].ToString();
-                        int Q;
-
-                        for (int r = 0; r < dt.Rows.Count; r++)
+                        Q = r + 1;
+                        if (Question.ToString() == dt.Rows[r]["Question"].ToString())
                         {
-                            Q = r + 1;
-                            if (Question.ToString() == dt.Rows[r]["Question"].ToString())
+                            var x = new WrapPanel();
+                            x.Background = System.Windows.Media.Brushes.Transparent;
+                            x.VerticalAlignment = VerticalAlignment.Top;
+                            x.HorizontalAlignment = HorizontalAlignment.Left;
+                            x.Margin = new Thickness(4, -10, 1, 1);
+                            x.Orientation = Orientation.Horizontal;
+
+                            grd.grdData.QuestionForm.drObjContainer["Question"] = dt.Rows[r]["Question"];
+
+                            var y = new TextBlock();
+                            y.Text = "Q" + Q + ": " + dt.Rows[r]["Question"].ToString();
+                            y.TextWrapping = TextWrapping.Wrap;
+                            y.Width = 250;
+                            y.FontSize = 13;
+                            y.HorizontalAlignment = HorizontalAlignment.Left;
+                            y.Foreground = System.Windows.Media.Brushes.White;
+                            y.Margin = new Thickness(1, 2, 1, 1);
+                            y.VerticalAlignment = VerticalAlignment.Top;
+
+                            dd = new RadComboBox();
+                            dd.Width = 100;
+                            dd.Height = 24;
+                            dd.FontSize = 11;
+                            dd.HorizontalContentAlignment = HorizontalAlignment.Left;
+                            dd.VerticalContentAlignment = VerticalAlignment.Center;
+                            dd.VerticalAlignment = VerticalAlignment.Top;
+                            dd.Foreground = System.Windows.Media.Brushes.Black;
+                            dd.Margin = new Thickness(8, 1, 1, 1);
+                            dd.IsEditable = false;
+                            dd.SelectedValuePath = "Score";
+                            dd.DisplayMemberPath = "Value";
+                            dd.Name = QAGetObjectNameScore(loopCtr);
+                            this.RegisterName(dd.Name, dd);
+
+                            x.Children.Add(y);
+                            x.Children.Add(dd);
+
+                            grd.grdData.QuestionForm.drObjContainer["DDNameSel"] = dd.Name;
+
+                            mdd = new RadComboBox();
+                            mdd.Width = 100;
+                            mdd.Height = 24;
+                            mdd.FontSize = 11;
+                            mdd.HorizontalContentAlignment = HorizontalAlignment.Left;
+                            mdd.VerticalContentAlignment = VerticalAlignment.Center;
+                            mdd.VerticalAlignment = VerticalAlignment.Top;
+                            mdd.Foreground = System.Windows.Media.Brushes.Black;
+                            mdd.Margin = new Thickness(4, 1, 1, 1);
+                            mdd.IsEditable = false;
+                            mdd.SelectedValuePath = "Id";
+                            mdd.DisplayMemberPath = "Value";
+                            mdd.Name = QAGetObjectNameMd(loopMd);
+                            this.RegisterName(mdd.Name, mdd);
+
+                            x.Children.Add(mdd);
+
+                            grd.grdData.QuestionForm.drObjContainer["DDNameMD"] = mdd.Name;
+
+                            tb = new RadWatermarkTextBox();
+                            tb.Text = "Put a remarks here..."; /*dt.Rows[r]["Description"].ToString();*/
+                            tb.Width = 250;
+                            tb.Height = 24;
+                            tb.FontSize = 11;
+                            tb.HorizontalContentAlignment = HorizontalAlignment.Left;
+                            tb.VerticalContentAlignment = VerticalAlignment.Center;
+                            tb.VerticalAlignment = VerticalAlignment.Top;
+                            tb.Foreground = System.Windows.Media.Brushes.Black;
+                            tb.Margin = new Thickness(4, 1, 1, 1);
+                            tb.Name = QAGetObjectNameRem(loopTb);
+                            this.RegisterName(tb.Name, tb);
+
+                            x.Children.Add(tb);
+
+                            grd.grdData.QuestionForm.drObjContainer["Remarks"] = tb.Name;
+
+                            this.QAWrapPanel.Children.Add(x);
+
+                            DataRow[] res = grd.grdData.QuestionForm.dtQASelection.Select("FormId = '" + dt.Rows[k]["QID"] + "'");
+                            foreach (DataRow row in res)
                             {
-                                var x = new StackPanel();
-                                x.Background = System.Windows.Media.Brushes.Transparent;
-                                x.Height = 26;
-                                x.Width = 770;
-                                x.VerticalAlignment = VerticalAlignment.Center;
-                                x.HorizontalAlignment = HorizontalAlignment.Left;
-                                x.Margin = new Thickness(0, 1, 0, 0);
-                                x.Orientation = Orientation.Horizontal;
-                               
-
-                                var y = new TextBlock();
-                                y.Text = "Q" + Q + ": " + dt.Rows[r]["Question"].ToString();
-                                y.TextWrapping = TextWrapping.Wrap;
-                                y.Width = 200;
-                                y.Height = 26;
-                                y.FontSize = 12;
-                                y.HorizontalAlignment = HorizontalAlignment.Left;
-                                y.Foreground = System.Windows.Media.Brushes.White;
-                                y.Margin = new Thickness(0, 0, 0, 0);
-                                y.VerticalAlignment = VerticalAlignment.Center;
-                         
-
-                                dd = new RadComboBox();
-                                dd.Width = 100;
-                                dd.Height = 25;
-                                dd.FontSize = 11;
-                                dd.HorizontalContentAlignment = HorizontalAlignment.Left;
-                                dd.VerticalContentAlignment = VerticalAlignment.Center;
-                                dd.VerticalAlignment = VerticalAlignment.Center;
-                                dd.Foreground = System.Windows.Media.Brushes.Black;
-                                dd.Margin = new Thickness(1, 1, 1, 1);
-                                dd.IsEditable = false;
-                                dd.SelectedValuePath = "Score";
-                                dd.DisplayMemberPath = "Value";
-                                dd.Name = GetObjectName(loopCtr);
-                                this.RegisterName(dd.Name, dd);
-
-                                x.Children.Add(y);
-                                x.Children.Add(dd);
-
-                                mdd = new RadComboBox();
-                                mdd.Width = 100;
-                                mdd.Height = 25;
-                                mdd.FontSize = 11;                               
-                                mdd.HorizontalContentAlignment = HorizontalAlignment.Left;
-                                mdd.VerticalContentAlignment = VerticalAlignment.Center;
-                                mdd.VerticalAlignment = VerticalAlignment.Center;
-                                mdd.Foreground = System.Windows.Media.Brushes.Black;
-                                mdd.Margin = new Thickness(1, 1, 1, 1);
-                                mdd.IsEditable = false;
-                                mdd.SelectedValuePath = "Id";
-                                mdd.DisplayMemberPath = "Value";
-                                mdd.Name = GetObjectNameMd(loopMd);
-                                this.RegisterName(mdd.Name, mdd);
-                                x.Children.Add(mdd);
-
-
-                                tb = new RadWatermarkTextBox();
-                                tb.Text = "Puta remarks here..."; /*dt.Rows[r]["Description"].ToString();*/
-                                tb.Width = 300;
-                                tb.Height = 25;
-                                tb.FontSize = 11;
-                                tb.HorizontalContentAlignment = HorizontalAlignment.Left;
-                                tb.VerticalContentAlignment = VerticalAlignment.Center;
-                                tb.VerticalAlignment = VerticalAlignment.Center;
-                                tb.Foreground = System.Windows.Media.Brushes.Black;
-                                tb.Margin = new Thickness(1, 1, 1, 1);
-                                tb.Name = GetObjectNameCol2(loopTb);
-                                this.RegisterName(tb.Name, tb);
-                                x.Children.Add(tb);
-
-                                this.QAWrapPanelCol1.Children.Add(x);
-
-                                DataRow[] resMd = grd.grdData.QuestionForm.dtQAMarkdownSelection.Select("QID = '" + grd.grdData.QuestionForm.QID + "'");
-                                foreach (DataRow row in resMd)
-                                {
-                                    mdd.Items.Add(new { Value = row["Value"], Id = row["Id"] });
-                                }
-
-                                DataRow[] res = grd.grdData.QuestionForm.dtQASelection.Select("FormId = '" + dt.Rows[k]["QID"] + "'");
-  
-                                foreach (DataRow row in res)
-                                {
-                                    dd.Items.Add(new { Value = row["Value"], Score = row["Score"] });
-
-                                    grd.grdData.QuestionForm.drObjContainer = grd.grdData.QuestionForm.dtObjContainer.NewRow();
-                                    grd.grdData.QuestionForm.drObjContainer["Name"] = dd.Name;
-                                    grd.grdData.QuestionForm.drObjContainer["QID"] = row["FormId"];
-                                    grd.grdData.QuestionForm.drObjContainer["Question"] = row["Question"];
-                                    grd.grdData.QuestionForm.drObjContainer["Value"] = row["Value"];
-                                    grd.grdData.QuestionForm.drObjContainer["Score"] = row["Score"];
-
-                                    grd.grdData.QuestionForm.dtObjContainer.Rows.Add(grd.grdData.QuestionForm.drObjContainer);
-                                }
-
-
-                                grd.grdData.QuestionForm.dtObjContainer.AcceptChanges();
-
-                                loopCtr = loopCtr + 1;
-                                loopMd = loopMd + 1;
-                                loopTb = loopTb + 1;
-
+                                dd.Items.Add(new { Value = row["Value"], Score = row["Score"] });
                             }
 
+                            DataRow[] resMd = grd.grdData.QuestionForm.dtQAMarkdownSelection.Select("QID = '" + grd.grdData.QuestionForm.QID + "'");
+                            foreach (DataRow row in resMd)
+                            {
+                                mdd.Items.Add(new { Value = row["Value"], Id = row["Id"] });
+                            }
 
-                        
+                            grd.grdData.QuestionForm.dtObjContainer.Rows.Add(grd.grdData.QuestionForm.drObjContainer);
+                            grd.grdData.QuestionForm.dtObjContainer.AcceptChanges();
 
+                            loopCtr = loopCtr + 1;
+                            loopMd = loopMd + 1;
+                            loopTb = loopTb + 1;
                         }
-
-
-                        var l = new TextBlock();
-                        l.Text = "Description: " + dt.Rows[k]["Description"].ToString();
-                        l.TextWrapping = TextWrapping.Wrap;
-                        l.Width = 400;
-                        l.Height = 26;
-                        l.FontSize = 11;
-                        //l.FontWeight = FontWeights.Bold;
-                        l.HorizontalAlignment = HorizontalAlignment.Left;
-                        l.Foreground = System.Windows.Media.Brushes.Gold;
-                        l.Margin = new Thickness(0, 0, 0, 0);
-                        l.VerticalAlignment = VerticalAlignment.Center;
-
-                        this.QAWrapPanelCol1.Children.Add(l);
-
-
-
                     }
 
+                    var l = new TextBlock();
+                    l.Text = "Description: " + dt.Rows[k]["Description"].ToString();
+                    l.TextWrapping = TextWrapping.Wrap;
+                    l.Width = 400;
+                    l.Height = 24;
+                    l.FontSize = 11;
+                    l.FontStyle = FontStyles.Italic;
+                    //l.FontWeight = FontWeights.Bold;
+                    l.HorizontalAlignment = HorizontalAlignment.Left;
+                    l.Foreground = System.Windows.Media.Brushes.White;
+                    l.Margin = new Thickness(6, -1, 1, 1);
+                    l.VerticalAlignment = VerticalAlignment.Top;
+
+                    this.QAWrapPanel.Children.Add(l);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    this.GridDynamicObjects.Visibility = Visibility.Visible;
-                    this.WrapActivityList.Visibility = Visibility.Hidden;
-                    this.QAWrapPanelCol1.Visibility = Visibility.Visible;
-                    this.QAWrapPanelCategory.Visibility = Visibility.Visible;
                 }
+
+                xx = new WrapPanel();
+                xx.Background = System.Windows.Media.Brushes.Transparent;
+                xx.VerticalAlignment = VerticalAlignment.Top;
+                xx.HorizontalAlignment = HorizontalAlignment.Left;
+                xx.Margin = new Thickness(4, 6, 1, 1);
+                xx.Orientation = Orientation.Vertical;
+
+               
+
+                this.GridDynamicObjects.Visibility = Visibility.Visible;
+                this.WrapActivityList.Visibility = Visibility.Hidden;
+                this.QAWrapPanel.Visibility = Visibility.Visible;
+
+                //ScoreResultTimer.Start();
+       
             }
-
-
-
 
             if (!(curAct == null))
             {
@@ -3032,8 +2891,6 @@ namespace GRID.Pages
             }
             new MessagesBox(string.Format("{0} Activities Deleted Successfully!", (object)x), MessageType.Info, MessageButtons.Ok).ShowDialog();
 
-            //Interaction.MsgBox(string.Format("{0} activities deleted successfully!", (object)x), Constants.vbInformation, grd.AppName);
-
             this.PopulateFavoriteList();
         }
 
@@ -3124,37 +2981,193 @@ namespace GRID.Pages
             //        dr.Delete();
             //}
             //grd.grdData.QuestionForm.dtObjContainer.AcceptChanges();
-
-            dt = new DataTable();
-
-            dt.Columns.Add("QID");
-            dt.Columns.Add("Question");
-            dt.Columns.Add("Value");
-            dt.Columns.Add("Score");
-            dt.Columns.Add("Markdown");
-
-            foreach (DataRow row in grd.grdData.QuestionForm.dtObjContainer.Rows)
+            if (grd.grdData.QuestionForm.dtObjContainer.Rows.Count == _ConfigCtr)
             {
-                DataRow[] fQ = dt.Select("Question = '" + row["Question"].ToString() + "'");
-                RadComboBox cb = (RadComboBox)this.FindName(row["Name"].ToString());
-                RadComboBox mb = (RadComboBox)this.FindName(row["Name"].ToString());
+                dt = new DataTable();
 
-                if (fQ.Length == 0)
+                dt.Columns.Add("QID");
+                dt.Columns.Add("Question");
+                dt.Columns.Add("Value");
+                dt.Columns.Add("Score");
+                dt.Columns.Add("Markdown");
+                dt.Columns.Add("Remarks");
+
+                int _Score = 0;
+
+                foreach (DataRow row in grd.grdData.QuestionForm.dtObjContainer.Rows)
                 {
-                    dr = dt.NewRow();
-                    dr["QID"] = Convert.ToInt32(row["QID"]);
-                    dr["Question"] = row["Question"].ToString();
-                    dr["Value"] = cb.Text;
-                    dr["Score"] = Convert.ToInt32(cb.SelectedValue);
-                    dt.Rows.Add(dr);
-                    dt.AcceptChanges();
+                    DataRow[] fQ = dt.Select("Question = '" + row["Question"].ToString() + "'");
+                    RadComboBox cbValue = (RadComboBox)this.FindName(row["DDNameSel"].ToString());
+                    RadComboBox cbMd = (RadComboBox)this.FindName(row["DDNameMD"].ToString());
+                    RadWatermarkTextBox tbRemarks = (RadWatermarkTextBox)this.FindName(row["Remarks"].ToString());
+
+                    if (fQ.Length == 0)
+                    {
+                        dr = dt.NewRow();
+                        dr["QID"] = Convert.ToInt32(row["QID"]);
+                        dr["Question"] = row["Question"].ToString();
+                        dr["Value"] = cbValue.Text;
+                        dr["Score"] = Convert.ToInt32(cbValue.SelectedValue);
+                        dr["Markdown"] = cbMd.Text;
+                        dr["Remarks"] = tbRemarks.Text;
+                        dt.Rows.Add(dr);
+                        dt.AcceptChanges();
+                    }
+
+                    _Score = _Score + Convert.ToInt32(cbValue.SelectedValue);
                 }
 
+                switch (grd.grdData.QuestionForm.Formula.ToUpper())
+                {
+                    case "SUM":
+                        {
+                            if (_Score <= 99)
+                                grd.grdData.QuestionForm.ScoreRemarks = "Failed!";
+                            else
+                                grd.grdData.QuestionForm.ScoreRemarks = "Passed!";
+
+                            _ScoreAverage = _Score;
+                            break;
+                        }
+                    case "AVERAGE":
+                        {
+                            _ScoreAverage = _Score / _ConfigCtr;
+
+                            if (_ScoreAverage <= 99)
+                                grd.grdData.QuestionForm.ScoreRemarks = "Failed!";
+                            else
+                                grd.grdData.QuestionForm.ScoreRemarks = "Passed!";
+
+                            break;
+                        }
+                }
+
+                var s = new TextBlock();
+                s.Text = "SCORE: " + _ScoreAverage; 
+                s.TextWrapping = TextWrapping.Wrap;
+                s.Width = 200;
+                s.Height = 24;
+                s.FontSize = 13;
+                s.FontWeight = FontWeights.Bold;
+                s.HorizontalAlignment = HorizontalAlignment.Left;
+                s.Foreground = System.Windows.Media.Brushes.Gold;
+                s.Margin = new Thickness(4, 2, 0, 0);
+                s.VerticalAlignment = VerticalAlignment.Top;
+
+                var s1 = new TextBlock();
+                s1.Text = "Remarks: " + grd.grdData.QuestionForm.ScoreRemarks;
+                s1.TextWrapping = TextWrapping.Wrap;
+                s1.Width = 200;
+                s1.Height = 24;
+                s1.FontSize = 13;
+                s1.FontWeight = FontWeights.Bold;
+                s1.HorizontalAlignment = HorizontalAlignment.Left;
+                s1.Foreground = System.Windows.Media.Brushes.Gold;
+                s1.Margin = new Thickness(4, -6, 0, 0);
+                s1.VerticalAlignment = VerticalAlignment.Top;
+
+                xx.Children.Add(s);
+                xx.Children.Add(s1);
+                this.QAWrapPanel.Children.Add(xx);
             }
+
 
         }
 
-        private void cmbProcess_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ScoreResultTimer_Tick(object sender, EventArgs e)
+        {
+            if (grd.grdData.QuestionForm.dtObjContainer.Rows.Count == _ConfigCtr)
+            {
+                dt = new DataTable();
+
+                dt.Columns.Add("QID");
+                dt.Columns.Add("Question");
+                dt.Columns.Add("Value");
+                dt.Columns.Add("Score");
+                dt.Columns.Add("Markdown");
+                dt.Columns.Add("Remarks");
+
+                int _Score = 0;
+
+                foreach (DataRow row in grd.grdData.QuestionForm.dtObjContainer.Rows)
+                {
+                    DataRow[] fQ = dt.Select("Question = '" + row["Question"].ToString() + "'");
+                    RadComboBox cbValue = (RadComboBox)this.FindName(row["DDNameSel"].ToString());
+                    RadComboBox cbMd = (RadComboBox)this.FindName(row["DDNameMD"].ToString());
+                    RadWatermarkTextBox tbRemarks = (RadWatermarkTextBox)this.FindName(row["Remarks"].ToString());
+
+                    if (fQ.Length == 0)
+                    {
+                        dr = dt.NewRow();
+                        dr["QID"] = Convert.ToInt32(row["QID"]);
+                        dr["Question"] = row["Question"].ToString();
+                        dr["Value"] = cbValue.Text;
+                        dr["Score"] = Convert.ToInt32(cbValue.SelectedValue);
+                        dr["Markdown"] = cbMd.Text;
+                        dr["Remarks"] = tbRemarks.Text;
+                        dt.Rows.Add(dr);
+                        dt.AcceptChanges();
+                    }
+
+                    _Score = _Score + Convert.ToInt32(cbValue.SelectedValue);
+                }
+
+                switch (grd.grdData.QuestionForm.Formula.ToUpper())
+                {
+                    case "SUM":
+                        {
+                            if (_Score <= 99)
+                                grd.grdData.QuestionForm.ScoreRemarks = "Failed!";
+                            else
+                                grd.grdData.QuestionForm.ScoreRemarks = "Passed!";
+
+                            _ScoreAverage = _Score;
+                            break;
+                        }
+                    case "AVERAGE":
+                        {
+                            _ScoreAverage = _Score / _ConfigCtr;
+
+                            if (_ScoreAverage <= 99)
+                                grd.grdData.QuestionForm.ScoreRemarks = "Failed!";
+                            else
+                                grd.grdData.QuestionForm.ScoreRemarks = "Passed!";
+
+                            break;
+                        }
+                }
+
+                var s = new TextBlock();
+                s.Text = "SCORE: " + _ScoreAverage;
+                s.TextWrapping = TextWrapping.Wrap;
+                s.Width = 200;
+                s.Height = 24;
+                s.FontSize = 13;
+                s.FontWeight = FontWeights.Bold;
+                s.HorizontalAlignment = HorizontalAlignment.Left;
+                s.Foreground = System.Windows.Media.Brushes.Gold;
+                s.Margin = new Thickness(4, 2, 0, 0);
+                s.VerticalAlignment = VerticalAlignment.Top;
+
+                var s1 = new TextBlock();
+                s1.Text = "Remarks: " + grd.grdData.QuestionForm.ScoreRemarks;
+                s1.TextWrapping = TextWrapping.Wrap;
+                s1.Width = 200;
+                s1.Height = 24;
+                s1.FontSize = 13;
+                s1.FontWeight = FontWeights.Bold;
+                s1.HorizontalAlignment = HorizontalAlignment.Left;
+                s1.Foreground = System.Windows.Media.Brushes.Gold;
+                s1.Margin = new Thickness(4, -6, 0, 0);
+                s1.VerticalAlignment = VerticalAlignment.Top;
+
+                xx.Children.Add(s);
+                xx.Children.Add(s1);
+
+                this.QAWrapPanel.Children.Add(xx);
+            }
+        }
+            private void cmbProcess_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (cmbProcess.SelectedValue is not null)
             {
@@ -3185,5 +3198,6 @@ namespace GRID.Pages
 
             btnCloseMyAct.Visibility = Visibility.Visible;
         }
+
     }
 }

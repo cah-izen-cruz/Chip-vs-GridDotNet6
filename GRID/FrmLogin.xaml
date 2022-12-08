@@ -5,6 +5,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         xmlns:local="clr-namespace:GRID"
         mc:Ignorable="d"
         Title="Login" Height="360" Width="300"
@@ -68,10 +69,10 @@
 
 
                     <Image Source="/Resources/Prod100.png" Margin="0 -20 0 5" Height="40"/>
-                    <TextBlock x:Name="Hey" Text="Hey! Welcome Back!" Margin="0 4 0 2" HorizontalAlignment="Center" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextColor}"/>
+                    <TextBlock x:Name="Hey" Text="Hey! Welcome Back!" Margin="0 0 0 2" HorizontalAlignment="Center" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextColor}"/>
                     <TextBlock x:Name="Log" Text="Login to your existing account" HorizontalAlignment="Center" FontSize="15" Foreground="{DynamicResource PrimaryTextColor}"/>
 
-                    <TextBox x:Name="txtUserName" Width="230" Margin="0 20 0 0" IsReadOnly="True"
+                    <TextBox x:Name="txtUserName" Width="230" Margin="0 15 0 0" IsReadOnly="True"
                          FontSize="16" matDes:HintAssist.Hint="Username" 
                          BorderThickness="1" 
                          BorderBrush="{DynamicResource MaterialDesignDivider}"
@@ -83,12 +84,25 @@
                          BorderBrush="{DynamicResource MaterialDesignDivider}"
                          Style="{StaticResource MaterialDesignOutlinedPasswordBox}" Password="0123456789abcde" Foreground="{DynamicResource PrimaryTextColor}"/>
 
-                    <Button x:Name="btnLogin" Width="230" Margin="0 12 0 0"
+                    <Button Name="btnLogin" BorderThickness="0" Style="{StaticResource MaterialDesignFlatMidBgButton}"
+                            matDes:ButtonAssist.CornerRadius="10"
+                             matDes:ShadowAssist.ShadowDepth="Depth4"
+                            Click="btnLogin_Click"
+                            Width="230" Height="43" Margin="0 25 0 0">
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconMaterial Kind="Login" VerticalAlignment="Center" Margin="0 1 12 0" Width="16" Height="16"/>
+                            <TextBlock Text="LOG IN TO GRID" FontSize="16"/>
+                        </StackPanel>
+                    </Button>
+                    
+                    <!--<Button x:Name="btnLogin1" Width="230" Margin="0 12 0 0"
                          FontSize="16" Content="LOG IN TO GRID"
                          Style="{StaticResource MaterialDesignFlatMidBgButton}"
                          matDes:ButtonAssist.CornerRadius="10"
                          matDes:ShadowAssist.ShadowDepth="Depth0"
-                         Height="43" Click="btnLogin_Click" BorderThickness="0"/>
+                         Height="43" Click="btnLogin_Click" BorderThickness="0">
+             
+                    </Button>-->
 
                     <Border x:Name="BrdShiftDate" Height="80" Margin="10 12 10 10">
                         <Grid>

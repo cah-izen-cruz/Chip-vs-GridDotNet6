@@ -35,13 +35,6 @@ namespace GRIDLibraries.Libraries
 
     }
 
-    public class gridComboBoxes
-    {
-        //public ComboBox comboCompleted { get; set; }
-        //public ComboBox comboOpen { get; set; }
-    }
-
-
     public class gridUserInfo
     {
         public string EmpNo { get; set; }
@@ -450,8 +443,6 @@ namespace GRIDLibraries.Libraries
         public DataTable dtQASelection = new DataTable();
         public DataTable dtQAMarkdownSelection = new DataTable();
 
-        public DataTable dtQAContainers = new DataTable();
-
         public DataTable dtObjContainer = new DataTable();
         public DataRow drObjContainer;
 
@@ -471,16 +462,17 @@ namespace GRIDLibraries.Libraries
         public int QID { get; set; }
         public string Question { get; set; }
         public string ObjectType { get; set; }
-        public string Remarks { get; set; }
-           
+        public string Remarks { get; set; }          
         public int MaxLOBId { get; set; }
-        public int MaxQID { get; set; }
-        
+        public int MaxQID { get; set; }       
         public int SelId { get; set; }
         public int MarkId { get; set; }
         public string SelectionValue { get; set; }
         public double Score { get; set; }
         public string MarkdownType { get; set; }
+        public string Formula { get; set; }
+        public int Target { get; set; }
+        public string ScoreRemarks { get; set; }
 
     }
 
