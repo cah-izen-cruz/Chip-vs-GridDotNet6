@@ -6,14 +6,18 @@ using System;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using Telerik.Windows.Documents.Spreadsheet.Expressions.Functions;
 using ToastNotifications;
 using ToastNotifications.Lifetime;
 using ToastNotifications.Messages;
 using ToastNotifications.Position;
 using static GRID.MessagesBox;
+using static System.Net.Mime.MediaTypeNames;
 using Application = System.Windows.Application;
 using Convert = System.Convert;
 
@@ -31,6 +35,8 @@ namespace GRID.Pages
         //DataTable dtQAMarkdownSelection;
 
         MainWindow MainScrn = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+
+        private static readonly Regex _regex = new Regex("[^0-9.-]+");
 
         Mutex QAMutex = new Mutex();
 
@@ -71,9 +77,6 @@ namespace GRID.Pages
             bw.RunWorkerCompleted += bw_single_Complete;
 
             bw.RunWorkerAsync();
-
-
-
         }
 
         private void bw_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
@@ -125,6 +128,15 @@ namespace GRID.Pages
             msg.Dispatcher = Application.Current.Dispatcher;
         });
 
+        private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
+
+            if (e.Handled == true)
+                new MessagesBox("Accepts Numeric values only.", MessageType.Error, MessageButtons.Ok).ShowDialog();
+        }
+
         public void clearObjects()
         {
             txtQuestion.Text = "";
@@ -138,7 +150,6 @@ namespace GRID.Pages
             lstMardownType.Items.Clear();
             txtMarkdown.Text = "";
         }
-
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
@@ -186,6 +197,7 @@ namespace GRID.Pages
 
         private void btnAddQForm_Click(object sender, RoutedEventArgs e)
         {
+            
             QAFormMainte aFormMainte = new QAFormMainte(0,cmbQuestionnaire.Text, Convert.ToInt32(cmbQuestionnaire.SelectedValue));
             aFormMainte.ShowDialog();          
         }
@@ -373,6 +385,7 @@ namespace GRID.Pages
             {
                 qAQuestionForm.SelectionValue = txtValueSelection.Text;
                 qAQuestionForm.Score = Convert.ToInt32(txtScore.Text);
+               
 
                 if (IsEdit)
                 {
@@ -388,7 +401,7 @@ namespace GRID.Pages
 
                         drSelection = dtSelection.NewRow();
                         drSelection["Value"] = qAQuestionForm.SelectionValue;
-                        drSelection["Score"] = qAQuestionForm.Score;
+                        drSelection["Score"] = Strings.Trim(qAQuestionForm.Score.ToString());
 
                         dtSelection.Rows.Add(drSelection);
                     }
@@ -396,7 +409,7 @@ namespace GRID.Pages
                     {
                         drSelection = dtSelection.NewRow();
                         drSelection["Value"] = qAQuestionForm.SelectionValue;
-                        drSelection["Score"] = qAQuestionForm.Score;
+                        drSelection["Score"] = Strings.Trim(qAQuestionForm.Score.ToString());
 
                         dtSelection.Rows.Add(drSelection);
                     }
@@ -404,7 +417,7 @@ namespace GRID.Pages
                     dtSelection.AcceptChanges();
                 }
 
-                lstSelection.Items.Add(new { Id = "", Value = Strings.Trim(qAQuestionForm.SelectionValue), Score = (qAQuestionForm.Score) });
+                lstSelection.Items.Add(new { Id = "", Value = Strings.Trim(qAQuestionForm.SelectionValue), Score = (Strings.Trim(qAQuestionForm.Score.ToString())) });
 
                 txtValueSelection.Text = "";
                 txtScore.Text = "";
@@ -617,5 +630,7 @@ namespace GRID.Pages
             aFormMainte.ShowDialog();
 
         }
+       
+
     }
 }

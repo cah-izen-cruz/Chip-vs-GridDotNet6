@@ -58,7 +58,7 @@
                             <matDes:TransitionEffect Kind="FadeIn"/>
                             <matDes:TransitionEffect Kind="SlideInFromBottom"/>
                         </matDes:TransitioningContent.OpeningEffects>
-                        <TextBox x:Name="txtQAFormTarget" 
+                        <TextBox x:Name="txtQAFormTarget" PreviewTextInput="NumberValidationTextBox"
                                                     FontSize="12" matDes:HintAssist.Hint="Please Enter Target" 
                                                     HorizontalContentAlignment="Stretch"
                                                     BorderThickness="1" Width="235" Padding="8"

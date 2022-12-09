@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Windows.Controls.Primitives;
 using System.Security.Cryptography;
 using System.Diagnostics;
+using Microsoft.VisualBasic;
 
 namespace GRIDLibraries.Libraries
 {
@@ -133,21 +134,12 @@ namespace GRIDLibraries.Libraries
         public bool AddQAForm(string _OALOBName, int _Formula, int _Target)
         {
             
-
             bool temp = false;
             this.grdMutexx.WaitOne();
 
             if (this.OpenMainAHSQAConnection())
             {
-                //this.gridMainDbCommand.CommandText = "SELECT COALESCE(MAX(ID)+1,1) AS MAXID FROM [dbo].[tblQAForm];";
-                //try
-                //{
-                    //SqlDataReader dr = this.gridMainDbCommand.ExecuteReader();
-                    //while (dr.Read())
-                    //{                      
-                    //    this.grdData.QuestionForm.MaxLOBId = Convert.ToInt32(dr["MAXID"]);                       
-                    //}
-                    //dr.Close();
+
 
                     this.gridMainDbCommand.Parameters.Clear();
                     this.gridMainDbCommand.Parameters.AddWithValue("@Name", _OALOBName);
@@ -167,10 +159,6 @@ namespace GRIDLibraries.Libraries
                     catch (Exception)
                     {
                     }
-                //}
-                //catch (Exception ex)
-                //{
-                //}
                 this.CloseMainDbConnection();
             }
             this.grdMutexx.ReleaseMutex();
@@ -179,6 +167,36 @@ namespace GRIDLibraries.Libraries
 
         }
 
+        public bool GetQASumFormula(int _Id)
+        {
+            bool temp = false;
+            this.grdMutexx.WaitOne();
+            if (this.OpenMainAHSQAConnection())
+            {
+
+                this.gridMainDbCommand.Parameters.Clear();
+                this.gridMainDbCommand.Parameters.AddWithValue("@Id", _Id);
+                this.gridMainDbCommand.CommandText = "SELECT FORMULA,TARGET FROM [dbo].[tblQAForm] WHERE Id=@Id;";
+                try
+                {
+                    SqlDataReader dr = this.gridMainDbCommand.ExecuteReader();
+                    while (dr.Read())
+                    {
+                        this.grdData.QuestionForm.Formula = dr["Formula"].ToString();
+                        this.grdData.QuestionForm.Target = Convert.ToInt32(dr["Target"].ToString());
+                        temp = true;
+                    }
+                    dr.Close();
+                }
+                catch (Exception ex)
+                {
+                }
+                this.CloseMainDbConnection();
+               
+            }
+            this.grdMutexx.ReleaseMutex();
+            return temp;
+        }
         public bool UpdateQAForm(int _Id, string _OALOBName, int _Formula, int _Target)
         {
 
@@ -357,7 +375,7 @@ namespace GRIDLibraries.Libraries
                     this.gridMainDbCommand.Parameters.Clear();
                     this.gridMainDbCommand.Parameters.AddWithValue("@QID", _QID);
                     this.gridMainDbCommand.Parameters.AddWithValue("@Value", _SValue);
-                    this.gridMainDbCommand.Parameters.AddWithValue("@Score", _SScore);
+                    this.gridMainDbCommand.Parameters.AddWithValue("@Score", Strings.Trim(_SScore.ToString()));
 
                     this.gridMainDbCommand.CommandText = "INSERT INTO [dbo].[tblQAScoring] ([QID],[Value],[Score])" +
                                     " VALUES (@QID,@Value,@Score);";

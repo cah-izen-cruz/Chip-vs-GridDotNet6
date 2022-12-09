@@ -251,6 +251,7 @@
                                                             Style="{StaticResource MaterialDesignOutlinedTextBox}" Foreground="{DynamicResource PrimaryTextColor}"/>
 
                                             <TextBox x:Name="txtScore"  Margin="6 0 0 0" HorizontalAlignment="Left"
+                                                            PreviewTextInput="NumberValidationTextBox"
                                                             FontSize="12" matDes:HintAssist.Hint="Score" 
                                                             HorizontalContentAlignment="Stretch"
                                                             BorderThickness="1" Width="90" Padding="8"

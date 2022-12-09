@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -31,9 +32,6 @@ namespace GRID.Pages
 
         gridActivity curAct = default;
 
-        QAQuestionForm curQA = default;
-
-
         public RadComboBox dd = new RadComboBox();
         public RadComboBox mdd = new RadComboBox();
         public RadWatermarkTextBox tb = new RadWatermarkTextBox();
@@ -42,6 +40,7 @@ namespace GRID.Pages
         WrapPanel xx = new WrapPanel();
 
         public string Question;
+        public string Category;
 
         DataTable dt = new DataTable();
         DataRow dr;
@@ -194,6 +193,8 @@ namespace GRID.Pages
                 lstQAForm.Items.Add(new { Id = row["Id"], Name = row["Name"], Formula = _Formula, Target = row["Target"] });
 
             }
+
+            //lstQAForm.ItemsSource = grd.grdData.QuestionForm.dtLOB.DefaultView;
         }
         #endregion
 
@@ -978,6 +979,116 @@ namespace GRID.Pages
 
         #region "Level4 SetupDynamicConfigInfo"
 
+        private void QADynamicObjectsHandler()
+        {
+            if (grd.grdData.QuestionForm.dtObjContainer.Rows.Count == _ConfigCtr)
+            {
+                dt = new DataTable();
+
+                dt.Columns.Add("QID");
+                dt.Columns.Add("Question");
+                dt.Columns.Add("Value");
+                dt.Columns.Add("Score");
+                dt.Columns.Add("Markdown");
+                dt.Columns.Add("Remarks");
+
+                int _Score = 0;
+
+                foreach (DataRow row in grd.grdData.QuestionForm.dtObjContainer.Rows)
+                {
+                    DataRow[] fQ = dt.Select("Question = '" + row["Question"].ToString() + "'");
+                    RadComboBox cbValue = (RadComboBox)this.FindName(row["DDNameSel"].ToString());
+                    RadComboBox cbMd = (RadComboBox)this.FindName(row["DDNameMD"].ToString());
+                    RadWatermarkTextBox tbRemarks = (RadWatermarkTextBox)this.FindName(row["Remarks"].ToString());
+
+                    if (fQ.Length == 0)
+                    {
+                        dr = dt.NewRow();
+                        dr["QID"] = Convert.ToInt32(row["QID"]);
+                        dr["Question"] = row["Question"].ToString();
+                        dr["Value"] = cbValue.Text;
+                        dr["Score"] = Convert.ToInt32(cbValue.SelectedValue);
+                        dr["Markdown"] = cbMd.Text;
+                        dr["Remarks"] = tbRemarks.Text;
+                        dt.Rows.Add(dr);
+                        dt.AcceptChanges();
+                    }
+
+                    _Score = _Score + Convert.ToInt32(cbValue.SelectedValue);
+                }
+
+                switch (grd.grdData.QuestionForm.Formula.ToUpper())
+                {
+                    case "SUM":
+                        {
+                            if (_Score <= 99)
+                                grd.grdData.QuestionForm.ScoreRemarks = "FAILED!";
+                            else
+                                grd.grdData.QuestionForm.ScoreRemarks = "PASSED!";
+
+                            _ScoreAverage = _Score;
+                            break;
+                        }
+                    case "AVERAGE":
+                        {
+                            _ScoreAverage = _Score / _ConfigCtr;
+
+                            if (_ScoreAverage <= 99)
+                                grd.grdData.QuestionForm.ScoreRemarks = "FAILED!";
+                            else
+                                grd.grdData.QuestionForm.ScoreRemarks = "PASSED!";
+
+                            break;
+                        }
+                }
+
+                this.xx.Children.Clear();
+                this.QAWrapPanel.Children.Remove(xx);
+
+                var s = new TextBlock();
+                if (_ScoreAverage == 0)
+                    s.Text = "SCORE: ";
+                else
+                    s.Text = "SCORE: " + _ScoreAverage + " out of (" + grd.grdData.QuestionForm.Target + " Target Score)";
+                s.TextWrapping = TextWrapping.Wrap;
+                s.Width = 400;
+                s.Height = 24;
+                s.FontSize = 13;
+                s.FontWeight = FontWeights.Bold;
+                s.HorizontalAlignment = HorizontalAlignment.Left;
+                s.Foreground = System.Windows.Media.Brushes.Gold;
+                s.Margin = new Thickness(4, 2, 0, 0);
+                s.VerticalAlignment = VerticalAlignment.Top;
+
+                var s1 = new TextBlock();
+                if (_ScoreAverage == 0)
+                    s1.Text = "Remarks: ";
+                else
+                    s1.Text = "Remarks: " + grd.grdData.QuestionForm.ScoreRemarks + " (Formula: " + grd.grdData.QuestionForm.Formula + ")";
+
+                s1.TextWrapping = TextWrapping.Wrap;
+                s1.Width = 400;
+                s1.Height = 24;
+                s1.FontSize = 13;
+                s1.FontWeight = FontWeights.Bold;
+                s1.HorizontalAlignment = HorizontalAlignment.Left;
+
+                if (grd.grdData.QuestionForm.ScoreRemarks.ToUpper() == "FAILED!")
+                    s1.Foreground = System.Windows.Media.Brushes.Red;
+                else s1.Foreground = System.Windows.Media.Brushes.LimeGreen;
+
+                s1.Margin = new Thickness(4, -6, 0, 0);
+                s1.VerticalAlignment = VerticalAlignment.Top;
+
+
+                xx.Children.Add(s);
+                xx.Children.Add(s1);
+
+                this.QAWrapPanel.Children.Add(xx);
+
+            }
+        }
+
         private void SetupQADynamicConfigInfo()
         {
 
@@ -1072,8 +1183,10 @@ namespace GRID.Pages
                 z.Margin = new Thickness(4, 2, 0, 0);
                 z.VerticalAlignment = VerticalAlignment.Top;
 
+                if(dt.Rows[k]["Category"].ToString() != Category)
                 this.QAWrapPanel.Children.Add(z);
 
+                Category = dt.Rows[k]["Category"].ToString();
                 Question = dt.Rows[k]["Question"].ToString();
                 int Q;
 
@@ -1098,7 +1211,7 @@ namespace GRID.Pages
                         y.FontSize = 13;
                         y.HorizontalAlignment = HorizontalAlignment.Left;
                         y.Foreground = System.Windows.Media.Brushes.White;
-                        y.Margin = new Thickness(1, 2, 1, 1);
+                        y.Margin = new Thickness(1, 6, 1, 1);
                         y.VerticalAlignment = VerticalAlignment.Top;
 
                         dd = new RadComboBox();
@@ -1109,10 +1222,13 @@ namespace GRID.Pages
                         dd.VerticalContentAlignment = VerticalAlignment.Center;
                         dd.VerticalAlignment = VerticalAlignment.Top;
                         dd.Foreground = System.Windows.Media.Brushes.Black;
-                        dd.Margin = new Thickness(8, 1, 1, 1);
+                        dd.Margin = new Thickness(8, -1, 1, 1);
                         dd.IsEditable = false;
                         dd.SelectedValuePath = "Score";
                         dd.DisplayMemberPath = "Value";
+
+                        dd.SelectionChanged += btnHandler_Click;
+
                         dd.Name = QAGetObjectNameScore(loopCtr);
                         this.RegisterName(dd.Name, dd);
 
@@ -1129,10 +1245,13 @@ namespace GRID.Pages
                         mdd.VerticalContentAlignment = VerticalAlignment.Center;
                         mdd.VerticalAlignment = VerticalAlignment.Top;
                         mdd.Foreground = System.Windows.Media.Brushes.Black;
-                        mdd.Margin = new Thickness(4, 1, 1, 1);
+                        mdd.Margin = new Thickness(4, -1, 1, 1);
                         mdd.IsEditable = false;
                         mdd.SelectedValuePath = "Id";
                         mdd.DisplayMemberPath = "Value";
+
+                        mdd.SelectionChanged += btnHandler_Click;
+
                         mdd.Name = QAGetObjectNameMd(loopMd);
                         this.RegisterName(mdd.Name, mdd);
 
@@ -1149,7 +1268,8 @@ namespace GRID.Pages
                         tb.VerticalContentAlignment = VerticalAlignment.Center;
                         tb.VerticalAlignment = VerticalAlignment.Top;
                         tb.Foreground = System.Windows.Media.Brushes.Black;
-                        tb.Margin = new Thickness(4, 1, 1, 1);
+                        tb.Margin = new Thickness(4, -1, 1, 1);
+
                         tb.Name = QAGetObjectNameRem(loopTb);
                         this.RegisterName(tb.Name, tb);
 
@@ -2680,13 +2800,13 @@ namespace GRID.Pages
             }
             else if (_ctr == 3)
             {
-
+                
                 this.SetupQADynamicConfigInfo();
+                this.QADynamicObjectsHandler();
 
                 this.GridDynamicObjects.Visibility = Visibility.Visible;
                 this.WrapActivityList.Visibility = Visibility.Hidden;
                 this.QAWrapPanel.Visibility = Visibility.Visible;
-
             }
 
             if (!(curAct == null))
@@ -2962,119 +3082,7 @@ namespace GRID.Pages
 
         private void btnChange_Click(object sender, RoutedEventArgs e)
         {
-            //notifier.ShowError(objRF01.SelectedValue.ToString());
-
-
-            //for (int i = grd.grdData.QuestionForm.dtObjContainer.Rows.Count - 1; i >= 0; i--)
-            //{
-            //    DataRow dr = grd.grdData.QuestionForm.dtObjContainer.Rows[i];
-            //    if (dr["Name"] == row1["Name"].ToString())
-            //        dr.Delete();
-            //}
-            //grd.grdData.QuestionForm.dtObjContainer.AcceptChanges();
-            if (grd.grdData.QuestionForm.dtObjContainer.Rows.Count == _ConfigCtr)
-            {
-                dt = new DataTable();
-
-                dt.Columns.Add("QID");
-                dt.Columns.Add("Question");
-                dt.Columns.Add("Value");
-                dt.Columns.Add("Score");
-                dt.Columns.Add("Markdown");
-                dt.Columns.Add("Remarks");
-
-                int _Score = 0;
-
-                foreach (DataRow row in grd.grdData.QuestionForm.dtObjContainer.Rows)
-                {
-                    DataRow[] fQ = dt.Select("Question = '" + row["Question"].ToString() + "'");
-                    RadComboBox cbValue = (RadComboBox)this.FindName(row["DDNameSel"].ToString());
-                    RadComboBox cbMd = (RadComboBox)this.FindName(row["DDNameMD"].ToString());
-                    RadWatermarkTextBox tbRemarks = (RadWatermarkTextBox)this.FindName(row["Remarks"].ToString());
-
-                    if (fQ.Length == 0)
-                    {
-                        dr = dt.NewRow();
-                        dr["QID"] = Convert.ToInt32(row["QID"]);
-                        dr["Question"] = row["Question"].ToString();
-                        dr["Value"] = cbValue.Text;
-                        dr["Score"] = Convert.ToInt32(cbValue.SelectedValue);
-                        dr["Markdown"] = cbMd.Text;
-                        dr["Remarks"] = tbRemarks.Text;
-                        dt.Rows.Add(dr);
-                        dt.AcceptChanges();
-                    }
-
-                    _Score = _Score + Convert.ToInt32(cbValue.SelectedValue);
-                }
-
-                switch (grd.grdData.QuestionForm.Formula.ToUpper())
-                {
-                    case "SUM":
-                        {
-                            if (_Score <= 99)
-                                grd.grdData.QuestionForm.ScoreRemarks = "Failed!";
-                            else
-                                grd.grdData.QuestionForm.ScoreRemarks = "Passed!";
-
-                            _ScoreAverage = _Score;
-                            break;
-                        }
-                    case "AVERAGE":
-                        {
-                            _ScoreAverage = _Score / _ConfigCtr;
-
-                            if (_ScoreAverage <= 99)
-                                grd.grdData.QuestionForm.ScoreRemarks = "Failed!";
-                            else
-                                grd.grdData.QuestionForm.ScoreRemarks = "Passed!";
-
-                            break;
-                        }
-                }
-
-
-
-                this.xx.Children.Clear();
-                this.QAWrapPanel.Children.Remove(xx);
-
-                var s = new TextBlock();
-                s.Text = "SCORE: " + _ScoreAverage + " out of (" + grd.grdData.QuestionForm.Target +  " Target Score)";
-                s.TextWrapping = TextWrapping.Wrap;
-                s.Width = 400;
-                s.Height = 24;
-                s.FontSize = 13;
-                s.FontWeight = FontWeights.Bold;
-                s.HorizontalAlignment = HorizontalAlignment.Left;
-                s.Foreground = System.Windows.Media.Brushes.Gold;
-                s.Margin = new Thickness(4, 2, 0, 0);
-                s.VerticalAlignment = VerticalAlignment.Top;
-
-                var s1 = new TextBlock();
-                s1.Text = "Remarks: " + grd.grdData.QuestionForm.ScoreRemarks + " (Formula: " + grd.grdData.QuestionForm.Formula + ")";
-                s1.TextWrapping = TextWrapping.Wrap;
-                s1.Width = 400;
-                s1.Height = 24;
-                s1.FontSize = 13;
-                s1.FontWeight = FontWeights.Bold;
-                s1.HorizontalAlignment = HorizontalAlignment.Left;
-
-                if(grd.grdData.QuestionForm.ScoreRemarks.ToUpper() == "FAILED!")
-                s1.Foreground = System.Windows.Media.Brushes.Red;
-                else s1.Foreground = System.Windows.Media.Brushes.LimeGreen;
-
-                s1.Margin = new Thickness(4, -6, 0, 0);
-                s1.VerticalAlignment = VerticalAlignment.Top;
-
-
-                xx.Children.Add(s);
-                xx.Children.Add(s1);
-
-                this.QAWrapPanel.Children.Add(xx);
-
-            }
-
-
+            
         }
 
         private void cmbProcess_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -3109,5 +3117,20 @@ namespace GRID.Pages
             btnCloseMyAct.Visibility = Visibility.Visible;
         }
 
+        private void btnHandler_Click(object sender, RoutedEventArgs e)
+        {
+            //notifier.ShowError(objRF01.SelectedValue.ToString());
+
+
+            //for (int i = grd.grdData.QuestionForm.dtObjContainer.Rows.Count - 1; i >= 0; i--)
+            //{
+            //    DataRow dr = grd.grdData.QuestionForm.dtObjContainer.Rows[i];
+            //    if (dr["Name"] == row1["Name"].ToString())
+            //        dr.Delete();
+            //}
+            //grd.grdData.QuestionForm.dtObjContainer.AcceptChanges();
+
+            QADynamicObjectsHandler();
+        }
     }
 }

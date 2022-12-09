@@ -1,7 +1,10 @@
 ﻿using GRIDLibraries.Libraries;
+using Microsoft.VisualBasic;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Input;
 using ToastNotifications;
 using ToastNotifications.Lifetime;
 using ToastNotifications.Messages;
@@ -42,6 +45,15 @@ namespace GRID.Pages.QAQuestion
             msg.Dispatcher = Application.Current.Dispatcher;
         });
 
+        private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
+
+            if (e.Handled == true)
+                new MessagesBox("Accepts Numeric values only.", MessageType.Error, MessageButtons.Ok).ShowDialog();
+        }
+
 
         int Formula;
 
@@ -49,6 +61,9 @@ namespace GRID.Pages.QAQuestion
         {
             InitializeComponent();
             Function = Fn;
+            FormId = _Id;
+            FormName = _FormName;
+
             if (Function == 0)
             {
                 grpQAForm.Header = "Add New Form";
@@ -57,12 +72,29 @@ namespace GRID.Pages.QAQuestion
             }
             else
             {
+                grd.GetQASumFormula(_Id);
+
                 grpQAForm.Header = "Update Form";
                 btnSaveQForm.Visibility = Visibility.Collapsed;
                 btnUpdateQForm.Visibility = Visibility.Visible;
-                FormId = _Id;
-                FormName = _FormName;
-                txtQAFormName.Text = _FormName; 
+
+                if (grd.grdData.QuestionForm.Formula.ToString() == "1")
+                {
+                    rdoSum.IsChecked = true;
+                    rdoAve.IsChecked = false;
+                }                 
+                else
+                {
+                    rdoSum.IsChecked = false;
+                    rdoAve.IsChecked = true;
+                }
+                   
+
+
+                txtQAFormName.Text = _FormName;
+                txtQAFormTarget.Text = Convert.ToInt32(grd.grdData.QuestionForm.Target).ToString();
+
+                //grd.grdData.QuestionForm.Formula, grd.grdData.QuestionForm.Target
             }
         }
 
@@ -95,7 +127,7 @@ namespace GRID.Pages.QAQuestion
                         {
                             try
                             {
-                                grd.AddQAForm(txtQAFormName.Text, Formula, Convert.ToInt32(txtQAFormTarget.Text));
+                                grd.AddQAForm(txtQAFormName.Text, Formula, Convert.ToInt32(Strings.Trim(txtQAFormTarget.Text)));
                                 grd.grdData.QuestionForm.dtLOB = grd.GetQALob();
                                 MainScrn.fContainer.Content = "";
                                 MainScrn.fContainer.Navigate(new QAQuestionnaire());
@@ -141,7 +173,7 @@ namespace GRID.Pages.QAQuestion
                         {
                             try
                             {
-                                grd.UpdateQAForm(FormId, txtQAFormName.Text, Formula, Convert.ToInt32(txtQAFormTarget.Text));
+                                grd.UpdateQAForm(FormId, txtQAFormName.Text, Formula, Convert.ToInt32(Strings.Trim(txtQAFormTarget.Text)));
                                 grd.grdData.QuestionForm.dtLOB = grd.GetQALob();
                                 MainScrn.fContainer.Content = "";
                                 MainScrn.fContainer.Navigate(new QAQuestionnaire());

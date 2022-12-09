@@ -28,8 +28,8 @@
                 <Button x:Name="btnCloseMyAct" Style="{StaticResource IconButtonsStyle}" Content="{DynamicResource close}" Tag="IsCloseButton" ToolTip="Close My Activities" Height="20" Width="20" Click="btnCloseMyAct_Click" />
             </StackPanel>
 
-            <StackPanel Name="WrapMainContainer" Grid.Row="2">
-                <StackPanel Name="WrapActivityList" Visibility="Visible">
+            <StackPanel Name="WrapMainContainer" Grid.Row="2" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                <StackPanel Name="WrapActivityList" Visibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
                     <telerik:RadTabControl Name="MainTab" Background="Transparent" BorderThickness="0" HeaderBackground="{DynamicResource SecundaryBackgroundColor}">
 
                         <telerik:RadTabItem IsSelected="True" Header="My Favorites" x:Name="tabMyActivities" Foreground="White" Height="30" Width="100">
@@ -85,7 +85,7 @@
                             </GroupBox>
                         </telerik:RadTabItem>
 
-                        <telerik:RadTabItem IsSelected="True" Header="My Favorites" x:Name="tabProductive" Foreground="White" Height="30" Width="100">
+                        <telerik:RadTabItem IsSelected="True" Header="Activity List" x:Name="tabProductive" Foreground="White" Height="30" Width="100">
                             <GroupBox Margin="0 3 0 0" Header="Select Process">
                                 <Grid>
                                     <Grid.RowDefinitions>
@@ -133,15 +133,19 @@
                         </telerik:RadTabItem>
 
                         <telerik:RadTabItem IsSelected="True" Header="QA Questions" x:Name="tabQA" Foreground="White" Height="30" Width="100">
-                            <GroupBox Header="Double click an Item to start" Margin="0 3 0 0">
 
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
-                                    <ListView x:Name="lstQAForm" ItemsSource="{Binding}" Grid.Row="0" Grid.Column="0" Height="Auto" Width="Auto" Foreground="{DynamicResource PrimaryTextColor}" Background="{x:Null}"  Grid.ColumnSpan="2" Cursor="Hand" MouseDoubleClick="lstQAForm_MouseDoubleClick">
-                                        <ListView.View>
-                                            <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
+
+
+                            <GroupBox Header="Double click an Item to start" Margin="0 3 0 0" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible">
+
+
+
+                                <ListView x:Name="lstQAForm" ItemsSource="{Binding}"
+                                          Foreground="{DynamicResource PrimaryTextColor}" Background="{x:Null}"  
+                                          Cursor="Hand" MouseDoubleClick="lstQAForm_MouseDoubleClick" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="True" HorizontalContentAlignment="Stretch">
+
+                                    <ListView.View>
+                                        <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
                                                 <!--<GridViewColumn>
                                                     <GridViewColumn.Header>
                                                         <GridViewColumnHeader>
@@ -215,10 +219,14 @@
 
                                             </GridView>
                                         </ListView.View>
-                                    </ListView>
-                                </Grid>
+                                </ListView>
+                            
+                    
+
+
 
                             </GroupBox>
+                            
                         </telerik:RadTabItem>
                     </telerik:RadTabControl>
                 </StackPanel>
@@ -268,6 +276,10 @@
                     <ColumnDefinition Width="100"/>
                 </Grid.ColumnDefinitions>
 
+                <telerik:RadButton Name="btnHandler" Grid.Column="0" BorderThickness="0" Width="50" Height="20" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   CornerRadius="3" telerik:StyleManager.Theme="Transparent"
+                                   Cursor="Hand" Click="btnHandler_Click" Visibility="Collapsed"/>
 
                 <telerik:RadButton Name="btnStart" Grid.Column="1" BorderThickness="0" ToolTip="Start New Activity" Width="80" Height="30" 
                                    HorizontalAlignment="Left" VerticalAlignment="Bottom"
