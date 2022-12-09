@@ -51,11 +51,13 @@ namespace GRID.Pages.QAQuestion
             Function = Fn;
             if (Function == 0)
             {
+                grpQAForm.Header = "Add New Form";
                 btnSaveQForm.Visibility = Visibility.Visible;
                 btnUpdateQForm.Visibility = Visibility.Collapsed;
             }
             else
             {
+                grpQAForm.Header = "Update Form";
                 btnSaveQForm.Visibility = Visibility.Collapsed;
                 btnUpdateQForm.Visibility = Visibility.Visible;
                 FormId = _Id;

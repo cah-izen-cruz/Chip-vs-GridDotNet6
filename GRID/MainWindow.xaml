@@ -11,7 +11,8 @@
         Title="MainWindow" Height="600" Width="1020"
         WindowStartupLocation="CenterScreen" WindowStyle="None"
         Background="Transparent" AllowsTransparency="True"
-        ResizeMode="NoResize" FontFamily="Poppins" MouseDown="home_MouseDown" Loaded="Home_Loaded">
+        ResizeMode="NoResize" FontFamily="Poppins" MouseDown="home_MouseDown"
+        Loaded="Home_Loaded">
 
     <Window.Resources>
         <ImageBrush x:Key="tb_mouse_over"

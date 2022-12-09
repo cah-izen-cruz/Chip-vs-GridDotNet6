@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
       xmlns:local="clr-namespace:GRID.Pages"
+       xmlns:matDes="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="MyActivities">
@@ -30,18 +31,18 @@
             <StackPanel Name="WrapMainContainer" Grid.Row="2">
                 <StackPanel Name="WrapActivityList" Visibility="Visible">
                     <telerik:RadTabControl Name="MainTab" Background="Transparent" BorderThickness="0" HeaderBackground="{DynamicResource SecundaryBackgroundColor}">
-                        
+
                         <telerik:RadTabItem IsSelected="True" Header="My Favorites" x:Name="tabMyActivities" Foreground="White" Height="30" Width="100">
                             <GroupBox Margin="0 3 0 0" Header="Select Process">
                                 <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="35"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-                         
-                                <StackPanel Orientation="Horizontal" Grid.Row="0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="35"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
 
-                                    <telerik:RadComboBox Name="cmbProcess"  Width="200" Height="23" BorderBrush="White" BorderThickness=".5" telerik:StyleManager.Theme="Office" FontSize="12" SelectionChanged="cmbProcess_SelectionChanged"/>
+                                    <StackPanel Orientation="Horizontal" Grid.Row="0">
+
+                                        <telerik:RadComboBox Name="cmbProcess"  Width="200" Height="23" BorderBrush="White" BorderThickness=".5" telerik:StyleManager.Theme="Office" FontSize="12" SelectionChanged="cmbProcess_SelectionChanged"/>
                                         <Button Name="cmdMyFilter" BorderThickness="0" Style="{StaticResource AddButtonQForm}" Margin="6 0 0 0" Click="cmdMyFilter_Click">
                                             <StackPanel Orientation="Horizontal">
                                                 <iconPacks:PackIconMaterial Kind="FilterOff" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
@@ -58,9 +59,9 @@
 
                                     </StackPanel>
 
-                          
 
-                                <ListView Name="lvMyActivities" ItemsSource="{Binding}" Grid.Row="1" 
+
+                                    <ListView Name="lvMyActivities" ItemsSource="{Binding}" Grid.Row="1" 
                                           Height="Auto" Width="Auto"  Cursor="Hand" 
                                           MouseDoubleClick="lvMyActivities_MouseDoubleClick">
                                         <ListView.View>
@@ -74,13 +75,13 @@
                                                 </GridView.Columns>
                                             </GridView>
                                         </ListView.View>
-                                 </ListView>
+                                    </ListView>
 
 
-                               
 
 
-                            </Grid>
+
+                                </Grid>
                             </GroupBox>
                         </telerik:RadTabItem>
 
@@ -133,12 +134,11 @@
 
                         <telerik:RadTabItem IsSelected="True" Header="QA Questions" x:Name="tabQA" Foreground="White" Height="30" Width="100">
                             <GroupBox Header="Double click an Item to start" Margin="0 3 0 0">
+
                                 <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-
-
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
                                     <ListView x:Name="lstQAForm" ItemsSource="{Binding}" Grid.Row="0" Grid.Column="0" Height="Auto" Width="Auto" Foreground="{DynamicResource PrimaryTextColor}" Background="{x:Null}"  Grid.ColumnSpan="2" Cursor="Hand" MouseDoubleClick="lstQAForm_MouseDoubleClick">
                                         <ListView.View>
                                             <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
@@ -154,8 +154,8 @@
                                                         </GridViewColumnHeader>
                                                     </GridViewColumn.Header>
                                                 </GridViewColumn>-->
-                                               
-                                                
+
+
                                                 <GridViewColumn Width="Auto" Header="Id">
                                                     <GridViewColumn.CellTemplate>
                                                         <DataTemplate>
@@ -216,40 +216,48 @@
                                             </GridView>
                                         </ListView.View>
                                     </ListView>
+                                </Grid>
 
-                             
-
-                        
-
-                            </Grid>
                             </GroupBox>
                         </telerik:RadTabItem>
                     </telerik:RadTabControl>
                 </StackPanel>
             </StackPanel>
 
-          
+
             <!--<StackPanel x:Name="GridDynamicObjects" Grid.Row="2" Background="{DynamicResource SecundaryBackgroundColor}">
                 
             </StackPanel>-->
 
-           
-                <Border x:Name="GridDynamicObjects" Grid.Row="2" CornerRadius="10" BorderBrush="{DynamicResource PrimaryTextColor}" BorderThickness="0" Background="{DynamicResource SecundaryBackgroundColor}" Padding="4" VerticalAlignment="Top" HorizontalAlignment="Left" Width="Auto" Margin="0 0 0 10">
-                <ScrollViewer Margin="0 0 0 0">
+
+
+            <Border x:Name="GridDynamicObjects" Grid.Column="0" Grid.Row="2" CornerRadius="10" BorderBrush="{DynamicResource PrimaryTextColor}" BorderThickness="0" Background="{DynamicResource SecundaryBackgroundColor}" Padding="4" VerticalAlignment="Top" HorizontalAlignment="Left" Width="Auto" Margin="0 0 0 10">
+                <ScrollViewer>
                     <Grid Width="Auto" VerticalAlignment="Top">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                                                
-                            <WrapPanel Grid.Column="0" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="WrapPanelMain"/>
-                            <WrapPanel Grid.Column="1" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="WrapPanelMain2"/>
 
-                            <WrapPanel x:Name="QAWrapPanel" Grid.Column="0" Grid.ColumnSpan="3" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Orientation="Vertical"  />
+                        <WrapPanel Grid.Column="0" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="WrapPanelMain"/>
+                        <WrapPanel Grid.Column="1" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="WrapPanelMain2"/>
+
+
+
+                        <WrapPanel x:Name="QAWrapPanel" Grid.Column="0" Grid.ColumnSpan="2" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Orientation="Vertical" Width="Auto" />
+
+
+
                     </Grid>
                 </ScrollViewer>
             </Border>
-          
+
+
+
+
+
+
+
 
             <Grid x:Name="ActivityButtonsMyActs" Grid.Row="4" Margin="0 0 0 4">
                 <Grid.ColumnDefinitions>

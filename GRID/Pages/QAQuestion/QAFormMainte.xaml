@@ -13,7 +13,7 @@
     <!--Background="Transparent" AllowsTransparency="True"-->
     <Border Background="{DynamicResource SecundaryBackgroundColor}" CornerRadius="12" matDes:ShadowAssist.ShadowDepth="Depth5">
 
-        <GroupBox x:Name="grpTemplate" Header="Add | Update">
+        <GroupBox x:Name="grpQAForm">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1"/>

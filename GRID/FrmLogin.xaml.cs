@@ -161,7 +161,7 @@ namespace GRID
                 else
                     UserInitialized = false;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
             }
 
@@ -357,7 +357,7 @@ namespace GRID
                     txtShift.Document.Blocks.Add(new Paragraph(new Run("Your Shift Schedule " + Strings.Format(Conversions.ToDate(DateTime.Now.Date + grd.grdData.CurrentUser.SchedTimeIn), "h:mmtt").ToString() + "-" + Strings.Format(Conversions.ToDate(DateTime.Now.Date + grd.grdData.CurrentUser.SchedTimeOut), "h:mmtt").ToString() + " " + grd.grdData.TeamInfo.TimeZone)));
                     Log.Text = "Validated. Please click Login";
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
 
                 }
