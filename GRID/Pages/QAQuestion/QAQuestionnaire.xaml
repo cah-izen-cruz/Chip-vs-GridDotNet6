@@ -269,12 +269,12 @@
                                     
                                     <DataGrid x:Name="lstMardownType" RowStyle="{DynamicResource DataGridRowStyle1}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle1}" CellStyle="{DynamicResource DataGridCellStyle1}" Style="{DynamicResource DataGridStyle1}" Margin="2 4 0 0" Width="320" HorizontalAlignment="Left">
                                         <DataGrid.Columns>
-                                            <DataGridTextColumn Header="Id" IsReadOnly="True" CanUserResize="False" Width="Auto" Binding="{Binding Id}" Visibility="Collapsed"/>
-                                            <DataGridTextColumn Header="MarkDown Type" IsReadOnly="True" CanUserResize="False" Width="180" Binding="{Binding Value}"/>
-                                            <DataGridTemplateColumn Header="" IsReadOnly="True" Width="90">
+                                            <DataGridTextColumn Header="Id" IsReadOnly="True" CanUserResize="False" Width="*" Binding="{Binding Id}" Visibility="Collapsed"/>
+                                            <DataGridTextColumn Header="MarkDown Type" IsReadOnly="True" CanUserResize="False" Width="*" Binding="{Binding Value}"/>
+                                            <DataGridTemplateColumn Header="" IsReadOnly="True">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
-                                                        <StackPanel Orientation="Horizontal">
+                                                        <StackPanel Orientation="Horizontal" Margin="102 0 0 0">
                                                             <Button Margin="5 0 0 0" Style="{StaticResource gridRemoveButton}" x:Name="btnDelMark" Click="btnDelMark_Click">
                                                                 <iconPacks:PackIconMaterial Kind="DeleteOutline" Style="{StaticResource gridButtonIcon}"/>
                                                             </Button>

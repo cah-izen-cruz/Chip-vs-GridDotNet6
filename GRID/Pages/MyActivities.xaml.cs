@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -410,6 +409,11 @@ namespace GRID.Pages
                 this.WrapPanelMain2.Visibility = Visibility.Visible;
                 this.WrapPanelMain.Width = 380;
                 this.WrapPanelMain2.Width = 380;
+                this.QAWrapPanel.Visibility = Visibility.Collapsed;
+
+                btnStop.Visibility = Visibility.Visible;
+                btnPause.Visibility = Visibility.Visible;
+                btnChange.Visibility = Visibility.Visible;
 
             }
 
@@ -1183,8 +1187,8 @@ namespace GRID.Pages
                 z.Margin = new Thickness(4, 2, 0, 0);
                 z.VerticalAlignment = VerticalAlignment.Top;
 
-                if(dt.Rows[k]["Category"].ToString() != Category)
-                this.QAWrapPanel.Children.Add(z);
+                if (dt.Rows[k]["Category"].ToString() != Category)
+                    this.QAWrapPanel.Children.Add(z);
 
                 Category = dt.Rows[k]["Category"].ToString();
                 Question = dt.Rows[k]["Question"].ToString();
@@ -2800,12 +2804,15 @@ namespace GRID.Pages
             }
             else if (_ctr == 3)
             {
-                
+
                 this.SetupQADynamicConfigInfo();
                 this.QADynamicObjectsHandler();
 
                 this.GridDynamicObjects.Visibility = Visibility.Visible;
                 this.WrapActivityList.Visibility = Visibility.Hidden;
+
+                this.WrapPanelMain.Visibility = Visibility.Collapsed;
+                this.WrapPanelMain2.Visibility = Visibility.Collapsed;
                 this.QAWrapPanel.Visibility = Visibility.Visible;
             }
 
@@ -2829,10 +2836,6 @@ namespace GRID.Pages
                 withBlock.ActivityId = curAct.Id;
                 withBlock.LOBId = curAct.LOBId;
                 withBlock.LOBItemId = 0;
-
-
-
-
 
                 if (IsActivityStarted)
                     this.MainWindowActivated();
@@ -2950,30 +2953,18 @@ namespace GRID.Pages
         private void GvProductivity_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             this.StartActivity(2);
-            if (_ConfigCtr == 0)
-            {
-                new MessagesBox("You have selected a Question Form with no Configuration yet.", MessageType.Error, MessageButtons.Ok).ShowDialog();
-                return;
-            }
-            else
-            {
-                btnStop.Visibility = Visibility.Visible;
-                btnPause.Visibility = Visibility.Visible;
-                btnChange.Visibility = Visibility.Visible;
-                grd.grdData.ScrContent.IsActivityRunning = true;
-                grd.grdData.ScrContent.IsMyDataChanged = true;
-            }
 
+            btnStop.Visibility = Visibility.Visible;
+            btnPause.Visibility = Visibility.Visible;
+            btnChange.Visibility = Visibility.Visible;
+            grd.grdData.ScrContent.IsActivityRunning = true;
+            grd.grdData.ScrContent.IsMyDataChanged = true;
         }
 
         private void lvMyActivities_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             this.StartActivity(1);
-            if (_ConfigCtr == 0)
-            {
-                new MessagesBox("You have selected a Question Form with no Configuration yet.", MessageType.Error, MessageButtons.Ok).ShowDialog();
-                return;
-            }
+
             btnStop.Visibility = Visibility.Visible;
             btnPause.Visibility = Visibility.Visible;
             btnChange.Visibility = Visibility.Visible;
@@ -3082,7 +3073,7 @@ namespace GRID.Pages
 
         private void btnChange_Click(object sender, RoutedEventArgs e)
         {
-            
+
         }
 
         private void cmbProcess_SelectionChanged(object sender, SelectionChangedEventArgs e)
