@@ -141,8 +141,8 @@ namespace GRIDLibraries.Libraries
 
                     this.grdData.TeamInfo = grdData.TeamInfo;
 
-                    this.conString = "Data Source=WPEC5009GRDRP01;" + "Initial Catalog=" + grdData.TeamInfo.DBName + "; " + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
-                    //this.conString = "Data Source=DESKTOP-A0R75AD;" + "Initial Catalog=" + grdData.TeamInfo.DBName + "; " + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
+                    //this.conString = "Data Source=WPEC5009GRDRP01;" + "Initial Catalog=" + grdData.TeamInfo.DBName + "; " + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
+                    this.conString = "Data Source=DESKTOP-A0R75AD;" + "Initial Catalog=" + grdData.TeamInfo.DBName + "; " + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
 
                 }
 

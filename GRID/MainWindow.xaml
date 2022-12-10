@@ -514,13 +514,9 @@
                     </StackPanel>
                     <!-- End: Button Close | Restore | Minimize -->
 
-                    <Frame Grid.Row="1"
-                       Name="fContainer"
-                       Margin="10 -8 10 10"
-                       NavigationUIVisibility="Hidden">
-
-                    </Frame>
-                    
+          
+                        <Frame x:Name="fContainer" Grid.Row="1" Margin="10 -8 10 10" NavigationUIVisibility="Hidden"/>
+                  
                 </Grid>
 
                 <StackPanel Grid.Row="2" Orientation="Horizontal" Grid.Column="0" VerticalAlignment="Bottom" Grid.ColumnSpan="3" Height="50">

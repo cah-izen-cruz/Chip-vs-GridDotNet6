@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
       xmlns:local="clr-namespace:GRID.Pages"
-       xmlns:matDes="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:matDes="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="MyActivities">
@@ -30,6 +30,65 @@
 
             <StackPanel Name="WrapMainContainer" Grid.Row="2" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
                 <StackPanel Name="WrapActivityList" Visibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+                    <!--<telerik:RadTabControl ScrollMode="Viewport" >
+                        <telerik:RadTabControl.Resources>
+                            <Style TargetType="telerik:RadTabItem">
+                                <Setter Property="CloseButtonVisibility" Value="Visible"/>
+                                <Setter Property="PinButtonVisibility" Value="Visible"/>
+                            </Style>
+                        </telerik:RadTabControl.Resources>
+                        <telerik:RadTabItem Header="Tab Item 1" />
+                        <telerik:RadTabItem Header="Tab Item 2"/>
+                        <telerik:RadTabItem Header="Tab Item 3"/>
+                        <telerik:RadTabItem Header="Tab Item 4"/>
+                        <telerik:RadTabItem Header="Tab Item 5"/>
+                        <telerik:RadTabItem Header="Tab Item 6"/>
+                        <telerik:RadTabItem Header="Tab Item 7"/>
+                        <telerik:RadTabItem Header="Tab Item 8"/>
+                        <telerik:RadTabItem Header="Tab Item 9"/>
+                    </telerik:RadTabControl>-->
+
+                    <TabControl HorizontalAlignment="Left">
+                        <TabItem  Width="Auto">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:PackIconMaterial Kind="FilterOff" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                                    <TextBlock Text="My Favorites" />
+                                </StackPanel>
+                            </TabItem.Header>
+                            <Label Content="Content goes here..." />
+                        </TabItem>
+                        <TabItem HorizontalAlignment="Left" Width="Auto">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:PackIconMaterial Kind="FilterOff" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                                    <TextBlock Text="My Favorites" />
+                                </StackPanel>
+                            </TabItem.Header>
+                            <Label Content="Content goes here..." />
+                        </TabItem>
+                        <TabItem HorizontalAlignment="Left" Width="Auto">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:PackIconMaterial Kind="FilterOff" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                                    <TextBlock Text="My Favorites" />
+                                </StackPanel>
+                            </TabItem.Header>
+                            <Label Content="Content goes here..." />
+                        </TabItem>
+                        <TabItem HorizontalAlignment="Left" Width="Auto">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:PackIconMaterial Kind="FilterOff" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                                    <TextBlock Text="My Favorites" />
+                                </StackPanel>
+                            </TabItem.Header>
+                            <Label Content="Content goes here..." />
+                        </TabItem>
+                    </TabControl>
+
+
                     <telerik:RadTabControl Name="MainTab" Background="Transparent" BorderThickness="0" HeaderBackground="{DynamicResource SecundaryBackgroundColor}">
 
                         <telerik:RadTabItem IsSelected="True" Header="My Favorites" x:Name="tabMyActivities" Foreground="White" Height="30" Width="100">
@@ -136,17 +195,25 @@
 
 
 
-                            <GroupBox Header="Double click an Item to start" Margin="0 3 0 0" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible">
+                            <GroupBox Header="Double click an Item to start" Margin="0 3 0 0" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" Height="400">
 
+                              
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="450"/>
+                                            <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                        
+                               
 
-
-                                <ListView x:Name="lstQAForm" ItemsSource="{Binding}"
+                                    <ScrollViewer Grid.Row="0">
+                                        <ListView x:Name="lstQAForm" ItemsSource="{Binding}"
                                           Foreground="{DynamicResource PrimaryTextColor}" Background="{x:Null}"  
-                                          Cursor="Hand" MouseDoubleClick="lstQAForm_MouseDoubleClick" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="True" HorizontalContentAlignment="Stretch">
+                                          Cursor="Hand" MouseDoubleClick="lstQAForm_MouseDoubleClick" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="True">
 
-                                    <ListView.View>
-                                        <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
-                                                <!--<GridViewColumn>
+                                            <ListView.View>
+                                                <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
+                                                    <!--<GridViewColumn>
                                                     <GridViewColumn.Header>
                                                         <GridViewColumnHeader>
                                                             <GridViewColumnHeader.Content>
@@ -160,73 +227,84 @@
                                                 </GridViewColumn>-->
 
 
-                                                <GridViewColumn Width="Auto" Header="Id">
-                                                    <GridViewColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <StackPanel Orientation="Horizontal">
-                                                                <!--<Border Width="25" Height="25" CornerRadius="1" Margin="0 0 4 0" Background="{Binding BgColor}">
+                                                    <GridViewColumn Width="Auto" Header="Id">
+                                                        <GridViewColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <StackPanel Orientation="Horizontal">
+                                                                    <!--<Border Width="25" Height="25" CornerRadius="1" Margin="0 0 4 0" Background="{Binding BgColor}">
                                                                 <iconPacks:PackIconMaterial Kind="CheckboxBlank" Margin="-2 4 0 0" />
                                                             </Border>-->
 
-                                                                <TextBlock Text="{Binding Id}" VerticalAlignment="Center"/>
-                                                            </StackPanel>
-                                                        </DataTemplate>
-                                                    </GridViewColumn.CellTemplate>
-                                                </GridViewColumn>
+                                                                    <TextBlock Text="{Binding Id}" VerticalAlignment="Center"/>
+                                                                </StackPanel>
+                                                            </DataTemplate>
+                                                        </GridViewColumn.CellTemplate>
+                                                    </GridViewColumn>
 
-                                                <GridViewColumn Width="250" Header="Question Form">
-                                                    <GridViewColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <StackPanel Orientation="Horizontal">
-                                                                <Border Width="25" Height="25" CornerRadius="1" Background="{Binding BgColor}">
-                                                                    <iconPacks:PackIconMaterial Kind="FileQuestion" Margin="6 2 0 0" />
-                                                                </Border>
+                                                    <GridViewColumn Width="250" Header="Question Form">
+                                                        <GridViewColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <StackPanel Orientation="Horizontal">
+                                                                    <Border Width="25" Height="25" CornerRadius="1" Background="{Binding BgColor}">
+                                                                        <iconPacks:PackIconMaterial Kind="FileQuestion" Margin="6 2 0 0" />
+                                                                    </Border>
 
-                                                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Margin="4 -6 0 0"/>
-                                                            </StackPanel>
-                                                        </DataTemplate>
-                                                    </GridViewColumn.CellTemplate>
-                                                </GridViewColumn>
-
-
-                                                <GridViewColumn Width="200" Header="Formula">
-                                                    <GridViewColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <StackPanel Orientation="Horizontal">
-                                                                <Border Width="25" Height="25" CornerRadius="1" Margin="0 0 4 0" Background="{Binding BgColor}">
-                                                                    <iconPacks:PackIconMaterial Kind="Star" Margin="-2 4 0 0" />
-                                                                </Border>
-
-                                                                <TextBlock Text="{Binding Formula}" VerticalAlignment="Center"/>
-                                                            </StackPanel>
-                                                        </DataTemplate>
-                                                    </GridViewColumn.CellTemplate>
-                                                </GridViewColumn>
-
-                                                <GridViewColumn Width="100" Header="Target">
-                                                    <GridViewColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <StackPanel Orientation="Horizontal">
-                                                                <Border Width="25" Height="25" CornerRadius="1" Margin="0 0 4 0" Background="{Binding BgColor}">
-                                                                    <iconPacks:PackIconMaterial Kind="Target" Margin="-2 4 0 0" />
-                                                                </Border>
-
-                                                                <TextBlock Text="{Binding Target}" VerticalAlignment="Center"/>
-                                                            </StackPanel>
-                                                        </DataTemplate>
-                                                    </GridViewColumn.CellTemplate>
-                                                </GridViewColumn>
-
-                                            </GridView>
-                                        </ListView.View>
-                                </ListView>
-                            
-                    
+                                                                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Margin="4 -6 0 0"/>
+                                                                </StackPanel>
+                                                            </DataTemplate>
+                                                        </GridViewColumn.CellTemplate>
+                                                    </GridViewColumn>
 
 
+                                                    <GridViewColumn Width="200" Header="Formula">
+                                                        <GridViewColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <StackPanel Orientation="Horizontal">
+                                                                    <Border Width="25" Height="25" CornerRadius="1" Margin="0 0 4 0" Background="{Binding BgColor}">
+                                                                        <iconPacks:PackIconMaterial Kind="Star" Margin="-2 4 0 0" />
+                                                                    </Border>
+
+                                                                    <TextBlock Text="{Binding Formula}" VerticalAlignment="Center"/>
+                                                                </StackPanel>
+                                                            </DataTemplate>
+                                                        </GridViewColumn.CellTemplate>
+                                                    </GridViewColumn>
+
+                                                    <GridViewColumn Width="100" Header="Target">
+                                                        <GridViewColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <StackPanel Orientation="Horizontal">
+                                                                    <Border Width="25" Height="25" CornerRadius="1" Margin="0 0 4 0" Background="{Binding BgColor}">
+                                                                        <iconPacks:PackIconMaterial Kind="Target" Margin="-2 4 0 0" />
+                                                                    </Border>
+
+                                                                    <TextBlock Text="{Binding Target}" VerticalAlignment="Center"/>
+                                                                </StackPanel>
+                                                            </DataTemplate>
+                                                        </GridViewColumn.CellTemplate>
+                                                    </GridViewColumn>
+
+                                                </GridView>
+                                            </ListView.View>
+                                        </ListView>
+                                    </ScrollViewer>
+
+
+                              
+                            </Grid>
 
                             </GroupBox>
-                            
+
+
+
+
+
+
+
+
+
+
+
                         </telerik:RadTabItem>
                     </telerik:RadTabControl>
                 </StackPanel>

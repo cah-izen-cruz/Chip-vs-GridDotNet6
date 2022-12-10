@@ -11,6 +11,7 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="QAQuestionnaire">
+    
     <telerik:RadBusyIndicator x:Name="objBusyIndicator" Height="Auto" Width="Auto" telerik:StyleManager.Theme="Windows8">
         <Border CornerRadius="12" Background="Transparent">
             <Grid>
