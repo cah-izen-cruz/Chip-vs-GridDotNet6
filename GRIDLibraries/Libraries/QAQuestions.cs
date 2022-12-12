@@ -18,20 +18,19 @@ namespace GRIDLibraries.Libraries
     partial class GridLib
     {
 
-        public List<QAQuestionForm> MIGetQAList()
+        public List<QAQuestionForm> GetQAFormList()
         {
             var tempQAList = new List<QAQuestionForm>();
-
 
             if (this.OpenMainAHSQAConnection())
             {
                 SqlDataReader dr;
-                this.gridMainDbCommand.CommandText = "SELECT * FROM [dbo].[vQuery_QA_Questionnaire];";
+                this.gridMainDbCommand.CommandText = "SELECT [ID], [NAME], CASE [FORMULA] WHEN 1 THEN 'SUM' ELSE 'AVERAGE' END AS FORMULA, [TARGET] FROM [dbo].[tblQAForm] ORDER BY [NAME];";
 
                 dr = this.gridMainDbCommand.ExecuteReader();
 
                 while (dr.Read())
-                    tempQAList.Add(new QAQuestionForm() { LOBId = (int)dr["Id"], Name = (string)dr["Name"], QID = (int)dr["FormId"], Question = (string)dr["Question"], ObjectType = (string)dr["ObjectType"], Remarks = (string)dr["Remarks"], SelId = (int)dr["SId"], SelectionValue = (string)dr["Value"], Score = (double)dr["Score"] });
+                    tempQAList.Add(new QAQuestionForm() { LOBId = (int)dr["Id"], Name = (string)dr["Name"], Formula = (string)dr["FORMULA"], Target = Convert.ToInt32(dr["Target"]) });           
                 dr.Close();
                 this.CloseDbConnection();
             }
@@ -47,7 +46,7 @@ namespace GRIDLibraries.Libraries
 
             var da = new SqlDataAdapter();
 
-            da = new SqlDataAdapter("SELECT * FROM dbo.[tblQAForm] Order By Id;", conStringAHS_QA);
+            da = new SqlDataAdapter("SELECT Id,Name,Formula,Target FROM dbo.[tblQAForm] Order By Id;", conStringAHS_QA);
             da.SelectCommand.CommandTimeout = 1000;
             try
             {
@@ -66,7 +65,7 @@ namespace GRIDLibraries.Libraries
 
             var da = new SqlDataAdapter();
 
-            da = new SqlDataAdapter("SELECT DISTINCT Id,Name,FormId,Question,ObjectType,Description,Category FROM [dbo].[vQuery_QA_Questionnaire];", conStringAHS_QA);
+            da = new SqlDataAdapter("SELECT DISTINCT Id AS LOBId,Name,FormId,Question,ObjectType,Description,Category FROM [dbo].[vQuery_QA_Questionnaire];", conStringAHS_QA);
             da.SelectCommand.CommandTimeout = 1000;
             try
             {

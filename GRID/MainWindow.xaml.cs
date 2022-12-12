@@ -679,7 +679,7 @@ namespace GRID
 
 
 
-            TabItem1.Header = "(" + lvOpenActivities.Items.Count + ") " + " Open";
+            GroupOpen.Header = "(" + lvOpenActivities.Items.Count + ") - " + " Open";
 
         }
 
@@ -768,7 +768,7 @@ namespace GRID
 
             lvClosedActivities.ItemsSource = grd.GetPerformances(ActId, 2);
 
-            tabItem2.Header = "(" + lvClosedActivities.Items.Count + ")" + " Completed";
+            GroupCompleted.Header = "(" + lvClosedActivities.Items.Count + ") - " + " Completed";
         }
 
         #endregion
@@ -1131,8 +1131,8 @@ namespace GRID
             grd.grdData.CurrentActivity.TransDate2 = grd.grdData.CurrentUser.TransactionDate2;
             grd.grdData.TeamInfo.DBName = grd.grdData.TeamInfo.DBName;
 
-            //grd.conString = "Data Source=WPEC5009GRDRP01;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
-            grd.conString = "Data Source=DESKTOP-A0R75AD;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
+            grd.conString = "Data Source=WPEC5009GRDRP01;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
+            //grd.conString = "Data Source=DESKTOP-A0R75AD;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
 
             idleCtr = 0;
             idleTotal = 0;
@@ -1179,14 +1179,14 @@ namespace GRID
                 this.LoadOpenActivity();
                 this.LoadCompletedActivity();
 
-                if (TabCtr == 1)
-                {
-                    TabControl1.SelectedIndex = 1;
-                }
-                else
-                {
-                    TabControl1.SelectedIndex = 0;
-                }
+                //if (TabCtr == 1)
+                //{
+                //    TabControl1.SelectedIndex = 1;
+                //}
+                //else
+                //{
+                //    TabControl1.SelectedIndex = 0;
+                //}
             }
             catch (Exception ex)
             {
@@ -1252,12 +1252,12 @@ namespace GRID
             }
 
             try
-            {  
+            {
+                grd.grdData._lstQAQuestions = grd.GetQAFormList();
                 grd.grdData.QuestionForm.dtLOB = grd.GetQALob();
                 grd.grdData.QuestionForm.dtQAQuestionnaire = grd.GetQAQuestionnaires();
                 grd.grdData.QuestionForm.dtQASelection = grd.GetQASelection();
                 grd.grdData.QuestionForm.dtQAMarkdownSelection = grd.GetQAMarkdown();
-                //grd.grdData.QuestionForm.dtQAContainers = grd.GetQAContainers();
             }
             catch (Exception ex)
             {
@@ -1548,12 +1548,18 @@ namespace GRID
             Popup.IsOpen = false;
         }
 
-        private void btnCompletedRefresh_Click(object sender, RoutedEventArgs e)
+    
+
+        private void btnLogout_Click(object sender, RoutedEventArgs e)
         {
-            LoadCompletedActivity();
+
+            fContainer.Visibility = Visibility.Visible;
+            this.DashMyData.Visibility = Visibility.Collapsed;
+            this.DashMyActivities.Visibility = Visibility.Collapsed;
+            fContainer.Navigate(new Page3());
         }
 
-        private void btnCompletedRefresh_Click_1(object sender, RoutedEventArgs e)
+        private void btnCompletedRefresh_Click(object sender, RoutedEventArgs e)
         {
             LoadCompletedActivity();
         }

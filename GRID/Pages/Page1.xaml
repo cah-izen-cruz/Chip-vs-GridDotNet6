@@ -11,80 +11,73 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Page1">
 
-    <Border CornerRadius="12" Background="White">
+
         <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="40"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+        <matDes:TransitioningContent>
+            <matDes:TransitioningContent.OpeningEffects>
+                <matDes:TransitionEffect Kind="ExpandIn"/>
+            </matDes:TransitioningContent.OpeningEffects>
 
-            <StackPanel Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0 6 10 0" Height="30" Orientation="Horizontal" FlowDirection="RightToLeft">
-                <Button x:Name="btnClose" Style="{StaticResource IconButtonsStyle}" Content="{DynamicResource close}" Tag="IsCloseButton"/>
-                <!--<Button x:Name="btnRestore" Margin="5,0" Click="btnRestore_Click">
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource IconButtonsStyle}">
-                                <Setter Property="Content" Value="{DynamicResource maximize}"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=Home, Path=WindowState}" Value="Maximized">
-                                        <Setter Property="Content" Value="{DynamicResource restore}"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                    <Button x:Name="btnMinimize" Style="{DynamicResource IconButtonsStyle}" Content="{DynamicResource minimize}" Click="btnMinimize_Click"/>-->
-            </StackPanel>
+            <TabControl x:Name="MyDataMainTab" FlowDirection="RightToLeft" HorizontalContentAlignment="Left" Margin="0 -4 0 0" ScrollViewer.PanningMode="Both" Cursor="Hand">
+                <TabItem Width="160" FlowDirection="LeftToRight">
+                    <TabItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconMaterial Kind="Briefcase" VerticalAlignment="Center" Margin="0 2 10 0" Width="14" Height="14"/>
+                            <TextBlock Text="Activities" Foreground="{DynamicResource PrimaryTextColor}"/>
+                        </StackPanel>
+                    </TabItem.Header>
 
-            <telerik:RadTabControl Grid.Row="1" Name="MyDataMainTab" DisplayMemberPath="Content" DropDownDisplayMode="Visible" ScrollMode="Viewport" FlowDirection="RightToLeft" Panel.ZIndex="1" BorderBrush="{DynamicResource PrimaryTextColor}" BorderThickness="0" Background="Transparent">
-                <telerik:RadTabControl.Items>
+                    <TabControl HorizontalContentAlignment="Left">
+                        <TabItem Width="160">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:PackIconMaterial Kind="ClockAlert" VerticalAlignment="Center" Margin="0 2 10 0" Width="18" Height="18"/>
+                                    <TextBlock Text="Open" Foreground="{DynamicResource PrimaryTextColor}"/>
+                                </StackPanel>
+                            </TabItem.Header>
 
-                    <telerik:RadTabItem Header="Activities" x:Name="MaintabActivities" IsSelected="True" FlowDirection="RightToLeft"  Width="120" Height="30">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="40"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="10"/>
+                                </Grid.RowDefinitions>
 
-                        <telerik:RadTabControl FlowDirection="LeftToRight" Name="TabControl1" Width="Auto" Background="Transparent" HeaderBackground="Transparent" BorderThickness="0" Height="Auto">
-                            
-                            <telerik:RadTabItem Header="Open" Name="TabItem1" Width="110" Height="30" IsSelected="True">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="40"/>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="10"/>
-                                    </Grid.RowDefinitions>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
 
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-
-                                        <ComboBox x:Name="cmbOpenActName" Padding="8"
+                                    <ComboBox x:Name="cmbOpenActName" Padding="8"
                                                     ItemsSource="{Binding Items}"
                                                     matDes:HintAssist.Hint="Choose Activity"
                                                     HorizontalAlignment="Stretch"   
-                                                    BorderBrush="Gray" BorderThickness="1"                           
-                                                    Width="250"
-                                                    Foreground="Black"
+                                                    BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="1"
+                                                    Foreground="{DynamicResource PrimaryTextColor}"                          
+                                                    Width="250"               
                                                     IsEditable="False"
                                                     ToolTip="Choose Activity" DisplayMemberPath="ActName" SelectedValuePath="Id" Margin="0 4 0 0"/>
 
-                                        <Button x:Name="btnOpenRefresh" Style="{StaticResource addButton}" Margin="6 4 24 0">
-                                            <StackPanel Orientation="Horizontal">
-                                                <iconPacks:PackIconMaterial Kind="Refresh" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
-                                                <TextBlock Text="Refresh"/>
-                                            </StackPanel>
-                                        </Button>
+                                    <Button x:Name="btnOpenRefresh" Style="{StaticResource addButton}" Margin="6 4 24 0">
+                                        <StackPanel Orientation="Horizontal">
+                                            <iconPacks:PackIconMaterial Kind="Refresh" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                                            <TextBlock Text="Refresh"/>
+                                        </StackPanel>
+                                    </Button>
 
-                                    </StackPanel>
+                                </StackPanel>
 
-
-                                    <ScrollViewer Grid.Row="1">
-                                         <ListView x:Name="lvOpenActivities" IsSynchronizedWithCurrentItem="True" Margin="4 4 10 0">
+                                <GroupBox Header="Total" Grid.Row="1" Margin="0 8 4 4" matDes:ShadowAssist.ShadowDepth="Depth5">
+                                    <ScrollViewer>
+                                        <ListView x:Name="lvOpenActivities" IsSynchronizedWithCurrentItem="True">
                                             <ListView.View>
                                                 <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
                                                     <GridView.Columns>
-                                                        <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}" Width="80"/>
-                                                        <GridViewColumn Header="Description" DisplayMemberBinding="{Binding Path=Activity.ActName}" Width="200"/>
-                                                        <GridViewColumn Header="Type" DisplayMemberBinding="{Binding Path=Activity.Type}" Width="80"/>
-                                                        <GridViewColumn Header="Process" DisplayMemberBinding="{Binding Path=Activity.Process}" Width="100"/>
-                                                        <GridViewColumn Header="Time Started" DisplayMemberBinding="{Binding TimeStart}" Width="100"/>
-                                                        <GridViewColumn Header="Time Ended" DisplayMemberBinding="{Binding TimeEnd}" Width="100"/>
-                                                        <GridViewColumn Header="Duration" DisplayMemberBinding="{Binding TimeElapsed}" Width="100"/>
-                                                        <GridViewColumn Header="Ref No." DisplayMemberBinding="{Binding ReferenceId}" Width="80"/>
+                                                        <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}" Width="0"/>
+                                                        <GridViewColumn Header="DESCRIPTION" DisplayMemberBinding="{Binding Path=Activity.ActName}" Width="200"/>
+                                                        <GridViewColumn Header="TYPE" DisplayMemberBinding="{Binding Path=Activity.Type}" Width="80"/>
+                                                        <GridViewColumn Header="PROCESS" DisplayMemberBinding="{Binding Path=Activity.Process}" Width="100"/>
+                                                        <GridViewColumn Header="TIME STARTED" DisplayMemberBinding="{Binding TimeStart}" Width="100"/>
+                                                        <GridViewColumn Header="TIME ENDED" DisplayMemberBinding="{Binding TimeEnd}" Width="100"/>
+                                                        <GridViewColumn Header="DURATION" DisplayMemberBinding="{Binding TimeElapsed}" Width="100"/>
+                                                        <GridViewColumn Header="REF NO." DisplayMemberBinding="{Binding ReferenceId}" Width="80"/>
                                                     </GridView.Columns>
                                                 </GridView>
                                             </ListView.View>
@@ -92,95 +85,256 @@
 
 
                                     </ScrollViewer>
+                                </GroupBox>
 
-                                
-                                </Grid>
-                            </telerik:RadTabItem>
 
-                            <telerik:RadTabItem IsSelected="True" Header="Completed" x:Name="tabItem2" Width="110" Height="30">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="40"/>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="10"/>
-                                    </Grid.RowDefinitions>
 
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            </Grid>
+                        </TabItem>
 
-                                        <ComboBox x:Name="cmbCompletedActName" Padding="8"
+                        <TabItem Width="160">
+                                <TabItem.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <iconPacks:PackIconMaterial Kind="ClockCheck" VerticalAlignment="Center" Margin="0 2 10 0" Width="18" Height="18"/>
+                                        <TextBlock Text="Completed" Foreground="{DynamicResource PrimaryTextColor}"/>
+                                    </StackPanel>
+                                </TabItem.Header>
+
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="40"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="10"/>
+                                </Grid.RowDefinitions>
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+
+                                    <ComboBox x:Name="cmbCompletedActName" Padding="8"
                                                     ItemsSource="{Binding Items}"
                                                     matDes:HintAssist.Hint="Choose Activity"
                                                     HorizontalAlignment="Stretch"   
-                                                    BorderBrush="Gray" BorderThickness="1"                           
+                                                    BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="1"
+                                                    Foreground="{DynamicResource PrimaryTextColor}"                           
                                                     Width="250"
-                                                    Foreground="Black"
                                                     IsEditable="False"
                                                     ToolTip="Choose Activity" DisplayMemberPath="ActName" SelectedValuePath="Id" Margin="0 4 0 0"/>
 
-                                        <Button x:Name="btnCompletedRefresh" Style="{StaticResource addButton}" Margin="6 4 24 0">
-                                            <StackPanel Orientation="Horizontal">
-                                                <iconPacks:PackIconMaterial Kind="Refresh" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
-                                                <TextBlock Text="Refresh"/>
-                                            </StackPanel>
-                                        </Button>
+                                    <Button x:Name="btnCompletedRefresh" Style="{StaticResource addButton}" Margin="6 4 24 0">
+                                        <StackPanel Orientation="Horizontal">
+                                            <iconPacks:PackIconMaterial Kind="Refresh" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                                            <TextBlock Text="Refresh"/>
+                                        </StackPanel>
+                                    </Button>
 
-                                    </StackPanel>
+                                </StackPanel>
 
-                                    <ScrollViewer Grid.Row="1">
-                                        <ListView x:Name="lvClosedActivities" IsSynchronizedWithCurrentItem="True" Margin="4 2 10 0">
+                                <GroupBox Header="Total" Grid.Row="1" Margin="0 8 4 4" matDes:ShadowAssist.ShadowDepth="Depth5">
+                                    <ScrollViewer>
+                                        <ListView x:Name="lvClosedActivities" IsSynchronizedWithCurrentItem="True">
                                             <ListView.View>
                                                 <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
                                                     <GridView.Columns>
-                                                        <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}" Width="80"/>
-                                                        <GridViewColumn Header="Description" DisplayMemberBinding="{Binding Activity.ActName}" Width="200"/>
-                                                        <GridViewColumn Header="Type" DisplayMemberBinding="{Binding Activity.Type}" Width="80"/>
-                                                        <GridViewColumn Header="Process" DisplayMemberBinding="{Binding Activity.Process}" Width="100"/>
-                                                        <GridViewColumn Header="Time Started" DisplayMemberBinding="{Binding TimeStart}" Width="100"/>
-                                                        <GridViewColumn Header="Time Ended" DisplayMemberBinding="{Binding TimeEnd}" Width="100"/>
-                                                        <GridViewColumn Header="Duration" DisplayMemberBinding="{Binding TimeElapsed}" Width="100"/>
-                                                        <GridViewColumn Header="Ref No." DisplayMemberBinding="{Binding ReferenceId}" Width="80"/>
+                                                        <GridViewColumn Header="ID" DisplayMemberBinding="{Binding Id}" Width="0"/>
+                                                        <GridViewColumn Header="DESCRIPTION" DisplayMemberBinding="{Binding Activity.ActName}" Width="200"/>
+                                                        <GridViewColumn Header="TYPE" DisplayMemberBinding="{Binding Activity.Type}" Width="80"/>
+                                                        <GridViewColumn Header="PROCESS" DisplayMemberBinding="{Binding Activity.Process}" Width="100"/>
+                                                        <GridViewColumn Header="TIME STARTED" DisplayMemberBinding="{Binding TimeStart}" Width="100"/>
+                                                        <GridViewColumn Header="TIME ENDED" DisplayMemberBinding="{Binding TimeEnd}" Width="100"/>
+                                                        <GridViewColumn Header="DURATION" DisplayMemberBinding="{Binding TimeElapsed}" Width="100"/>
+                                                        <GridViewColumn Header="REF NO." DisplayMemberBinding="{Binding ReferenceId}" Width="80"/>
                                                     </GridView.Columns>
                                                 </GridView>
                                             </ListView.View>
                                         </ListView>
                                     </ScrollViewer>
-                                    
-                                 
-                                </Grid>
-                            </telerik:RadTabItem>
-                        </telerik:RadTabControl>
-                    </telerik:RadTabItem>
+                                </GroupBox>
 
-                    <telerik:RadTabItem IsSelected="True" Header="Graph" x:Name="MaintabGraph"  FlowDirection="RightToLeft" Width="120" Height="30">
+                              
 
 
-                        <Border Background="Transparent" CornerRadius="15" FlowDirection="LeftToRight" Height="Auto" Width="600" HorizontalAlignment="Right">
-                            <!--<lvc:PieChart LegendLocation="Right" Series="{Binding seriesCollection}"                        
-                                                    Hoverable="True" InnerRadius="130" 
-                                                     Cursor="Hand">
-
-                                <lvc:PieChart.ChartLegend>
-                                    <lvc:DefaultLegend BulletSize="20" TextBlock.FontSize="24" 
-                                                                TextBlock.Foreground="{DynamicResource PrimaryTextColor}"  />
-                                </lvc:PieChart.ChartLegend>
-                                <lvc:PieChart.DataTooltip>
-                                    <lvc:DefaultTooltip BulletSize="20"/>
-                                </lvc:PieChart.DataTooltip>
-                            </lvc:PieChart>-->
-                        </Border>
+                            </Grid>
+                        </TabItem>
 
 
+                      
+                    </TabControl>
+
+                
+
+
+                </TabItem>
+                
+                
+
+                <TabItem Width="160" FlowDirection="LeftToRight">
+                    <TabItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconMaterial Kind="GraphOutline" VerticalAlignment="Center" Margin="0 2 10 0" Width="14" Height="14"/>
+                            <TextBlock Text="Graph" Foreground="{DynamicResource PrimaryTextColor}"/>
+                        </StackPanel>
+                    </TabItem.Header>
+                </TabItem>
+                
+            </TabControl>
 
 
 
+            <!--<TabControl x:Name="ActivityMainTab" HorizontalContentAlignment="Left" Margin="0 -4 0 0" ScrollViewer.PanningMode="Both" Cursor="Hand">
 
-                    </telerik:RadTabItem>
+                <TabItem Width="160">
+                    <TabItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconMaterial Kind="BookmarkCheck" VerticalAlignment="Center" Margin="0 2 10 0" Width="14" Height="14"/>
+                            <TextBlock Text="My Favorites" Foreground="{DynamicResource PrimaryTextColor}"/>
+                        </StackPanel>
+                    </TabItem.Header>
+
+                    <GroupBox Header="Select Process" Margin="0 8 4 8" matDes:ShadowAssist.ShadowDepth="Depth5">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="35"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Orientation="Horizontal" Grid.Row="0">
+
+                                <telerik:RadComboBox Name="cmbProcess"  Width="200" Height="23" BorderBrush="White" BorderThickness=".5" telerik:StyleManager.Theme="Office" FontSize="12" SelectionChanged="cmbProcess_SelectionChanged"/>
+                                <Button Name="cmdMyFilter" BorderThickness="0" Style="{StaticResource AddButtonQForm}" Margin="6 0 0 0" Click="cmdMyFilter_Click">
+                                    <StackPanel Orientation="Horizontal">
+                                        <iconPacks:PackIconMaterial Kind="FilterOff" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                                        <TextBlock Text="Clear Filter"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Name="btnDeleteFromFav" BorderThickness="0" Style="{StaticResource AddButtonQForm}" Margin="6 0 0 0" Click="btnDeleteFromFav_Click">
+                                    <StackPanel Orientation="Horizontal">
+                                        <iconPacks:PackIconMaterial Kind="Delete" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                                        <TextBlock Text="Delete"/>
+                                    </StackPanel>
+                                </Button>
+
+                            </StackPanel>
+
+                            <ScrollViewer Grid.Row="1" Margin="0 6 0 0">
+
+                                <ListView Name="lvMyActivities" ItemsSource="{Binding}" Cursor="Hand" MouseDoubleClick="lvMyActivities_MouseDoubleClick">
+                                    <ListView.View>
+                                        <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
+                                            <GridView.Columns>
+                                                <GridViewColumn Header="ID" DisplayMemberBinding="{Binding Id}" Width="0"/>
+                                                <GridViewColumn Header="NAME" DisplayMemberBinding="{Binding ActName}" Width="300"/>
+                                                <GridViewColumn Header="TYPE" DisplayMemberBinding="{Binding Type}" Width="100"/>
+                                                <GridViewColumn Header="AHT" DisplayMemberBinding="{Binding AHT}" Width="100"/>
+                                                <GridViewColumn Header="PROCESS" DisplayMemberBinding="{Binding Process}" Width="150"/>
+                                            </GridView.Columns>
+                                        </GridView>
+                                    </ListView.View>
+                                </ListView>
+
+                            </ScrollViewer>
 
 
-                </telerik:RadTabControl.Items>
-            </telerik:RadTabControl>
 
-        </Grid>
+                        </Grid>
+                    </GroupBox>
+
+                </TabItem>
+
+                <TabItem  Width="160">
+                    <TabItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconMaterial Kind="Briefcase" VerticalAlignment="Center" Margin="0 2 10 0" Width="14" Height="14"/>
+                            <TextBlock Text="My Activity" Foreground="{DynamicResource PrimaryTextColor}"/>
+                        </StackPanel>
+                    </TabItem.Header>
+
+                    <GroupBox Header="Select Process" Margin="0 8 4 8" matDes:ShadowAssist.ShadowDepth="Depth5">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="35"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Orientation="Horizontal" Grid.Row="0">
+                                <telerik:RadComboBox Name="cmbProcessProd" Height="23" Width="200" BorderBrush="White" BorderThickness=".5" FontSize="12" SelectionChanged="cmbProcessProd_SelectionChanged"/>
+
+                                <Button Name="btnClearFilterProd" BorderThickness="0" Style="{StaticResource AddButtonQForm}" Margin="6 0 0 0" Click="btnClearFilterProd_Click">
+                                    <StackPanel Orientation="Horizontal">
+                                        <iconPacks:PackIconMaterial Kind="FilterOff" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                                        <TextBlock Text="Clear Filter"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Name="btnProductivityAddtoFav" BorderThickness="0" Style="{StaticResource AddButtonQForm}" Margin="6 0 0 0" Click="btnProductivityAddtoFav_Click">
+                                    <StackPanel Orientation="Horizontal">
+                                        <iconPacks:PackIconMaterial Kind="Plus" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                                        <TextBlock Text="Favorites"/>
+                                    </StackPanel>
+                                </Button>
+
+                            </StackPanel>
+
+                            <ScrollViewer Grid.Row="1" Margin="0 6 0 0">
+                                <ListView ItemsSource="{Binding}" Name="lvProductivity" Cursor="Hand" MouseDoubleClick="GvProductivity_MouseDoubleClick">
+                                    <ListView.View>
+                                        <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
+                                            <GridView.Columns>
+                                                <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}" Width="0"/>
+                                                <GridViewColumn Header="NAME" DisplayMemberBinding="{Binding ActName}" Width="300"/>
+                                                <GridViewColumn Header="TYPE" DisplayMemberBinding="{Binding Type}" Width="100"/>
+                                                <GridViewColumn Header="AHT" DisplayMemberBinding="{Binding AHT}" Width="100"/>
+                                                <GridViewColumn Header="PROCESS" DisplayMemberBinding="{Binding Process}" Width="150"/>
+                                            </GridView.Columns>
+                                        </GridView>
+                                    </ListView.View>
+                                </ListView>
+                            </ScrollViewer>
+
+
+                        </Grid>
+                    </GroupBox>
+
+                </TabItem>
+
+                <TabItem x:Name="TabQA" Width="160">
+                    <TabItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconMaterial Kind="CloudQuestion" VerticalAlignment="Center" Margin="0 2 10 0" Width="16" Height="16"/>
+                            <TextBlock Text="QA Question" Foreground="{DynamicResource PrimaryTextColor}"/>
+                        </StackPanel>
+                    </TabItem.Header>
+
+                    <GroupBox Header="Double Click an Item to Start" Margin="0 8 4 4" matDes:ShadowAssist.ShadowDepth="Depth5">
+
+                        <ScrollViewer>
+                            <ListView ItemsSource="{Binding}" Name="lstQAForm" Cursor="Hand" ScrollViewer.HorizontalScrollBarVisibility="Visible" MouseDoubleClick="lstQAForm_MouseDoubleClick">
+                                <ListView.View>
+                                    <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
+                                        <GridView.Columns>
+                                            <GridViewColumn Header="Id" DisplayMemberBinding="{Binding LOBId}" Width="0"/>
+                                            <GridViewColumn Header="FORM NAME" DisplayMemberBinding="{Binding Name}" Width="500"/>
+                                            <GridViewColumn Header="FORMULA" DisplayMemberBinding="{Binding Formula}" Width="150"/>
+                                            <GridViewColumn Header="TARGET" DisplayMemberBinding="{Binding Target}" Width="150"/>
+                                        </GridView.Columns>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </ScrollViewer>
+
+                    </GroupBox>
+
+                </TabItem>
+
+            </TabControl>-->
+        
+        
+        
+        
+        
+        
+        </matDes:TransitioningContent>
+
+    </Grid>
       
-    </Border>
+  
 </Page>

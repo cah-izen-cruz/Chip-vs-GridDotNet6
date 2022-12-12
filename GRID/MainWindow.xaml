@@ -15,11 +15,10 @@
         Loaded="Home_Loaded">
 
     <Window.Resources>
-        <ImageBrush x:Key="tb_mouse_over"
-                    ImageSource="Resources/HamNav.png"/>
+       
+        <ImageBrush x:Key="tb_mouse_over" ImageSource="Resources/HamNav.png"/>
 
         <Style x:Key="tb_style" TargetType="{x:Type ToggleButton}">
-
             <Setter Property="Template">
 
                 <Setter.Value>
@@ -66,10 +65,13 @@
                 </Setter.Value>
 
             </Setter>
-
         </Style>
+
+     
+
     </Window.Resources>
 
+    
     <telerik:RadBusyIndicator Name="BusyIndicator" IsBusy="False" Visibility="Visible"  Width="Auto" Height="Auto"  BusyContent="Setting up Resources. Please wait..."    telerik:StyleManager.Theme="Windows8">
         <Border Name="Main" CornerRadius="12" Background="{DynamicResource PrimaryBackgroundColor}"> 
 
@@ -80,8 +82,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50"/>
                     <RowDefinition Height="50"/>
-                    <RowDefinition/>
-
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -112,36 +113,29 @@
                 <!-- My Data -->
                 <Border CornerRadius="10" Grid.Column="2" Grid.Row="1" Grid.RowSpan="2" x:Name="DashMyData" Background="Transparent" BorderBrush="Gray" BorderThickness="0" Visibility="Visible" Margin="10 0 10 0">
                     <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="40"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
+                        <matDes:TransitioningContent>
+                            <matDes:TransitioningContent.OpeningEffects>
+                                <matDes:TransitionEffect Kind="ExpandIn"/>
+                            </matDes:TransitioningContent.OpeningEffects>
 
-                        <StackPanel Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0 6 10 0" Height="30" Orientation="Horizontal" FlowDirection="RightToLeft">
-                            <Button x:Name="btnClose1" Style="{StaticResource IconButtonsStyle}" Content="{DynamicResource close}" Tag="IsCloseButton"/>
-                            <!--<Button x:Name="btnRestore" Margin="5,0" Click="btnRestore_Click">
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource IconButtonsStyle}">
-                                <Setter Property="Content" Value="{DynamicResource maximize}"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=Home, Path=WindowState}" Value="Maximized">
-                                        <Setter Property="Content" Value="{DynamicResource restore}"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                    <Button x:Name="btnMinimize" Style="{DynamicResource IconButtonsStyle}" Content="{DynamicResource minimize}" Click="btnMinimize_Click"/>-->
-                        </StackPanel>
+                            <TabControl x:Name="MyDataMainTab" FlowDirection="RightToLeft" HorizontalContentAlignment="Left" Margin="0 -4 0 0" ScrollViewer.PanningMode="Both" Cursor="Hand">
+                                <TabItem Width="160" FlowDirection="LeftToRight">
+                                    <TabItem.Header>
+                                        <StackPanel Orientation="Horizontal">
+                                            <iconPacks:PackIconMaterial Kind="Briefcase" VerticalAlignment="Center" Margin="0 2 10 0" Width="14" Height="14"/>
+                                            <TextBlock Text="Activities" Foreground="{DynamicResource PrimaryTextColor}"/>
+                                        </StackPanel>
+                                    </TabItem.Header>
 
-                        <telerik:RadTabControl Grid.Row="1" Name="MyDataMainTab" DisplayMemberPath="Content" DropDownDisplayMode="Visible" ScrollMode="Viewport" FlowDirection="RightToLeft" Panel.ZIndex="1" BorderBrush="{DynamicResource PrimaryTextColor}" BorderThickness="0" Background="Transparent">
-                            <telerik:RadTabControl.Items>
+                                    <TabControl HorizontalContentAlignment="Left">
+                                        <TabItem x:Name="MDTabOpen" Width="160">
+                                            <TabItem.Header>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <iconPacks:PackIconMaterial Kind="ClockAlert" VerticalAlignment="Center" Margin="0 2 10 0" Width="18" Height="18"/>
+                                                    <TextBlock Text="Open" Foreground="{DynamicResource PrimaryTextColor}"/>
+                                                </StackPanel>
+                                            </TabItem.Header>
 
-                                <telerik:RadTabItem Header="Activities" x:Name="MaintabActivities" IsSelected="True" FlowDirection="RightToLeft"  Width="120" Height="30">
-
-                                    <telerik:RadTabControl FlowDirection="LeftToRight" Name="TabControl1" Width="Auto" Background="Transparent" HeaderBackground="Transparent" BorderThickness="0" Height="Auto">
-
-                                        <telerik:RadTabItem Header="Open" Name="TabItem1" Width="110" Height="30" IsSelected="True">
                                             <Grid>
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="40"/>
@@ -155,9 +149,9 @@
                                                     ItemsSource="{Binding Items}"
                                                     matDes:HintAssist.Hint="Choose Activity"
                                                     HorizontalAlignment="Stretch"   
-                                                    BorderBrush="Gray" BorderThickness="1"                           
-                                                    Width="250"
-                                                    Foreground="Black"
+                                                    BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="1"
+                                                    Foreground="{DynamicResource PrimaryTextColor}"                          
+                                                    Width="250"               
                                                     IsEditable="False"
                                                     ToolTip="Choose Activity" DisplayMemberPath="ActName" SelectedValuePath="Id" Margin="0 4 0 0"/>
 
@@ -170,33 +164,42 @@
 
                                                 </StackPanel>
 
+                                                <GroupBox x:Name="GroupOpen" Grid.Row="1" Margin="0 8 4 4" matDes:ShadowAssist.ShadowDepth="Depth5">
+                                                    <ScrollViewer>
+                                                        <ListView x:Name="lvOpenActivities" IsSynchronizedWithCurrentItem="True">
+                                                            <ListView.View>
+                                                                <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
+                                                                    <GridView.Columns>
+                                                                        <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}" Width="0"/>
+                                                                        <GridViewColumn Header="DESCRIPTION" DisplayMemberBinding="{Binding Path=Activity.ActName}" Width="200"/>
+                                                                        <GridViewColumn Header="TYPE" DisplayMemberBinding="{Binding Path=Activity.Type}" Width="80"/>
+                                                                        <GridViewColumn Header="PROCESS" DisplayMemberBinding="{Binding Path=Activity.Process}" Width="100"/>
+                                                                        <GridViewColumn Header="TIME STARTED" DisplayMemberBinding="{Binding TimeStart}" Width="100"/>
+                                                                        <GridViewColumn Header="TIME ENDED" DisplayMemberBinding="{Binding TimeEnd}" Width="100"/>
+                                                                        <GridViewColumn Header="DURATION" DisplayMemberBinding="{Binding TimeElapsed}" Width="100"/>
+                                                                        <GridViewColumn Header="REF NO." DisplayMemberBinding="{Binding ReferenceId}" Width="80"/>
+                                                                    </GridView.Columns>
+                                                                </GridView>
+                                                            </ListView.View>
+                                                        </ListView>
 
-                                                <ScrollViewer Grid.Row="1">
-                                                    <ListView x:Name="lvOpenActivities" IsSynchronizedWithCurrentItem="True" Margin="4 2 10 0">
-                                                        <ListView.View>
-                                                            <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
-                                                                <GridView.Columns>
-                                                                    <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}" Width="80"/>
-                                                                    <GridViewColumn Header="Description" DisplayMemberBinding="{Binding Path=Activity.ActName}" Width="200"/>
-                                                                    <GridViewColumn Header="Type" DisplayMemberBinding="{Binding Path=Activity.Type}" Width="80"/>
-                                                                    <GridViewColumn Header="Process" DisplayMemberBinding="{Binding Path=Activity.Process}" Width="100"/>
-                                                                    <GridViewColumn Header="Time Started" DisplayMemberBinding="{Binding TimeStart}" Width="100"/>
-                                                                    <GridViewColumn Header="Time Ended" DisplayMemberBinding="{Binding TimeEnd}" Width="100"/>
-                                                                    <GridViewColumn Header="Duration" DisplayMemberBinding="{Binding TimeElapsed}" Width="100"/>
-                                                                    <GridViewColumn Header="Ref No." DisplayMemberBinding="{Binding ReferenceId}" Width="80"/>
-                                                                </GridView.Columns>
-                                                            </GridView>
-                                                        </ListView.View>
-                                                    </ListView>
 
+                                                    </ScrollViewer>
+                                                </GroupBox>
 
-                                                </ScrollViewer>
 
 
                                             </Grid>
-                                        </telerik:RadTabItem>
+                                        </TabItem>
 
-                                        <telerik:RadTabItem IsSelected="True" Header="Completed" x:Name="tabItem2" Width="110" Height="30">
+                                        <TabItem x:Name="MDTabCompleted" Width="160">
+                                            <TabItem.Header>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <iconPacks:PackIconMaterial Kind="ClockCheck" VerticalAlignment="Center" Margin="0 2 10 0" Width="18" Height="18"/>
+                                                    <TextBlock Text="Completed" Foreground="{DynamicResource PrimaryTextColor}"/>
+                                                </StackPanel>
+                                            </TabItem.Header>
+
                                             <Grid>
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="40"/>
@@ -207,16 +210,16 @@
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
 
                                                     <ComboBox x:Name="cmbCompletedActName" Padding="8"
-                                                    ItemsSource="{Binding Items}"
-                                                    matDes:HintAssist.Hint="Choose Activity"
-                                                    HorizontalAlignment="Stretch"   
-                                                    BorderBrush="Gray" BorderThickness="1"                           
-                                                    Width="250"
-                                                    Foreground="Black"
-                                                    IsEditable="False"
-                                                    ToolTip="Choose Activity" DisplayMemberPath="ActName" SelectedValuePath="Id" Margin="0 4 0 0"/>
+                                                                    ItemsSource="{Binding Items}"
+                                                                    matDes:HintAssist.Hint="Choose Activity"
+                                                                    HorizontalAlignment="Stretch"   
+                                                                    BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="1"
+                                                                    Foreground="{DynamicResource PrimaryTextColor}"                           
+                                                                    Width="250"
+                                                                    IsEditable="False"
+                                                                    ToolTip="Choose Activity" DisplayMemberPath="ActName" SelectedValuePath="Id" Margin="0 4 0 0"/>
 
-                                                    <Button x:Name="btnCompletedRefresh" Style="{StaticResource addButton}" Margin="6 4 24 0" Click="btnCompletedRefresh_Click_1">
+                                                    <Button x:Name="btnCompletedRefresh" Style="{StaticResource addButton}" Margin="6 4 24 0" Click="btnCompletedRefresh_Click">
                                                         <StackPanel Orientation="Horizontal">
                                                             <iconPacks:PackIconMaterial Kind="Refresh" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
                                                             <TextBlock Text="Refresh"/>
@@ -225,60 +228,45 @@
 
                                                 </StackPanel>
 
-                                                <ScrollViewer Grid.Row="1">
-                                                    <ListView x:Name="lvClosedActivities" IsSynchronizedWithCurrentItem="True" Margin="4 2 10 0">
-                                                        <ListView.View>
-                                                            <GridView x:Name="GvCompleted">
-                                                                <!--<GridView.ColumnHeaderContainerStyle>
-                                                                    <Style TargetType="{x:Type GridViewColumnHeader}">
-                                                                        --><!-- Set any properties you want to set --><!--
-                                                                        <Setter Property="Height" Value="30" />
-                                                                        <Setter Property="Background" Value="DarkBlue" />
-                                                                        <Setter Property="Foreground" Value="White" />
-                                                                        <Setter Property="FontWeight" Value="Bold" />
-                                                                    </Style>
-                                                                </GridView.ColumnHeaderContainerStyle>-->
-                                                                <GridView.Columns>
-                                                                    <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}" Width="80"/>
-                                                                    <GridViewColumn Header="Description" DisplayMemberBinding="{Binding Activity.ActName}" Width="200"/>
-                                                                    <GridViewColumn Header="Type" DisplayMemberBinding="{Binding Activity.Type}" Width="80"/>
-                                                                    <GridViewColumn Header="Process" DisplayMemberBinding="{Binding Activity.Process}" Width="100"/>
-                                                                    <GridViewColumn Header="Time Started" DisplayMemberBinding="{Binding TimeStart}" Width="100"/>
-                                                                    <GridViewColumn Header="Time Ended" DisplayMemberBinding="{Binding TimeEnd}" Width="100"/>
-                                                                    <GridViewColumn Header="Duration" DisplayMemberBinding="{Binding TimeElapsed}" Width="100"/>
-                                                                    <GridViewColumn Header="Ref No." DisplayMemberBinding="{Binding ReferenceId}" Width="80"/>
-                                                                </GridView.Columns>
-                                                            </GridView>
-                                                        </ListView.View>
-                                                    </ListView>
-                                                </ScrollViewer>
-
+                                                <GroupBox x:Name="GroupCompleted" Grid.Row="1" Margin="0 8 4 4" matDes:ShadowAssist.ShadowDepth="Depth5">
+                                                    <ScrollViewer>
+                                                        <ListView x:Name="lvClosedActivities" IsSynchronizedWithCurrentItem="True">
+                                                            <ListView.View>
+                                                                <GridView x:Name="GvCompleted" ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
+                                                                    <GridView.Columns>
+                                                                        <GridViewColumn Header="ID" DisplayMemberBinding="{Binding Id}" Width="0"/>
+                                                                        <GridViewColumn Header="DESCRIPTION" DisplayMemberBinding="{Binding Activity.ActName}" Width="200"/>
+                                                                        <GridViewColumn Header="TYPE" DisplayMemberBinding="{Binding Activity.Type}" Width="80"/>
+                                                                        <GridViewColumn Header="PROCESS" DisplayMemberBinding="{Binding Activity.Process}" Width="100"/>
+                                                                        <GridViewColumn Header="TIME STARTED" DisplayMemberBinding="{Binding TimeStart}" Width="100"/>
+                                                                        <GridViewColumn Header="TIME ENDED" DisplayMemberBinding="{Binding TimeEnd}" Width="100"/>
+                                                                        <GridViewColumn Header="DURATION" DisplayMemberBinding="{Binding TimeElapsed}" Width="100"/>
+                                                                        <GridViewColumn Header="REF NO." DisplayMemberBinding="{Binding ReferenceId}" Width="80"/>
+                                                                    </GridView.Columns>
+                                                                </GridView>
+                                                            </ListView.View>
+                                                        </ListView>
+                                                    </ScrollViewer>
+                                                </GroupBox>
 
                                             </Grid>
-                                        </telerik:RadTabItem>
-                                    </telerik:RadTabControl>
-                                </telerik:RadTabItem>
+                                        </TabItem>
 
-                                <telerik:RadTabItem IsSelected="True" Header="Graph" x:Name="MaintabGraph"  FlowDirection="RightToLeft" Width="120" Height="30">
+                                    </TabControl>
+                                </TabItem>
 
 
-                                    <Border Background="Transparent" CornerRadius="15" FlowDirection="LeftToRight" Height="Auto" Width="600" HorizontalAlignment="Right">
-                                        <!--<lvc:PieChart LegendLocation="Right" Series="{Binding seriesCollection}"                        
-                                                    Hoverable="True" InnerRadius="130" 
-                                                     Cursor="Hand">
+                                <TabItem Width="160" FlowDirection="LeftToRight">
+                                    <TabItem.Header>
+                                        <StackPanel Orientation="Horizontal">
+                                            <iconPacks:PackIconMaterial Kind="GraphOutline" VerticalAlignment="Center" Margin="0 2 10 0" Width="14" Height="14"/>
+                                            <TextBlock Text="Graph" Foreground="{DynamicResource PrimaryTextColor}"/>
+                                        </StackPanel>
+                                    </TabItem.Header>
+                                </TabItem>
 
-                                <lvc:PieChart.ChartLegend>
-                                    <lvc:DefaultLegend BulletSize="20" TextBlock.FontSize="24" 
-                                                                TextBlock.Foreground="{DynamicResource PrimaryTextColor}"  />
-                                </lvc:PieChart.ChartLegend>
-                                <lvc:PieChart.DataTooltip>
-                                    <lvc:DefaultTooltip BulletSize="20"/>
-                                </lvc:PieChart.DataTooltip>
-                            </lvc:PieChart>-->
-                                    </Border>
-                                </telerik:RadTabItem>
-                           </telerik:RadTabControl.Items>
-                        </telerik:RadTabControl>
+                            </TabControl>
+                        </matDes:TransitioningContent>
 
                     </Grid>
 
@@ -345,17 +333,9 @@
                                     </StackPanel>
                                 </Border>
 
-
-
                             </Grid>
-
                         </Grid>
-
-
                     </Grid>
-
-
-
 
                 </Border>
                 <!-- End Dash My Activities-->
@@ -428,7 +408,7 @@
                             <RadioButton x:Name="btnMyData" Content="My Data" Style="{DynamicResource MenuRadioButtonStyle}" Tag="{DynamicResource MyData}" Margin="0 10 0 1" Cursor="Hand" MouseEnter="btnMyData_MouseEnter" MouseLeave="btnMyData_MouseLeave" Click="btnMyData_Click"/>
                             <RadioButton x:Name="btnMyActivities" Content="My Activities" Style="{DynamicResource MenuRadioButtonStyle}" Tag="{DynamicResource MyActivities}" Margin="0 1 0 1" Cursor="Hand" MouseEnter="btnMyActivities_MouseEnter" MouseLeave="btnMyActivities_MouseLeave" Click="btnMyActivities_Click"/>
                             <RadioButton x:Name="btnBreak" Content="Take A Break!" Style="{DynamicResource MenuRadioButtonStyle}" Tag="{DynamicResource Break}" Margin="0 1 0 1" Cursor="Hand" MouseEnter="btnBreak_MouseEnter" MouseLeave="btnBreak_MouseLeave" Click="btnBreak_Click"/>
-                            <RadioButton x:Name="btnLogout" Content="Until Next Time!" Style="{DynamicResource MenuRadioButtonStyle}" Tag="{DynamicResource Bye}" Margin="0 1 0 1" Cursor="Hand" MouseEnter="btnLogout_MouseEnter" MouseLeave="btnLogout_MouseLeave"/>
+                            <RadioButton x:Name="btnLogout" Content="Until Next Time!" Style="{DynamicResource MenuRadioButtonStyle}" Tag="{DynamicResource Bye}" Margin="0 1 0 1" Cursor="Hand" MouseEnter="btnLogout_MouseEnter" MouseLeave="btnLogout_MouseLeave" Click="btnLogout_Click"/>
 
                             <StackPanel Height="Auto">
                                 <Separator Height="1" Margin="10,5,10,10" Background="White"/>

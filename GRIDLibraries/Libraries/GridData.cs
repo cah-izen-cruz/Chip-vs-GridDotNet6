@@ -17,7 +17,9 @@ namespace GRIDLibraries.Libraries
         public List<gridPerformance> _lstOpenActivities = new List<gridPerformance>();
         public List<gridPerformance> _lstCompletedActivities = new List<gridPerformance>();
 
-        
+        public List<QAQuestionForm> _lstQAQuestions = new List<QAQuestionForm>();
+
+
         public DataTable dtActivity { get; set; } = new DataTable();
 
         public static GridData gridDataStore { get; set; } = new GridData();

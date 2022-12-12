@@ -1,4 +1,5 @@
 ﻿using GRIDLibraries.Libraries;
+using LiveCharts.Wpf;
 using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
 using System;
@@ -67,18 +68,18 @@ namespace GRID.Pages
 
             grd.grdData.TeamInfo.DBName = grd.grdData.TeamInfo.DBName;
 
-            //grd.conString = "Data Source=WPEC5009GRDRP01;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
-            grd.conString = "Data Source=DESKTOP-A0R75AD;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
+            grd.conString = "Data Source=WPEC5009GRDRP01;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
+            //grd.conString = "Data Source=DESKTOP-A0R75AD;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
 
             lvMyActivities.ItemsSource = null;
-            GvProductivity.ItemsSource = null;
+            lvProductivity.ItemsSource = null;
             lstQAForm.ItemsSource = null;
 
-            GvProductivity.ItemsSource = grd.grdData._lstProductivityOrig;
+            lvProductivity.ItemsSource = grd.grdData._lstProductivityOrig;
             lvMyActivities.ItemsSource = grd.grdData._lstMyActivitiesOrig;
+            lstQAForm.ItemsSource = grd.grdData._lstQAQuestions;
 
-
-          
+            //this.PopulateQuestionForms();
             this.PopulateProcessAndSubProcessMyActivities();
             this.PopulateProcessAndSubProcessProductivity();
 
@@ -401,7 +402,8 @@ namespace GRID.Pages
                 catch (Exception ex)
                 {
                 }
-                this.WrapActivityList.Visibility = Visibility.Hidden;
+
+                //this.WrapActivityList.Visibility = Visibility.Hidden;
                 this.btnCloseMyAct.Visibility = Visibility.Hidden;
 
                 this.GridDynamicObjects.Visibility = Visibility.Visible;
@@ -547,7 +549,7 @@ namespace GRID.Pages
             }
 
 
-            this.WrapActivityList.Visibility = Visibility.Collapsed;
+            //this.WrapActivityList.Visibility = Visibility.Collapsed;
             this.btnCloseMyAct.Visibility = Visibility.Collapsed;
 
 
@@ -707,9 +709,7 @@ namespace GRID.Pages
             this.GridDynamicObjects.Visibility = Visibility.Collapsed;
             this.WrapPanelMain.Visibility = Visibility.Collapsed;
             this.WrapPanelMain2.Visibility = Visibility.Collapsed;
-            this.WrapActivityList.Visibility = Visibility.Visible;
-
-            btnCloseMyAct.Visibility = Visibility.Visible;
+            this.QAWrapPanel.Visibility = Visibility.Collapsed;
 
             btnStop.Visibility = Visibility.Collapsed;
             btnPause.Visibility = Visibility.Collapsed;
@@ -956,7 +956,7 @@ namespace GRID.Pages
                 catch (Exception ex)
                 {
                 }
-                this.WrapActivityList.Visibility = Visibility.Hidden;
+                //this.WrapActivityList.Visibility = Visibility.Hidden;
                 this.btnCloseMyAct.Visibility = Visibility.Hidden;
 
                 this.GridDynamicObjects.Visibility = Visibility.Visible;
@@ -983,10 +983,14 @@ namespace GRID.Pages
 
         #region "Level4 SetupDynamicConfigInfo"
 
-        private void QADynamicObjectsHandler()
+        private bool QADynamicObjectsHandler()
         {
-            if (grd.grdData.QuestionForm.dtObjContainer.Rows.Count == _ConfigCtr)
+            bool temp = false;
+
+            if (_ConfigCtr >0)
             {
+                temp = true;
+
                 dt = new DataTable();
 
                 dt.Columns.Add("QID");
@@ -1091,10 +1095,50 @@ namespace GRID.Pages
                 this.QAWrapPanel.Children.Add(xx);
 
             }
+            else
+            {
+                temp = false;
+            }
+
+            return temp;
+
         }
 
         private void SetupQADynamicConfigInfo()
         {
+            #region "Clean"
+            this.QAWrapPanel.Children.Clear();
+            try
+            {
+                for (int i = 1; i <= 50; i++)
+                {
+
+                    object tempObj = this.FindName("objScore" + Strings.Format(i, "00"));
+                    if (!(tempObj == null))
+                    {
+                        this.UnregisterName("objScore" + Strings.Format(i, "00"));
+                    }
+
+                    object tempObj2 = this.FindName("objMd" + Strings.Format(i, "00"));
+                    if (!(tempObj2 == null))
+                    {
+                        this.UnregisterName("objMd" + Strings.Format(i, "00"));
+                    }
+
+                    object tempObj3 = this.FindName("objRemarks" + Strings.Format(i, "00"));
+                    if (!(tempObj3 == null))
+                    {
+                        this.UnregisterName("objRemarks" + Strings.Format(i, "00"));
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            #endregion
 
             dt = new DataTable();
             grd.grdData.QuestionForm.dtObjContainer = new DataTable();
@@ -1109,19 +1153,19 @@ namespace GRID.Pages
             for (int i = lstQAForm.SelectedItems.Count - 1; i >= 0; i -= 1)
             {
                 var obj = lstQAForm.SelectedItems[i];
-                var id = obj.GetType().GetProperties().First(o => o.Name == "Id").GetValue(obj, null);
+                var id = obj.GetType().GetProperties().First(o => o.Name == "LOBId").GetValue(obj, null);
                 var Name = obj.GetType().GetProperties().First(o => o.Name == "Name").GetValue(obj, null);
                 var Formula = obj.GetType().GetProperties().First(o => o.Name == "Formula").GetValue(obj, null);
                 var Target = obj.GetType().GetProperties().First(o => o.Name == "Target").GetValue(obj, null);
 
-                grd.grdData.QuestionForm.Name = Name.ToString();
                 grd.grdData.QuestionForm.Formula = Formula.ToString();
+                grd.grdData.QuestionForm.Name = Name.ToString();
                 grd.grdData.QuestionForm.Target = Convert.ToInt32(Target);
 
 
                 if (id.ToString() != "")
                 {
-                    DataRow[] result = grd.grdData.QuestionForm.dtQAQuestionnaire.Select("Id = '" + id + "'");
+                    DataRow[] result = grd.grdData.QuestionForm.dtQAQuestionnaire.Select("LOBId = '" + id + "'");
                     foreach (DataRow row in result)
                     {
                         if (dt.Rows.Count == 0)
@@ -2730,7 +2774,7 @@ namespace GRID.Pages
         public void ClearWrapPanel()
         {
             this.GridDynamicObjects.Visibility = Visibility.Collapsed;
-            this.WrapActivityList.Visibility = Visibility.Collapsed;
+            //this.WrapActivityList.Visibility = Visibility.Collapsed;
 
             this.WrapPanelMain.Visibility = Visibility.Collapsed;
             this.WrapPanelMain2.Visibility = Visibility.Collapsed;
@@ -2777,9 +2821,9 @@ namespace GRID.Pages
             else if (_ctr == 2)
             {
 
-                if (GvProductivity.SelectedItem is not null)
+                if (lvProductivity.SelectedItem is not null)
                 {
-                    curAct = (gridActivity)GvProductivity.SelectedItem;
+                    curAct = (gridActivity)lvProductivity.SelectedItem;
 
                     if (curAct.LOBId == 79)
                     {
@@ -2806,14 +2850,17 @@ namespace GRID.Pages
             {
 
                 this.SetupQADynamicConfigInfo();
-                this.QADynamicObjectsHandler();
 
-                this.GridDynamicObjects.Visibility = Visibility.Visible;
-                this.WrapActivityList.Visibility = Visibility.Hidden;
-
-                this.WrapPanelMain.Visibility = Visibility.Collapsed;
-                this.WrapPanelMain2.Visibility = Visibility.Collapsed;
-                this.QAWrapPanel.Visibility = Visibility.Visible;
+                if(QADynamicObjectsHandler())
+                {
+                    this.GridDynamicObjects.Visibility = Visibility.Visible;
+                    this.QAWrapPanel.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    this.ClearWrapPanel();
+                }
+    
             }
 
             if (!(curAct == null))
@@ -2872,7 +2919,7 @@ namespace GRID.Pages
                     this.WrapPanelMain.Visibility = Visibility.Collapsed;
                     this.WrapPanelMain2.Visibility = Visibility.Collapsed;
 
-                    WrapActivityList.Visibility = Visibility.Visible;
+                    //WrapActivityList.Visibility = Visibility.Visible;
 
                     btnStop.Visibility = Visibility.Collapsed;
                     btnPause.Visibility = Visibility.Collapsed;
@@ -2908,9 +2955,10 @@ namespace GRID.Pages
                 MainScrn.cmbOpenActName.ItemsSource = grd.GetDistinctPerfActivity(grd.grdData.CurrentUser.EmpNo, grd.grdData.CurrentUser.TransactionDate2, 1);
                 MainScrn.cmbOpenActName.SelectedIndex = 0;
 
-                //this.LoadOpenActivity();
-                //this.LoadCompletedActivity();
                 grd.grdData.ScrContent.IsActivityRunning = false;
+                this.GridDynamicObjects.Visibility = Visibility.Collapsed;
+                this.QAWrapPanel.Visibility = Visibility.Collapsed;
+                this.ActivityMainTab.Visibility = Visibility.Visible;
 
                 if (grd.grdData.ScrContent.IsBreakStarted)
                     grd.grdData.ScrContent.IsBreakStarted = false;
@@ -2924,23 +2972,21 @@ namespace GRID.Pages
 
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
-            WrapActivityList.Visibility = Visibility.Visible;
-            this.PopulateQuestionForms();
+            //WrapActivityList.Visibility = Visibility.Visible;
+           
             if (grd.grdData.ScrContent.IsBreakClicked)
             {
-                tabMyActivities.Visibility = Visibility.Collapsed;
-                tabProductive.Visibility = Visibility.Collapsed;
-                tabMyActivities.Width = 0;
-                tabProductive.Width = 0;
+                //tabMyActivities.Visibility = Visibility.Collapsed;
+                //tabProductive.Visibility = Visibility.Collapsed;
+                //tabMyActivities.Width = 0;
+                //tabProductive.Width = 0;
             }
             else
             {
-                tabMyActivities.Visibility = Visibility.Visible;
-                tabProductive.Visibility = Visibility.Visible;
-                //tabMyActivities.Width = 100;
-                //tabProductive.Width = 100;
-                tabMyActivities.IsSelected = true;
-                tabMyActivities.Focus();
+                //tabMyActivities.Visibility = Visibility.Visible;
+                //tabProductive.Visibility = Visibility.Visible;
+                //tabMyActivities.IsSelected = true;
+                //tabMyActivities.Focus();
             }
 
             btnStart.Visibility = Visibility.Collapsed;
@@ -3014,21 +3060,21 @@ namespace GRID.Pages
                         where p.Process.Equals(cmbProcessProd.SelectedValue.ToString())
                         select p;
 
-                GvProductivity.ItemsSource = q;
+                lvProductivity.ItemsSource = q;
 
             }
         }
 
         private void btnClearFilterProd_Click(object sender, RoutedEventArgs e)
         {
-            GvProductivity.ItemsSource = grd.grdData._lstProductivityOrig;
+            lvProductivity.ItemsSource = grd.grdData._lstProductivityOrig;
             cmbProcessProd.SelectedItem = null;
         }
 
         private void btnProductivityAddtoFav_Click(object sender, RoutedEventArgs e)
         {
             int x = 0;
-            foreach (gridActivity hAct in GvProductivity.SelectedItems)
+            foreach (gridActivity hAct in lvProductivity.SelectedItems)
             {
 
                 hAct.UserId = grd.grdData.CurrentUser.EmpNo;
@@ -3058,7 +3104,7 @@ namespace GRID.Pages
 
             MainScrn.btnMyActivities.IsChecked = false;
 
-            this.WrapActivityList.Visibility = Visibility.Collapsed;
+            //this.WrapActivityList.Visibility = Visibility.Collapsed;
 
             btnStart.Visibility = Visibility.Collapsed;
             btnStop.Visibility = Visibility.Collapsed;
@@ -3096,7 +3142,7 @@ namespace GRID.Pages
             this.StartActivity(3);
             if (_ConfigCtr == 0)
             {
-                new MessagesBox("You have selected a Question Form" + Constants.vbNewLine + "with no Configuration.", MessageType.Error, MessageButtons.Ok).ShowDialog();
+                new MessagesBox("You've Selected a Form" + Constants.vbNewLine + "With No Configuration.", MessageType.Error, MessageButtons.Ok).ShowDialog();
                 return;
             }
             btnStop.Visibility = Visibility.Visible;
@@ -3106,6 +3152,8 @@ namespace GRID.Pages
             //grd.grdData.ScrContent.IsMyDataChanged = true;
 
             btnCloseMyAct.Visibility = Visibility.Visible;
+
+            this.ActivityMainTab.Visibility = Visibility.Collapsed;
         }
 
         private void btnHandler_Click(object sender, RoutedEventArgs e)

@@ -81,12 +81,18 @@
                         </Button>
                     </matDes:TransitioningContent>
 
-                    <Button x:Name="btnUpdateQForm" Style="{StaticResource AddButtonQForm}" Margin="0 0 0 0" Click="btnUpdateQForm_Click">
-                        <StackPanel Orientation="Horizontal">
-                            <iconPacks:PackIconMaterial Kind="Update" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
-                            <TextBlock Text="Update"/>
-                        </StackPanel>
-                    </Button>
+                    <matDes:TransitioningContent>
+                        <matDes:TransitioningContent.OpeningEffects>
+                            <matDes:TransitionEffect Kind="FadeIn"/>
+                            <matDes:TransitionEffect Kind="SlideInFromBottom"/>
+                        </matDes:TransitioningContent.OpeningEffects>
+                        <Button x:Name="btnUpdateQForm" Style="{StaticResource AddButtonQForm}" Margin="0 0 0 0" Click="btnUpdateQForm_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <iconPacks:PackIconMaterial Kind="Update" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                                <TextBlock Text="Update"/>
+                            </StackPanel>
+                        </Button>
+                    </matDes:TransitioningContent>
 
                     <matDes:TransitioningContent>
                         <matDes:TransitioningContent.OpeningEffects>

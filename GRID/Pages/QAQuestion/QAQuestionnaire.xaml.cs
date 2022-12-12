@@ -174,16 +174,16 @@ namespace GRID.Pages
                 DataRow[] result;
                 if (maxQID == 0)
                 {
-                    result = grd.grdData.QuestionForm.dtQAQuestionnaire.Select("Id = '" + cmbQuestionnaire.SelectedValue + "'");
+                    result = grd.grdData.QuestionForm.dtQAQuestionnaire.Select("LOBId = '" + cmbQuestionnaire.SelectedValue + "'");
                 }
                 else
                 {
-                    result = grd.grdData.QuestionForm.dtQAQuestionnaire.Select("Id = '" + maxQID + "'");
+                    result = grd.grdData.QuestionForm.dtQAQuestionnaire.Select("LOBId = '" + maxQID + "'");
                 }
 
                 foreach (DataRow row in result)
                 {
-                    lstQuestions.Items.Add(new { Id = row["Id"], FormId = row["FormId"], QQuestionName = row["Question"], QCategory = row["Category"] });
+                    lstQuestions.Items.Add(new { Id = row["LOBId"], FormId = row["FormId"], QQuestionName = row["Question"], QCategory = row["Category"] });
                 }
 
                 this.grd.grdData.QuestionForm.LOBId = (int)cmbQuestionnaire.SelectedValue;

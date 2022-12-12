@@ -11,7 +11,11 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="QAQuestionnaire">
-    
+
+    <!--<Page.Resources >
+        <ResourceDictionary Source="/Styles/ScrollViewer.xaml"/>
+    </Page.Resources>-->
+
     <telerik:RadBusyIndicator x:Name="objBusyIndicator" Height="Auto" Width="Auto" telerik:StyleManager.Theme="Windows8">
         <Border CornerRadius="12" Background="Transparent">
             <Grid>
