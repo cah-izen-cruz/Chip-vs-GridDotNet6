@@ -128,11 +128,11 @@
                                     </TabItem.Header>
 
                                     <TabControl HorizontalContentAlignment="Left">
-                                        <TabItem x:Name="MDTabOpen" Width="160">
+                                        <TabItem Width="160">
                                             <TabItem.Header>
                                                 <StackPanel Orientation="Horizontal">
                                                     <iconPacks:PackIconMaterial Kind="ClockAlert" VerticalAlignment="Center" Margin="0 2 10 0" Width="18" Height="18"/>
-                                                    <TextBlock Text="Open" Foreground="{DynamicResource PrimaryTextColor}"/>
+                                                    <TextBlock x:Name="MDTabOpen" Text="Open" Foreground="{DynamicResource PrimaryTextColor}"/>
                                                 </StackPanel>
                                             </TabItem.Header>
 
@@ -192,11 +192,11 @@
                                             </Grid>
                                         </TabItem>
 
-                                        <TabItem x:Name="MDTabCompleted" Width="160">
+                                        <TabItem Width="160">
                                             <TabItem.Header>
                                                 <StackPanel Orientation="Horizontal">
                                                     <iconPacks:PackIconMaterial Kind="ClockCheck" VerticalAlignment="Center" Margin="0 2 10 0" Width="18" Height="18"/>
-                                                    <TextBlock Text="Completed" Foreground="{DynamicResource PrimaryTextColor}"/>
+                                                    <TextBlock x:Name="MDTabCompleted" Text="Completed" Foreground="{DynamicResource PrimaryTextColor}"/>
                                                 </StackPanel>
                                             </TabItem.Header>
 
@@ -256,7 +256,7 @@
                                 </TabItem>
 
 
-                                <TabItem Width="160" FlowDirection="LeftToRight">
+                                <TabItem x:Name="MyDataTabGraph" Width="160" FlowDirection="LeftToRight">
                                     <TabItem.Header>
                                         <StackPanel Orientation="Horizontal">
                                             <iconPacks:PackIconMaterial Kind="GraphOutline" VerticalAlignment="Center" Margin="0 2 10 0" Width="14" Height="14"/>

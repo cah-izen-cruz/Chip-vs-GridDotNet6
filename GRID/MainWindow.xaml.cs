@@ -678,7 +678,7 @@ namespace GRID
             lvOpenActivities.ItemsSource = grd.GetPerformances(ActId, 1);
 
 
-
+            MDTabOpen.Text = "(" + lvOpenActivities.Items.Count + ") - " + " Open";
             GroupOpen.Header = "(" + lvOpenActivities.Items.Count + ") - " + " Open";
 
         }
@@ -768,6 +768,7 @@ namespace GRID
 
             lvClosedActivities.ItemsSource = grd.GetPerformances(ActId, 2);
 
+            MDTabCompleted.Text = "(" + lvClosedActivities.Items.Count + ") - " + " Completed";
             GroupCompleted.Header = "(" + lvClosedActivities.Items.Count + ") - " + " Completed";
         }
 
@@ -1131,8 +1132,10 @@ namespace GRID
             grd.grdData.CurrentActivity.TransDate2 = grd.grdData.CurrentUser.TransactionDate2;
             grd.grdData.TeamInfo.DBName = grd.grdData.TeamInfo.DBName;
 
-            grd.conString = "Data Source=WPEC5009GRDRP01;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
-            //grd.conString = "Data Source=DESKTOP-A0R75AD;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
+            MyDataTabGraph.IsSelected = true;
+
+            //grd.conString = "Data Source=WPEC5009GRDRP01;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
+            grd.conString = "Data Source=DESKTOP-A0R75AD;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
 
             idleCtr = 0;
             idleTotal = 0;
