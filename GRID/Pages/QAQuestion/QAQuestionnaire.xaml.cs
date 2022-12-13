@@ -102,7 +102,7 @@ namespace GRID.Pages
             {
           
                 this.QAMutex.WaitOne();
-                cmbQuestionnaire.ItemsSource = grd.grdData.QuestionForm.dtLOB.DefaultView;
+                cmbQuestionnaire.ItemsSource = grd.grdData._lstQAQuestions;
                 this.QAMutex.ReleaseMutex();
             }
             catch (Exception ex)
@@ -302,7 +302,8 @@ namespace GRID.Pages
                 this.grd.DeleteQATemplate(this.grd.grdData.QuestionForm.QID);
 
                 this.QAMutex.WaitOne();
-                grd.grdData.QuestionForm.dtLOB = grd.GetQALob();
+                //grd.grdData.QuestionForm.dtLOB = grd.GetQALob();
+                grd.grdData._lstQAQuestions = grd.GetQAFormList();
                 grd.grdData.QuestionForm.dtQAQuestionnaire = grd.GetQAQuestionnaires();
                 grd.grdData.QuestionForm.dtQASelection = grd.GetQASelection();
                 grd.grdData.QuestionForm.dtQAMarkdownSelection = grd.GetQAMarkdown();
@@ -535,7 +536,8 @@ namespace GRID.Pages
                     grd.UpdateQATemplate(grd.grdData.QuestionForm.LOBId, txtCategory.Text, txtQuestion.Text, "Selectionlist", txtDescription.Text);
                     this.QAMutex.WaitOne();
 
-                    grd.grdData.QuestionForm.dtLOB = grd.GetQALob();
+                    //grd.grdData.QuestionForm.dtLOB = grd.GetQALob();
+                    grd.grdData._lstQAQuestions = grd.GetQAFormList();
                     grd.grdData.QuestionForm.dtQAQuestionnaire = grd.GetQAQuestionnaires();
                     grd.grdData.QuestionForm.dtQASelection = grd.GetQASelection();
                     grd.grdData.QuestionForm.dtQAMarkdownSelection = grd.GetQAMarkdown();
@@ -583,7 +585,8 @@ namespace GRID.Pages
 
                     grd.AddQATemplate(grd.grdData.QuestionForm.LOBId, txtCategory.Text, txtQuestion.Text, "Selectionlist", txtDescription.Text, dtSelection, dtMarkdown);
 
-                    grd.grdData.QuestionForm.dtLOB = grd.GetQALob();
+                    //grd.grdData.QuestionForm.dtLOB = grd.GetQALob();
+                    grd.grdData._lstQAQuestions = grd.GetQAFormList();
                     grd.grdData.QuestionForm.dtQAQuestionnaire = grd.GetQAQuestionnaires();
                     grd.grdData.QuestionForm.dtQASelection = grd.GetQASelection();
                     grd.grdData.QuestionForm.dtQAMarkdownSelection = grd.GetQAMarkdown();

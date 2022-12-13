@@ -128,7 +128,8 @@ namespace GRID.Pages.QAQuestion
                             try
                             {
                                 grd.AddQAForm(txtQAFormName.Text, Formula, Convert.ToInt32(Strings.Trim(txtQAFormTarget.Text)));
-                                grd.grdData.QuestionForm.dtLOB = grd.GetQALob();
+                                grd.grdData._lstQAQuestions = grd.GetQAFormList();
+                                //grd.grdData.QuestionForm.dtLOB = grd.GetQALob();
                                 MainScrn.fContainer.Content = "";
                                 MainScrn.fContainer.Navigate(new QAQuestionnaire());
                             }
@@ -174,7 +175,8 @@ namespace GRID.Pages.QAQuestion
                             try
                             {
                                 grd.UpdateQAForm(FormId, txtQAFormName.Text, Formula, Convert.ToInt32(Strings.Trim(txtQAFormTarget.Text)));
-                                grd.grdData.QuestionForm.dtLOB = grd.GetQALob();
+                                //grd.grdData.QuestionForm.dtLOB = grd.GetQALob();
+                                grd.grdData._lstQAQuestions = grd.GetQAFormList();
                                 MainScrn.fContainer.Content = "";
                                 MainScrn.fContainer.Navigate(new QAQuestionnaire());
                             }

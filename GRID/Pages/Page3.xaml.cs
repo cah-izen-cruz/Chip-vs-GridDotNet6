@@ -30,13 +30,7 @@ namespace GRID.Pages
             InitializeComponent();
 
                 
-            lvMyActivities.ItemsSource = null;
-            lvProductivity.ItemsSource = null;
-            lstQAForm.ItemsSource = null;
-
-            lvMyActivities.ItemsSource = grd.grdData._lstMyActivitiesOrig;
-            lvProductivity.ItemsSource = grd.grdData._lstProductivityOrig;        
-            lstQAForm.ItemsSource = grd.grdData._lstQAQuestions;
+          
         }
 
         private void TabQA_MouseDown(object sender, MouseButtonEventArgs e)

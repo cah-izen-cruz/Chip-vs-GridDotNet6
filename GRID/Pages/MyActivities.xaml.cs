@@ -982,128 +982,6 @@ namespace GRID.Pages
         #endregion
 
         #region "Level4 SetupDynamicConfigInfo"
-
-        private bool QADynamicObjectsHandler()
-        {
-            bool temp = false;
-
-            if (_ConfigCtr >0)
-            {
-                temp = true;
-
-                dt = new DataTable();
-
-                dt.Columns.Add("QID");
-                dt.Columns.Add("Question");
-                dt.Columns.Add("Value");
-                dt.Columns.Add("Score");
-                dt.Columns.Add("Markdown");
-                dt.Columns.Add("Remarks");
-
-                int _Score = 0;
-
-                foreach (DataRow row in grd.grdData.QuestionForm.dtObjContainer.Rows)
-                {
-                    DataRow[] fQ = dt.Select("Question = '" + row["Question"].ToString() + "'");
-                    RadComboBox cbValue = (RadComboBox)this.FindName(row["DDNameSel"].ToString());
-                    RadComboBox cbMd = (RadComboBox)this.FindName(row["DDNameMD"].ToString());
-                    RadWatermarkTextBox tbRemarks = (RadWatermarkTextBox)this.FindName(row["Remarks"].ToString());
-
-                    if (fQ.Length == 0)
-                    {
-                        dr = dt.NewRow();
-                        dr["QID"] = Convert.ToInt32(row["QID"]);
-                        dr["Question"] = row["Question"].ToString();
-                        dr["Value"] = cbValue.Text;
-                        dr["Score"] = Convert.ToInt32(cbValue.SelectedValue);
-                        dr["Markdown"] = cbMd.Text;
-                        dr["Remarks"] = tbRemarks.Text;
-                        dt.Rows.Add(dr);
-                        dt.AcceptChanges();
-                    }
-
-                    _Score = _Score + Convert.ToInt32(cbValue.SelectedValue);
-                }
-
-                switch (grd.grdData.QuestionForm.Formula.ToUpper())
-                {
-                    case "SUM":
-                        {
-                            if (_Score <= 99)
-                                grd.grdData.QuestionForm.ScoreRemarks = "FAILED!";
-                            else
-                                grd.grdData.QuestionForm.ScoreRemarks = "PASSED!";
-
-                            _ScoreAverage = _Score;
-                            break;
-                        }
-                    case "AVERAGE":
-                        {
-                            _ScoreAverage = _Score / _ConfigCtr;
-
-                            if (_ScoreAverage <= 99)
-                                grd.grdData.QuestionForm.ScoreRemarks = "FAILED!";
-                            else
-                                grd.grdData.QuestionForm.ScoreRemarks = "PASSED!";
-
-                            break;
-                        }
-                }
-
-                this.xx.Children.Clear();
-                this.QAWrapPanel.Children.Remove(xx);
-
-                var s = new TextBlock();
-                if (_ScoreAverage == 0)
-                    s.Text = "SCORE: ";
-                else
-                    s.Text = "SCORE: " + _ScoreAverage + " out of (" + grd.grdData.QuestionForm.Target + " Target Score)";
-                s.TextWrapping = TextWrapping.Wrap;
-                s.Width = 400;
-                s.Height = 24;
-                s.FontSize = 13;
-                s.FontWeight = FontWeights.Bold;
-                s.HorizontalAlignment = HorizontalAlignment.Left;
-                s.Foreground = System.Windows.Media.Brushes.Gold;
-                s.Margin = new Thickness(4, 2, 0, 0);
-                s.VerticalAlignment = VerticalAlignment.Top;
-
-                var s1 = new TextBlock();
-                if (_ScoreAverage == 0)
-                    s1.Text = "Remarks: ";
-                else
-                    s1.Text = "Remarks: " + grd.grdData.QuestionForm.ScoreRemarks + " (Formula: " + grd.grdData.QuestionForm.Formula + ")";
-
-                s1.TextWrapping = TextWrapping.Wrap;
-                s1.Width = 400;
-                s1.Height = 24;
-                s1.FontSize = 13;
-                s1.FontWeight = FontWeights.Bold;
-                s1.HorizontalAlignment = HorizontalAlignment.Left;
-
-                if (grd.grdData.QuestionForm.ScoreRemarks.ToUpper() == "FAILED!")
-                    s1.Foreground = System.Windows.Media.Brushes.Red;
-                else s1.Foreground = System.Windows.Media.Brushes.LimeGreen;
-
-                s1.Margin = new Thickness(4, -6, 0, 0);
-                s1.VerticalAlignment = VerticalAlignment.Top;
-
-
-                xx.Children.Add(s);
-                xx.Children.Add(s1);
-
-                this.QAWrapPanel.Children.Add(xx);
-
-            }
-            else
-            {
-                temp = false;
-            }
-
-            return temp;
-
-        }
-
         private void SetupQADynamicConfigInfo()
         {
             #region "Clean"
@@ -1372,6 +1250,125 @@ namespace GRID.Pages
             xx.HorizontalAlignment = HorizontalAlignment.Left;
             xx.Margin = new Thickness(4, 6, 1, 1);
             xx.Orientation = Orientation.Vertical;
+
+        }
+
+        private bool QADynamicObjectsHandler()
+        {
+            bool temp = false;
+
+            if (_ConfigCtr > 0)
+            {
+                temp = true;
+
+                dt = new DataTable();
+
+                dt.Columns.Add("QID");
+                dt.Columns.Add("Question");
+                dt.Columns.Add("Value");
+                dt.Columns.Add("Score");
+                dt.Columns.Add("Markdown");
+                dt.Columns.Add("Remarks");
+
+                int _Score = 0;
+
+                foreach (DataRow row in grd.grdData.QuestionForm.dtObjContainer.Rows)
+                {
+                    DataRow[] fQ = dt.Select("Question = '" + row["Question"].ToString() + "'");
+                    RadComboBox cbValue = (RadComboBox)this.FindName(row["DDNameSel"].ToString());
+                    RadComboBox cbMd = (RadComboBox)this.FindName(row["DDNameMD"].ToString());
+                    RadWatermarkTextBox tbRemarks = (RadWatermarkTextBox)this.FindName(row["Remarks"].ToString());
+
+                    if (fQ.Length == 0)
+                    {
+                        dr = dt.NewRow();
+                        dr["QID"] = Convert.ToInt32(row["QID"]);
+                        dr["Question"] = row["Question"].ToString();
+                        dr["Value"] = cbValue.Text;
+                        dr["Score"] = Convert.ToInt32(cbValue.SelectedValue);
+                        dr["Markdown"] = cbMd.Text;
+                        dr["Remarks"] = tbRemarks.Text;
+                        dt.Rows.Add(dr);
+                        dt.AcceptChanges();
+                    }
+
+                    _Score = _Score + Convert.ToInt32(cbValue.SelectedValue);
+                }
+
+                switch (grd.grdData.QuestionForm.Formula.ToUpper())
+                {
+                    case "SUM":
+                        {
+                            if (_Score <= 99)
+                                grd.grdData.QuestionForm.ScoreRemarks = "FAILED!";
+                            else
+                                grd.grdData.QuestionForm.ScoreRemarks = "PASSED!";
+
+                            _ScoreAverage = _Score;
+                            break;
+                        }
+                    case "AVERAGE":
+                        {
+                            _ScoreAverage = _Score / _ConfigCtr;
+
+                            if (_ScoreAverage <= 99)
+                                grd.grdData.QuestionForm.ScoreRemarks = "FAILED!";
+                            else
+                                grd.grdData.QuestionForm.ScoreRemarks = "PASSED!";
+
+                            break;
+                        }
+                }
+
+                this.xx.Children.Clear();
+                this.QAWrapPanel.Children.Remove(xx);
+
+                var s = new TextBlock();
+                if (_ScoreAverage == 0)
+                    s.Text = "SCORE : ";
+                else
+                    s.Text = "SCORE : " + _ScoreAverage;
+                //s.Text = "SCORE: " + _ScoreAverage + " out of (" + grd.grdData.QuestionForm.Target + " Target Score)";
+                s.TextWrapping = TextWrapping.Wrap;
+                s.Width = 400;
+                s.Height = 24;
+                s.FontSize = 13;
+                s.FontWeight = FontWeights.Bold;
+                s.HorizontalAlignment = HorizontalAlignment.Left;
+                s.Foreground = System.Windows.Media.Brushes.White;
+                s.Margin = new Thickness(4, 2, 0, 0);
+                s.VerticalAlignment = VerticalAlignment.Top;
+
+                var s1 = new TextBlock();
+                if (_ScoreAverage == 0)
+                    s1.Text = "MARKING : ";
+                else
+                    s1.Text = "MARKING : " + grd.grdData.QuestionForm.ScoreRemarks;
+                //s1.Text = "Remarks: " + grd.grdData.QuestionForm.ScoreRemarks + " (Formula: " + grd.grdData.QuestionForm.Formula + ")";
+
+                s1.TextWrapping = TextWrapping.Wrap;
+                s1.Width = 400;
+                s1.Height = 24;
+                s1.FontSize = 13;
+                s1.FontWeight = FontWeights.Bold;
+                s1.HorizontalAlignment = HorizontalAlignment.Left;
+                s1.Foreground = System.Windows.Media.Brushes.White;
+                s1.Margin = new Thickness(4, -6, 0, 0);
+                s1.VerticalAlignment = VerticalAlignment.Top;
+
+
+                xx.Children.Add(s);
+                xx.Children.Add(s1);
+
+                this.QAWrapPanel.Children.Add(xx);
+
+            }
+            else
+            {
+                temp = false;
+            }
+
+            return temp;
 
         }
 

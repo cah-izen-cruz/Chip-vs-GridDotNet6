@@ -61,7 +61,7 @@
                                           BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="1"
                                           Foreground="{DynamicResource PrimaryTextColor}"
                                           IsEditable="False"
-                                          ToolTip="Choose Questionnaire Name" DisplayMemberPath="Name" SelectedValuePath="Id" SelectionChanged="cmbQuestionnaire_SelectionChanged" />
+                                          ToolTip="Choose Questionnaire Name" DisplayMemberPath="Name" SelectedValuePath="LOBId" SelectionChanged="cmbQuestionnaire_SelectionChanged" />
 
                             <!--Add Button-->
                             <Button x:Name="btnAddQForm" Style="{StaticResource AddButtonQForm}" 

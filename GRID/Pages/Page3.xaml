@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
       xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+       xmlns:matDes="http://materialdesigninxaml.net/winfx/xaml/themes"
       xmlns:local="clr-namespace:GRID.Pages"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
@@ -18,7 +19,6 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Top" Height="20" Width="20" Margin="0 12 10 0">
@@ -30,55 +30,39 @@
             <TabItem Width="160">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <iconPacks:PackIconMaterial Kind="BookmarkCheck" VerticalAlignment="Center" Margin="0 2 10 0" Width="14" Height="14"/>
-                        <TextBlock Text="My Favorites" Foreground="{DynamicResource PrimaryTextColor}"/>
+                        <iconPacks:PackIconMaterial Kind="FileDocumentEdit" VerticalAlignment="Center" Margin="0 2 10 0" Width="14" Height="14"/>
+                        <TextBlock Text="Account" Foreground="{DynamicResource PrimaryTextColor}"/>
                     </StackPanel>
                 </TabItem.Header>
 
-                <GroupBox Header="Select Process" Margin="0 8 4 8">
+                <GroupBox Header="Fill up details" Margin="0 8 4 8">
                     <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="180"/>
+                        </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="35"/>
-                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="32"/>
+                            <RowDefinition Height="32"/>
+                            <RowDefinition Height="32"/>
+                            <RowDefinition Height="32"/>
+                            <RowDefinition Height="32"/>
+                            <RowDefinition Height="32"/>
+                            <RowDefinition Height="32"/>
                         </Grid.RowDefinitions>
 
-                        <StackPanel Orientation="Horizontal" Grid.Row="0">
-
-                            <telerik:RadComboBox Name="cmbProcess"  Width="200" Height="23" BorderBrush="White" BorderThickness=".5" telerik:StyleManager.Theme="Office" FontSize="12"/>
-                            <Button Name="cmdMyFilter" BorderThickness="0" Style="{StaticResource AddButtonQForm}" Margin="6 0 0 0">
-                                <StackPanel Orientation="Horizontal">
-                                    <iconPacks:PackIconMaterial Kind="FilterOff" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
-                                    <TextBlock Text="Clear Filter"/>
-                                </StackPanel>
-                            </Button>
-
-                            <Button Name="btnDeleteFromFav" BorderThickness="0" Style="{StaticResource AddButtonQForm}" Margin="6 0 0 0">
-                                <StackPanel Orientation="Horizontal">
-                                    <iconPacks:PackIconMaterial Kind="Delete" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
-                                    <TextBlock Text="Delete"/>
-                                </StackPanel>
-                            </Button>
-
-                        </StackPanel>
-
-                        <ScrollViewer Grid.Row="1" Margin="0 4 0 0">
-
-                            <ListView Name="lvMyActivities" ItemsSource="{Binding}" Cursor="Hand">
-                                <ListView.View>
-                                    <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
-                                        <GridView.Columns>
-                                            <GridViewColumn Header="ID" DisplayMemberBinding="{Binding Id}" Width="0"/>
-                                            <GridViewColumn Header="NAME" DisplayMemberBinding="{Binding ActName}" Width="300"/>
-                                            <GridViewColumn Header="TYPE" DisplayMemberBinding="{Binding Type}" Width="100"/>
-                                            <GridViewColumn Header="AHT" DisplayMemberBinding="{Binding AHT}" Width="100"/>
-                                            <GridViewColumn Header="PROCESS" DisplayMemberBinding="{Binding Process}" Width="150"/>
-                                        </GridView.Columns>
-                                    </GridView>
-                                </ListView.View>
-                            </ListView>
-
-                        </ScrollViewer>
-
+                        <TextBlock Text="Date of Interaction" Grid.Column="0" Grid.Row="0"/>
+                        <telerik:RadDatePicker Width="150" Height="28" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left"/>
+                
+                        <TextBlock Text="Agent Name" Grid.Row="1" Grid.Column="0"/>
+                        <TextBox x:Name="txtCategory" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1"
+                                                    FontSize="12"
+                                                    HorizontalContentAlignment="Stretch"
+                                                    BorderThickness="1" Width="150" Padding="2"                                                 
+                                                     Foreground="{DynamicResource PrimaryTextColor}"/>
+                            
+                            
+                   
 
 
                     </Grid>
@@ -89,8 +73,8 @@
             <TabItem  Width="160">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <iconPacks:PackIconMaterial Kind="Briefcase" VerticalAlignment="Center" Margin="0 2 10 0" Width="14" Height="14"/>
-                        <TextBlock Text="My Activity" Foreground="{DynamicResource PrimaryTextColor}"/>
+                        <iconPacks:PackIconMaterial Kind="AccountQuestion" VerticalAlignment="Center" Margin="0 2 10 0" Width="14" Height="14"/>
+                        <TextBlock Text="Questionnaires" Foreground="{DynamicResource PrimaryTextColor}"/>
                     </StackPanel>
                 </TabItem.Header>
 
@@ -145,8 +129,8 @@
             <TabItem x:Name="TabQA" Width="160">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <iconPacks:PackIconMaterial Kind="CloudQuestion" VerticalAlignment="Center" Margin="0 2 10 0" Width="16" Height="16"/>
-                        <TextBlock Text="QA Question" Foreground="{DynamicResource PrimaryTextColor}"/>
+                        <iconPacks:PackIconMaterial Kind="CellphoneScreenshot" VerticalAlignment="Center" Margin="0 2 10 0" Width="16" Height="16"/>
+                        <TextBlock Text="Screenshots" Foreground="{DynamicResource PrimaryTextColor}"/>
                     </StackPanel>
                 </TabItem.Header>
 
@@ -173,68 +157,7 @@
         
         </TabControl>
      
-        <Grid x:Name="ActivityButtonsMyActs" Grid.Row="2" Margin="0 0 0 4">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="90"/>
-                <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="100"/>
-            </Grid.ColumnDefinitions>
-
-            <telerik:RadButton Name="btnHandler" Grid.Column="0" BorderThickness="0" Width="50" Height="20" 
-                                   HorizontalAlignment="Center" VerticalAlignment="Center"
-                                   CornerRadius="3" telerik:StyleManager.Theme="Transparent"
-                                   Cursor="Hand" Visibility="Collapsed"/>
-
-            <telerik:RadButton Name="btnStart" Grid.Column="1" BorderThickness="0" ToolTip="Start New Activity" Width="80" Height="30" 
-                                   HorizontalAlignment="Left" VerticalAlignment="Bottom"
-                                   CornerRadius="3" 
-                                   Cursor="Hand" telerik:StyleManager.Theme="Transparent" Background="{DynamicResource SecundaryBackgroundColor}" Margin="4 0 0 0">
-                <!--<telerik:RadButton.Background>
-                            <ImageBrush ImageSource="/Images/Icons/NewPlay.png" Stretch="Uniform"/>
-                        </telerik:RadButton.Background>-->
-
-                <StackPanel Orientation="Horizontal">
-                    <iconPacks:PackIconEntypo Kind="ControllerPlay" Foreground="{DynamicResource PrimaryTextColor}"/>
-                    <!--<TextBlock HorizontalAlignment="Right" Foreground="{DynamicResource PrimaryTextColor}" Margin="0 1 0 0">&#160; Start Activity</TextBlock>-->
-                </StackPanel>
-            </telerik:RadButton>
-
-
-            <telerik:RadButton Name="btnStop" Grid.Column="2" BorderThickness="0" ToolTip="Stop Current Activity" Width="80" Height="30" HorizontalAlignment="Left" VerticalAlignment="Bottom"  CornerRadius="3" telerik:StyleManager.Theme="Transparent" Cursor="Hand" Background="{DynamicResource SecundaryBackgroundColor}" Margin="4 0 0 0">
-                <!--<telerik:RadButton.Background>
-                            <ImageBrush ImageSource="/Images/Icons/NewStop.png" Stretch="Uniform"/>
-                        </telerik:RadButton.Background>-->
-                <StackPanel Orientation="Horizontal">
-                    <iconPacks:PackIconEntypo Kind="ControllerStop" Foreground="{DynamicResource PrimaryTextColor}"/>
-                    <!--<TextBlock HorizontalAlignment="Right" Foreground="{DynamicResource PrimaryTextColor}" Margin="0 1 0 0">&#160; Stop Activity</TextBlock>-->
-                </StackPanel>
-            </telerik:RadButton>
-
-
-            <telerik:RadButton Name="btnPause" Grid.Column="3" BorderThickness="0" ToolTip="Pause Current Activity" Width="80" Height="30" HorizontalAlignment="Left" VerticalAlignment="Bottom"  CornerRadius="3" telerik:StyleManager.Theme="Transparent" Cursor="Hand" Background="{DynamicResource SecundaryBackgroundColor}" Margin="4 0 0 0">
-
-                <StackPanel Orientation="Horizontal">
-                    <iconPacks:PackIconTypicons Kind="MediaPause"  Foreground="{DynamicResource PrimaryTextColor}"/>
-                    <!--<TextBlock HorizontalAlignment="Right" Foreground="{DynamicResource PrimaryTextColor}" Margin="0 1 0 0">&#160; Pause Activity</TextBlock>-->
-                </StackPanel>
-            </telerik:RadButton>
-
-
-            <telerik:RadButton Name="btnChange" Grid.Column="4" BorderThickness="0" ToolTip="Change Current Activity" Width="80" Height="30" HorizontalAlignment="Left" VerticalAlignment="Bottom"  CornerRadius="3" telerik:StyleManager.Theme="Transparent" Cursor="Hand" Background="{DynamicResource SecundaryBackgroundColor}" Margin="4 0 0 0">
-                <!--<telerik:RadButton.Background>
-                            <ImageBrush ImageSource="/Images/Icons/NewStop.png" Stretch="Uniform"/>
-                        </telerik:RadButton.Background>-->
-                <StackPanel Orientation="Horizontal">
-                    <iconPacks:PackIconFontAwesome Kind="SyncAltSolid" Foreground="{DynamicResource PrimaryTextColor}"/>
-                    <!--<TextBlock HorizontalAlignment="Right" Foreground="{DynamicResource PrimaryTextColor}" Margin="0 1 0 0">&#160; Change Activity</TextBlock>-->
-                </StackPanel>
-            </telerik:RadButton>
-
-
-
-        </Grid>
+       
 
     </Grid>
 

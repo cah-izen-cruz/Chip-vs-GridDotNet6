@@ -202,8 +202,7 @@
 
 
             <Border x:Name="GridDynamicObjects" Grid.Row="1"  CornerRadius="10" BorderBrush="{DynamicResource PrimaryTextColor}" BorderThickness="0" Background="{DynamicResource SecundaryBackgroundColor}" Padding="4" VerticalAlignment="Top" HorizontalAlignment="Left" Width="Auto" Margin="0 0 0 10">
-
-                        <ScrollViewer>
+                <ScrollViewer>
 
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -216,9 +215,21 @@
                                 <WrapPanel Grid.Column="1" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="WrapPanelMain2"/>
 
 
-                                <WrapPanel x:Name="QAWrapPanel" Grid.Column="0" Grid.ColumnSpan="2" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Orientation="Vertical" Width="Auto" />
+                        <WrapPanel x:Name="QAWrapPanel" Grid.Column="0" Grid.ColumnSpan="2" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Orientation="Vertical" Width="Auto" >
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="250"/>
+                                    <ColumnDefinition Width="250"/>
+                                </Grid.ColumnDefinitions>
 
+                                <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
+                                    <TextBlock Text="Date of Interaction" />
+                                    <DatePicker Width="200" Height="28"></DatePicker>
+                                </StackPanel>
                             </Grid>
+                        </WrapPanel>
+
+                    </Grid>
 
                         </ScrollViewer>
 

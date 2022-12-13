@@ -32,7 +32,7 @@ namespace GRIDLibraries.Libraries
                 while (dr.Read())
                     tempQAList.Add(new QAQuestionForm() { LOBId = (int)dr["Id"], Name = (string)dr["Name"], Formula = (string)dr["FORMULA"], Target = Convert.ToInt32(dr["Target"]) });           
                 dr.Close();
-                this.CloseDbConnection();
+                this.CloseMainDbConnection();
             }
 
 
@@ -40,24 +40,24 @@ namespace GRIDLibraries.Libraries
 
         }
 
-        public DataTable GetQALob()
-        {
-            var temp = new DataTable();
+        //public DataTable GetQALob()
+        //{
+        //    var temp = new DataTable();
 
-            var da = new SqlDataAdapter();
+        //    var da = new SqlDataAdapter();
 
-            da = new SqlDataAdapter("SELECT Id,Name,Formula,Target FROM dbo.[tblQAForm] Order By Id;", conStringAHS_QA);
-            da.SelectCommand.CommandTimeout = 1000;
-            try
-            {
-                da.Fill(temp);
-            }
-            catch (Exception ex)
-            {
-            }
+        //    da = new SqlDataAdapter("SELECT Id,Name,Formula,Target FROM dbo.[tblQAForm] Order By Id;", conStringAHS_QA);
+        //    da.SelectCommand.CommandTimeout = 1000;
+        //    try
+        //    {
+        //        da.Fill(temp);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //    }
 
-            return temp;
-        }
+        //    return temp;
+        //}
 
         public DataTable GetQAQuestionnaires()
         {

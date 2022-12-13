@@ -1153,7 +1153,7 @@ namespace GRID
             }
            
             this.DashMyActivities.Visibility = Visibility.Collapsed;
-            this.DashMyData.Visibility = Visibility.Visible;
+            this.DashMyData.Visibility = Visibility.Collapsed;
 
             btnMyData.IsChecked = true;
             //fContainer.Navigate(new System.Uri("Pages/Page1.xaml", UriKind.RelativeOrAbsolute));
@@ -1257,7 +1257,7 @@ namespace GRID
             try
             {
                 grd.grdData._lstQAQuestions = grd.GetQAFormList();
-                grd.grdData.QuestionForm.dtLOB = grd.GetQALob();
+                //grd.grdData.QuestionForm.dtLOB = grd.GetQALob();
                 grd.grdData.QuestionForm.dtQAQuestionnaire = grd.GetQAQuestionnaires();
                 grd.grdData.QuestionForm.dtQASelection = grd.GetQASelection();
                 grd.grdData.QuestionForm.dtQAMarkdownSelection = grd.GetQAMarkdown();
