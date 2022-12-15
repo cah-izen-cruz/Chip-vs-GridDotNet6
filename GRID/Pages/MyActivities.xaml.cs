@@ -1,21 +1,25 @@
-﻿using GRIDLibraries.Libraries;
-using LiveCharts.Wpf;
+﻿using GRID.Controls;
+using GRIDLibraries.Libraries;
 using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Threading;
 using Telerik.Windows.Controls;
+using Telerik.Windows.Controls.FileDialogs;
 using ToastNotifications;
 using ToastNotifications.Lifetime;
 using ToastNotifications.Messages;
 using ToastNotifications.Position;
 using static GRID.MessagesBox;
+using Constants = Microsoft.VisualBasic.Constants;
 using Convert = System.Convert;
 
 
@@ -59,10 +63,6 @@ namespace GRID.Pages
         public MyActivities()
         {
             InitializeComponent();
-            //notifier.ShowInformation("Info");
-            //notifier.ShowSuccess("Success");
-            //notifier.ShowWarning("Warning");
-            //notifier.ShowError("Error");
 
             this.MainScrn.ActivityElapsedTimer.Start();
 
@@ -79,7 +79,6 @@ namespace GRID.Pages
             lvMyActivities.ItemsSource = grd.grdData._lstMyActivitiesOrig;
             lstQAForm.ItemsSource = grd.grdData._lstQAQuestions;
 
-            //this.PopulateQuestionForms();
             this.PopulateProcessAndSubProcessMyActivities();
             this.PopulateProcessAndSubProcessProductivity();
 
@@ -87,17 +86,13 @@ namespace GRID.Pages
 
             if (grd.grdData.ScrContent.IsActivityRunning)
             {
-                grd.grdData.ScrContent.IsMyDataChanged = true;
                 btnStart.Visibility = Visibility.Collapsed;
                 btnStop.Visibility = Visibility.Visible;
                 btnPause.Visibility = Visibility.Visible;
                 btnChange.Visibility = Visibility.Visible;
 
-                if (grd.grdData.ScrContent.IsBreakStarted)
-                {
-                    this.ClearWrapPanel();
-                    btnCloseMyAct.Visibility = Visibility.Collapsed;
-                }
+                if (!grd.grdData.ScrContent.IsBreakStarted)
+                    MatDesActivityList.Visibility = Visibility.Collapsed;
             }
             else
             {
@@ -106,17 +101,18 @@ namespace GRID.Pages
                 btnStop.Visibility = Visibility.Collapsed;
                 btnPause.Visibility = Visibility.Collapsed;
                 btnChange.Visibility = Visibility.Collapsed;
-
-                this.ClearWrapPanel();
-
-                btnCloseMyAct.Visibility = Visibility.Collapsed;
-
-
             }
 
             ActivityElapsedTimer = new DispatcherTimer();
             ActivityElapsedTimer.Tick += ElapsedTimer_Tick;
             ActivityElapsedTimer.Interval = new TimeSpan(0, 0, 1);
+
+            this.GridDynamicObjects.Visibility = Visibility.Collapsed;
+
+            this.MatDesGridQA.Visibility = Visibility.Collapsed;
+            //this.TabAcc.IsSelected = true;
+            //this.TabQuestion.IsEnabled = false;
+            //this.TabSS.IsEnabled = false;
         }
 
         Notifier notifier = new Notifier(msg =>
@@ -371,7 +367,7 @@ namespace GRID.Pages
             newPerf.ActivityId = grd.grdData.CurrentActivity.ActivityId;
             newPerf.TimeStart = Strings.Format(grd.grdData.CurrentActivity.TimeStart2, "MM/dd/yyyy h:mm:ss tt").ToString();
             newPerf.TimeEnd = Strings.Format(grd.grdData.CurrentActivity.TimeEnd2, "MM/dd/yyyy h:mm:ss tt").ToString();
-            newPerf.TransDate2 = grd.grdData.CurrentUser.TransactionDate2; //grd.grdData.CurrentUser.TransactionDate2;
+            newPerf.TransDate2 = grd.grdData.CurrentUser.TransactionDate2;
             newPerf.TimeStart2 = grd.grdData.CurrentActivity.TimeStart2;
             newPerf.TimeEnd2 = grd.grdData.CurrentActivity.TimeEnd2;
             newPerf.TimeElapsed = Strings.LTrim(Strings.RTrim((string)MainScrn.lblTimeElapsed.Content));
@@ -386,7 +382,34 @@ namespace GRID.Pages
             {
                 if (grd.grdData.CurrentActivity.Activity.ConfigInfo.Count > 0)
                 {
-                    this.SetupDynamicConfigInfo();
+
+                    if (curAct.Id == 17)
+                    {
+                        this.SetupQADynamicConfigInfo();
+
+                        if (QADynamicObjectsHandler())
+                        {
+                            this.GridDynamicObjects.Visibility = Visibility.Visible;
+                            this.QAWrapPanel.Visibility = Visibility.Visible;
+                        }
+
+
+
+                        return;
+                    }
+                    else
+                    {
+                        this.SetupDynamicConfigInfo();
+
+                        this.MatDesGridQA.Visibility = Visibility.Collapsed;
+                        this.MatDesActivityList.Visibility = Visibility.Collapsed;
+                        this.GridDynamicObjects.Visibility = Visibility.Visible;
+                        this.WrapPanelMain.Visibility = Visibility.Visible;
+                        this.WrapPanelMain2.Visibility = Visibility.Visible;
+                        this.WrapPanelMain.Width = 380;
+                        this.WrapPanelMain2.Width = 380;
+                        this.QAWrapPanel.Visibility = Visibility.Collapsed;
+                    }
                 }
             }
 
@@ -403,15 +426,6 @@ namespace GRID.Pages
                 {
                 }
 
-                //this.WrapActivityList.Visibility = Visibility.Hidden;
-                this.btnCloseMyAct.Visibility = Visibility.Hidden;
-
-                this.GridDynamicObjects.Visibility = Visibility.Visible;
-                this.WrapPanelMain.Visibility = Visibility.Visible;
-                this.WrapPanelMain2.Visibility = Visibility.Visible;
-                this.WrapPanelMain.Width = 380;
-                this.WrapPanelMain2.Width = 380;
-                this.QAWrapPanel.Visibility = Visibility.Collapsed;
 
                 btnStop.Visibility = Visibility.Visible;
                 btnPause.Visibility = Visibility.Visible;
@@ -547,10 +561,6 @@ namespace GRID.Pages
                 return;
 
             }
-
-
-            //this.WrapActivityList.Visibility = Visibility.Collapsed;
-            this.btnCloseMyAct.Visibility = Visibility.Collapsed;
 
 
             this.GridDynamicObjects.Visibility = Visibility.Visible;
@@ -705,7 +715,6 @@ namespace GRID.Pages
 
             grd.grdData.CurrentUser.LogOut = grd.grdData.CurrentActivity.TimeEnd2;
 
-            this.btnCloseMyAct.Visibility = Visibility.Visible;
             this.GridDynamicObjects.Visibility = Visibility.Collapsed;
             this.WrapPanelMain.Visibility = Visibility.Collapsed;
             this.WrapPanelMain2.Visibility = Visibility.Collapsed;
@@ -925,7 +934,7 @@ namespace GRID.Pages
             newPerf.ActivityId = grd.grdData.CurrentActivity.ActivityId;
             newPerf.TimeStart = Strings.Format(grd.grdData.CurrentActivity.TimeStart2, "MM/dd/yyyy h:mm:ss tt").ToString();
             newPerf.TimeEnd = Strings.Format(grd.grdData.CurrentActivity.TimeEnd2, "MM/dd/yyyy h:mm:ss tt").ToString();
-            newPerf.TransDate2 = grd.grdData.CurrentUser.TransactionDate2; //grd.grdData.CurrentUser.TransactionDate2;
+            newPerf.TransDate2 = grd.grdData.CurrentUser.TransactionDate2;
             newPerf.TimeStart2 = grd.grdData.CurrentActivity.TimeStart2;
             newPerf.TimeEnd2 = grd.grdData.CurrentActivity.TimeEnd2;
             newPerf.TimeElapsed = Strings.LTrim(Strings.RTrim((string)MainScrn.lblTimeElapsed.Content));
@@ -936,13 +945,28 @@ namespace GRID.Pages
             newPerf.PerfStatus = 0;
 
 
-            if (!(grd.grdData.CurrentActivity.Activity.ConfigInfo == null))
+
+
+            if (curAct.Id == 17)
             {
-                if (grd.grdData.CurrentActivity.Activity.ConfigInfo.Count > 0)
+                this.SetupQADynamicConfigInfo();
+
+                if (QADynamicObjectsHandler())
                 {
-                    this.SetupDynamicConfigInfo();
+                    this.GridDynamicObjects.Visibility = Visibility.Visible;
+                    this.QAWrapPanel.Visibility = Visibility.Visible;
+
+                    this.MatDesGridQA.Visibility = Visibility.Collapsed;
+                    this.MatDesActivityList.Visibility = Visibility.Collapsed;
+                    this.WrapPanelMain.Visibility = Visibility.Collapsed;
+                    this.WrapPanelMain2.Visibility = Visibility.Collapsed;
                 }
+
+
+
+                return;
             }
+
 
 
             newPerf.Id = grd.AddPerformanceInfo(newPerf);
@@ -956,14 +980,10 @@ namespace GRID.Pages
                 catch (Exception ex)
                 {
                 }
-                //this.WrapActivityList.Visibility = Visibility.Hidden;
-                this.btnCloseMyAct.Visibility = Visibility.Hidden;
 
-                this.GridDynamicObjects.Visibility = Visibility.Visible;
-                this.WrapPanelMain.Visibility = Visibility.Visible;
-                this.WrapPanelMain2.Visibility = Visibility.Visible;
-                this.WrapPanelMain.Width = 380;
-                this.WrapPanelMain2.Width = 380;
+                btnStop.Visibility = Visibility.Visible;
+                btnPause.Visibility = Visibility.Visible;
+                btnChange.Visibility = Visibility.Visible;
 
             }
 
@@ -1244,12 +1264,16 @@ namespace GRID.Pages
 
             }
 
-            xx = new WrapPanel();
-            xx.Background = System.Windows.Media.Brushes.Transparent;
-            xx.VerticalAlignment = VerticalAlignment.Top;
-            xx.HorizontalAlignment = HorizontalAlignment.Left;
-            xx.Margin = new Thickness(4, 6, 1, 1);
-            xx.Orientation = Orientation.Vertical;
+            if (_ConfigCtr > 0)
+            {
+                xx = new WrapPanel();
+                xx.Background = System.Windows.Media.Brushes.Transparent;
+                xx.VerticalAlignment = VerticalAlignment.Top;
+                xx.HorizontalAlignment = HorizontalAlignment.Left;
+                xx.Margin = new Thickness(4, 6, 1, 1);
+                xx.Orientation = Orientation.Vertical;
+            }
+
 
         }
 
@@ -2771,7 +2795,6 @@ namespace GRID.Pages
         public void ClearWrapPanel()
         {
             this.GridDynamicObjects.Visibility = Visibility.Collapsed;
-            //this.WrapActivityList.Visibility = Visibility.Collapsed;
 
             this.WrapPanelMain.Visibility = Visibility.Collapsed;
             this.WrapPanelMain2.Visibility = Visibility.Collapsed;
@@ -2822,69 +2845,76 @@ namespace GRID.Pages
                 {
                     curAct = (gridActivity)lvProductivity.SelectedItem;
 
-                    if (curAct.LOBId == 79)
+
+                    var q = from p in grd.grdData.ActivityList
+                            where p.Id == 17
+                            select p.ConfigInfo;
+                    if (!(q == null))
                     {
-                        var q = from p in grd.grdData.ActivityList
-                                where p.Id == 1594
-                                select p.ConfigInfo;
-                        if (!(q == null))
+                        if (q.Count() > 0)
                         {
-                            if (q.Count() > 0)
-                            {
-                                curAct.ConfigInfo = q.FirstOrDefault();
-                            }
+                            curAct.ConfigInfo = q.FirstOrDefault();
                         }
                     }
 
-                    if (curAct.ConfigInfo == null)
-                    {
-                        //curAct.ConfigInfo = grd.GetPerfConfigListLocal(curAct.LOBId == 79 ? 1594 : curAct.Id);
-                    }
 
                 }
             }
-            else if (_ctr == 3)
-            {
 
-                this.SetupQADynamicConfigInfo();
-
-                if(QADynamicObjectsHandler())
-                {
-                    this.GridDynamicObjects.Visibility = Visibility.Visible;
-                    this.QAWrapPanel.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    this.ClearWrapPanel();
-                }
-    
-            }
 
             if (!(curAct == null))
             {
-                grd.grdData.CurrentActivity.Started = true;
-                if (grd.grdData.CurrentActivity.Id > 0)
-                {
-                    grd.grdData.MainWindowAction = "CHANGE";
-                }
 
+                if (curAct.Id == 17)
+                {
+                    this.GridDynamicObjects.Visibility = Visibility.Collapsed;
+                    this.WrapPanelMain.Visibility = Visibility.Collapsed;
+                    this.WrapPanelMain2.Visibility = Visibility.Collapsed;
+                    this.QAWrapPanel.Visibility = Visibility.Collapsed;
+
+                    this.MatDesGridQA.Visibility = Visibility.Visible;
+                    this.MatDesActivityList.Visibility = Visibility.Collapsed;
+
+                    grd.grdData.CurrentActivity.Started = false;
+                    IsActivityStarted = false;
+
+
+                }
                 else
                 {
-                    grd.grdData.MainWindowAction = "START";
-                    IsActivityStarted = true;
+                    grd.grdData.CurrentActivity.Started = true;
+                    if (grd.grdData.CurrentActivity.Id > 0)
+                    {
+                        grd.grdData.MainWindowAction = "CHANGE";
+                    }
+                    else
+                    {
+                        grd.grdData.MainWindowAction = "START";
+                        IsActivityStarted = true;
+                    }
+
+                    var withBlock = grd.grdData.CurrentActivity;
+                    withBlock.Activity = curAct;
+                    withBlock.ActivityId = curAct.Id;
+                    withBlock.LOBId = curAct.LOBId;
+                    withBlock.LOBItemId = 0;
+
+                    if (IsActivityStarted)
+                        this.MainWindowActivated();
+
+
+                    btnStop.Visibility = Visibility.Visible;
+                    btnPause.Visibility = Visibility.Visible;
+                    btnChange.Visibility = Visibility.Visible;
+                    grd.grdData.ScrContent.IsActivityRunning = true;
+                    grd.grdData.ScrContent.IsMyDataChanged = true;
                 }
 
-                var withBlock = grd.grdData.CurrentActivity;
-
-                withBlock.Activity = curAct;
-                withBlock.ActivityId = curAct.Id;
-                withBlock.LOBId = curAct.LOBId;
-                withBlock.LOBItemId = 0;
-
-                if (IsActivityStarted)
-                    this.MainWindowActivated();
 
             }
+
+
+
 
         }
 
@@ -2911,12 +2941,9 @@ namespace GRID.Pages
 
                     grd.grdData.CurrentActivity.Started = false;
 
-                    this.btnCloseMyAct.Visibility = Visibility.Visible;
                     this.GridDynamicObjects.Visibility = Visibility.Collapsed;
                     this.WrapPanelMain.Visibility = Visibility.Collapsed;
                     this.WrapPanelMain2.Visibility = Visibility.Collapsed;
-
-                    //WrapActivityList.Visibility = Visibility.Visible;
 
                     btnStop.Visibility = Visibility.Collapsed;
                     btnPause.Visibility = Visibility.Collapsed;
@@ -2970,49 +2997,23 @@ namespace GRID.Pages
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
             //WrapActivityList.Visibility = Visibility.Visible;
-           
-            if (grd.grdData.ScrContent.IsBreakClicked)
-            {
-                //tabMyActivities.Visibility = Visibility.Collapsed;
-                //tabProductive.Visibility = Visibility.Collapsed;
-                //tabMyActivities.Width = 0;
-                //tabProductive.Width = 0;
-            }
-            else
-            {
-                //tabMyActivities.Visibility = Visibility.Visible;
-                //tabProductive.Visibility = Visibility.Visible;
-                //tabMyActivities.IsSelected = true;
-                //tabMyActivities.Focus();
-            }
 
             btnStart.Visibility = Visibility.Collapsed;
             btnStop.Visibility = Visibility.Collapsed;
             btnPause.Visibility = Visibility.Collapsed;
             btnChange.Visibility = Visibility.Collapsed;
-            btnCloseMyAct.Visibility = Visibility.Visible;
+
+            MatDesActivityList.Visibility = Visibility.Visible;
         }
 
         private void GvProductivity_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             this.StartActivity(2);
-
-            btnStop.Visibility = Visibility.Visible;
-            btnPause.Visibility = Visibility.Visible;
-            btnChange.Visibility = Visibility.Visible;
-            grd.grdData.ScrContent.IsActivityRunning = true;
-            grd.grdData.ScrContent.IsMyDataChanged = true;
         }
 
         private void lvMyActivities_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             this.StartActivity(1);
-
-            btnStop.Visibility = Visibility.Visible;
-            btnPause.Visibility = Visibility.Visible;
-            btnChange.Visibility = Visibility.Visible;
-            grd.grdData.ScrContent.IsActivityRunning = true;
-            grd.grdData.ScrContent.IsMyDataChanged = true;
         }
 
         private void cmdMyFilter_Click(object sender, RoutedEventArgs e)
@@ -3095,25 +3096,6 @@ namespace GRID.Pages
             this.PopulateFavoriteList();
         }
 
-        private void btnCloseMyAct_Click(object sender, RoutedEventArgs e)
-        {
-            //if activity started, close is prohibited.
-
-            MainScrn.btnMyActivities.IsChecked = false;
-
-            //this.WrapActivityList.Visibility = Visibility.Collapsed;
-
-            btnStart.Visibility = Visibility.Collapsed;
-            btnStop.Visibility = Visibility.Collapsed;
-            btnPause.Visibility = Visibility.Collapsed;
-            btnChange.Visibility = Visibility.Collapsed;
-
-            btnCloseMyAct.Visibility = Visibility.Collapsed;
-            grd.grdData.ScrContent.IsStartClicked = false;
-
-            this.ClearWrapPanel();
-        }
-
         private void btnChange_Click(object sender, RoutedEventArgs e)
         {
 
@@ -3133,26 +3115,6 @@ namespace GRID.Pages
             }
         }
 
-        [Obsolete]
-        private void lstQAForm_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            this.StartActivity(3);
-            if (_ConfigCtr == 0)
-            {
-                new MessagesBox("You've Selected a Form" + Constants.vbNewLine + "With No Configuration.", MessageType.Error, MessageButtons.Ok).ShowDialog();
-                return;
-            }
-            btnStop.Visibility = Visibility.Visible;
-            btnPause.Visibility = Visibility.Visible;
-            btnChange.Visibility = Visibility.Visible;
-            //grd.grdData.ScrContent.IsActivityRunning = true;
-            //grd.grdData.ScrContent.IsMyDataChanged = true;
-
-            btnCloseMyAct.Visibility = Visibility.Visible;
-
-            this.ActivityMainTab.Visibility = Visibility.Collapsed;
-        }
-
         private void btnHandler_Click(object sender, RoutedEventArgs e)
         {
             //notifier.ShowError(objRF01.SelectedValue.ToString());
@@ -3167,6 +3129,87 @@ namespace GRID.Pages
             //grd.grdData.QuestionForm.dtObjContainer.AcceptChanges();
 
             QADynamicObjectsHandler();
+        }
+
+        private void btnEmpNo_Click(object sender, RoutedEventArgs e)
+        {
+
+            FrmChipUsers aa = new FrmChipUsers();
+            aa.ShowDialog();
+
+            txtAgentName.Text = grd.grdData.QuestionForm.EmpName;
+
+            if (Convert.ToInt32(grd.grdData.QuestionForm.UserId) != 0)
+                txtWorkgroup.Text = Convert.ToInt32(grd.grdData.QuestionForm.UserId).ToString();
+            else
+                txtWorkgroup.Text = "";
+        }
+
+        private void lstQAForm_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+
+            this.StartQAQuestion();
+
+            if (_ConfigCtr == 0)
+            {
+                new MessagesBox("You've Selected a Form" + Constants.vbNewLine + "With No Configuration.", MessageType.Error, MessageButtons.Ok).ShowDialog();
+                return;
+            }
+
+            btnStop.Visibility = Visibility.Visible;
+            btnPause.Visibility = Visibility.Visible;
+            btnChange.Visibility = Visibility.Visible;
+
+            this.ActivityMainTab.Visibility = Visibility.Collapsed;
+        }
+
+        private void Rectangle_Drop(object sender, DragEventArgs e)
+        {
+            if(e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                string filename = System.IO.Path.GetFileName(files[0]);
+
+                for (int i = 0; i < files.Length; i++)
+                {
+                    string fileName = System.IO.Path.GetFileName(files[i]);
+                    FileInfo fileInfo = new FileInfo(files[i]);
+
+                    UploadFileList.Items.Add(new Upload()
+                    {
+                        FileName = filename,
+                        FileSize = string.Format("{0} {1}", (fileInfo.Length / 1.049e+6).ToString("0.0"), "Mb"),
+                        UploadProgress = 100
+
+                    });
+                }
+            }
+        }
+
+        private void btnUploadSS_Click(object sender, RoutedEventArgs e)
+        {   
+            OpenFileDialog radOpenFileDialog = new OpenFileDialog() {Multiselect = true };
+            bool? response = radOpenFileDialog.ShowDialog();
+
+            if(response==true)
+            {
+                string[] files = radOpenFileDialog.FileNames;
+
+                for(int i =0; i < files.Length; i++)
+                {
+                    string filename = System.IO.Path.GetFileName(files[i]);
+                    FileInfo fileInfo = new FileInfo(files[i]);
+
+                    UploadFileList.Items.Add(new Upload()
+                    {
+                        FileName = filename,
+                        FileSize = string.Format("{0} {1}", (fileInfo.Length / 1.049e+6).ToString("0.0"), "Mb"),
+                        UploadProgress = 100
+
+                    }); 
+                }
+            }
+
         }
     }
 }

@@ -24,17 +24,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Pages\NewFolder\**" />
-    <EmbeddedResource Remove="Pages\NewFolder\**" />
-    <None Remove="Pages\NewFolder\**" />
-    <Page Remove="Pages\NewFolder\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="Controls\UserPopup.xaml.cs~RF192d5947.TMP" />
     <None Remove="Images\Icons\About.png" />
     <None Remove="Images\UserImg.png" />
-    <None Remove="Pages\tii4rokd.ngo~" />
     <None Remove="Resources\HamNav.png" />
     <None Remove="Resources\Prod100.png" />
     <None Remove="Resources\Prod1002.png" />

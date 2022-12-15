@@ -457,6 +457,9 @@ namespace GRIDLibraries.Libraries
             //DataTable dtQAMarkdownSelection;
         }
 
+
+        public int UserId { get; set; }
+        public string EmpName { get; set; }
         public int LOBId { get; set; }
         public string Name { get; set; }
         public int QID { get; set; }

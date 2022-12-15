@@ -1,7 +1,10 @@
-﻿using GRIDLibraries.Libraries;
+﻿using GRID.Controls;
+using GRIDLibraries.Libraries;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,36 +32,62 @@ namespace GRID.Pages
         {
             InitializeComponent();
 
-                
+          
           
         }
 
-        private void TabQA_MouseDown(object sender, MouseButtonEventArgs e)
+
+
+
+
+        private void btnUploadSS_Click(object sender, RoutedEventArgs e)
         {
-           
+            OpenFileDialog radOpenFileDialog = new OpenFileDialog() { Multiselect = true };
+            bool? response = radOpenFileDialog.ShowDialog();
+
+            if (response == true)
+            {
+                string[] files = radOpenFileDialog.FileNames;
+
+                for (int i = 0; i < files.Length; i++)
+                {
+                    string filename = System.IO.Path.GetFileName(files[i]);
+                    FileInfo fileInfo = new FileInfo(files[i]);
+
+                    UploadFileList.Items.Add(new Upload()
+                    {
+                        FileName = filename,
+                        FileSize = string.Format("{0} {1}", (fileInfo.Length / 1.049e+6).ToString("0.0"), "Mb"),
+                        UploadProgress = 100
+
+                    });
+                }
+            }
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
+        private void Rectangle_Drop(object sender, DragEventArgs e)
         {
-            //foreach (var QA in grd.grdData._lstQAQuestions)
-            //{
-            //    lstQAForm.Items.Add(new { Id = QA.LOBId, Name = QA.Name, Formula = QA.Formula, Target = QA.Target });
-            //}
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                string filename = System.IO.Path.GetFileName(files[0]);
 
-            //lstQAForm.Items.Clear();
-            //string _Formula;
-            //foreach (DataRow row in grd.grdData.QuestionForm.dtLOB.Rows)
-            //{
-            //    if (Convert.ToInt32(row["Formula"].ToString()) == 1)
-            //        _Formula = "Sum";
-            //    else
-            //        _Formula = "Average";
+                for (int i = 0; i < files.Length; i++)
+                {
+                    string fileName = System.IO.Path.GetFileName(files[i]);
+                    FileInfo fileInfo = new FileInfo(files[i]);
 
+                    UploadFileList.Items.Add(new Upload()
+                    {
+                        FileName = filename,
+                        FileSize = string.Format("{0} {1}", (fileInfo.Length / 1.049e+6).ToString("0.0"), "Mb"),
+                        UploadProgress = 100
 
-
-                //    lstQAForm.Items.Add(new { Id = row["Id"], Name = row["Name"], Formula = _Formula, Target = row["Target"] });
-
-                //}
+                    });
+                }
+            }
         }
+
+       
     }
 }

@@ -4,7 +4,7 @@
              xmlns:local="clr-namespace:GRID"
               xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
               xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
-             StartupUri="Pages/Page3.xaml">
+             StartupUri="FrmLogin.xaml">
 
     <!--StartupUri="FrmLogin.xaml"-->
     <!--"Pages/QAQuestionnaire.xaml"-->

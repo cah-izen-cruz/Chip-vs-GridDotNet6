@@ -40,6 +40,30 @@ namespace GRIDLibraries.Libraries
 
         }
 
+        public List<QAQuestionForm> GetEmployeePerTeamId(int _TeamId, string _EmpName)
+        {
+            var tempAgentList = new List<QAQuestionForm>();
+
+            if (this.OpenMainAHSQAConnection())
+            {
+                SqlDataReader dr;
+                this.gridMainDbCommand.CommandText = "SELECT EmpNo, EmpName FROM [dbo].[tblUserInfo] WITH (NOLOCK) WHERE EmpName LIKE '%" + _EmpName + "%' AND [Status]=1  ORDER BY [EmpName];";
+
+                dr = this.gridMainDbCommand.ExecuteReader();
+
+                while (dr.Read())
+                    tempAgentList.Add(new QAQuestionForm() { UserId = Convert.ToInt32(dr["EmpNo"]), EmpName = (string)dr["EmpName"] });
+                dr.Close();
+                this.CloseMainDbConnection();
+            }
+
+
+            return tempAgentList;
+
+        }
+
+
+
         //public DataTable GetQALob()
         //{
         //    var temp = new DataTable();
@@ -58,6 +82,7 @@ namespace GRIDLibraries.Libraries
 
         //    return temp;
         //}
+
 
         public DataTable GetQAQuestionnaires()
         {
