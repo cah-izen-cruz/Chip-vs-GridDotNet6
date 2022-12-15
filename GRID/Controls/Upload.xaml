@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:GRID.Controls"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              mc:Ignorable="d" x:Name="this"
-             Height="300" d:DesignWidth="300" Background="Transparent">
+             Height="110" d:DesignWidth="300" Background="Transparent">
 
     <UserControl.Resources>
         <PathGeometry x:Key="SS" Figures="M7,1A2,2 0 0,0 5,3V21A2,2 0 0,0 7,23H17A2,2 0 0,0 19,21V3A2,2 0 0,0 17,1H7M7,4H17V20H7V4M9,6V10H10.5V7.5H13V6H9M13.5,14V16.5H11V18H15V14H13.5Z" />
@@ -15,35 +15,34 @@
     
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="40"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Path Data="{StaticResource SS}" Fill="Silver" VerticalAlignment="Top" HorizontalAlignment="Left" Width="25" Stretch="Uniform"/>
+        <Path Data="{StaticResource SS}" Fill="{DynamicResource PrimaryTextColor}" VerticalAlignment="Top" HorizontalAlignment="Left" Width="25" Stretch="Uniform" Margin="0 10 0 0"/>
 
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="60"/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
+                <RowDefinition Height="30"/>
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="100"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock TextTrimming="CharacterEllipsis" 
-                           MaxWidth="230" 
+                <TextBlock Grid.Column="0"
+                           Width="400"
                            FontWeight="SemiBold"
                            Foreground="{DynamicResource PrimaryTextColor}"
-                           Text="{Binding FileName, ElementName=this, FallbackValue=FileName, TargetNullValue=FileName}" />
+                           Text="{Binding FileName, ElementName=this, FallbackValue=FileName, TargetNullValue=FileName}" HorizontalAlignment="Left"/>
 
-                <TextBlock Grid.Column="1" Padding="5,0"
+                <TextBlock Grid.Column="1" HorizontalAlignment="Right" 
                            Foreground="{DynamicResource PrimaryTextColor}"
                            Text="{Binding FileSize, ElementName=this, FallbackValue=FileSizeInMb, TargetNullValue=FileSizeInMb}" />
+
             </Grid>
             
             <Button x:Name="btnCloseMyAct" Style="{StaticResource IconButtonsStyle}" Content="{DynamicResource close}" Height="20" Width="20" HorizontalAlignment="Right" VerticalAlignment="Center"/>
@@ -53,46 +52,51 @@
                          x:Name="Pb"
                          Height="10"
                          Foreground="#47BDFF"
-                         Value="{Binding UploadProgress, ElementName=this}" />
+                         Value="{Binding UploadProgress, ElementName=this}"/>
+
+                <TextBlock Foreground="{DynamicResource PrimaryTextColor}" Margin="0 4 0 0">
+                    <TextBlock.Style>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Text" Value="{Binding Value, 
+                                      ElementName=Pb, StringFormat={}{0:##.0}% done}"/>
+
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Value, 
+                                            ElementName=Pb}" Value="100">
+                                    <Setter Property="Text" Value="Upload Complete"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+
+                        </Style>
+
+                    </TextBlock.Style>
+                </TextBlock>
+
+                <TextBlock HorizontalAlignment="Right" Foreground="{DynamicResource PrimaryTextColor}">
+                    <TextBlock.Style>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Text" Value="{Binding UploadSpeed, 
+                                      ElementName=this, StringFormat={}{0}Kb/sec}"/>
+
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding FallbackValue, 
+                                            ElementName=Pb}" Value="100">
+                                    <Setter Property="Text" Value=""/>
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+
+                        </Style>
+
+                    </TextBlock.Style>
+                </TextBlock>
+
             </StackPanel>
           
 
-            <TextBlock Grid.Row="2" Foreground="{DynamicResource PrimaryTextColor}">
-                <TextBlock.Style>
-                     <Style TargetType="{x:Type TextBlock}">
-                                  <Setter Property="Text" Value="{Binding Value, 
-                                      ElementName=Pb, StringFormat={}{0:##.0}% done}"/>
+           
 
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Value, 
-                                            ElementName=Pb}" Value="100">
-                                <Setter Property="Text" Value="Upload Complete"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-
-                    </Style>
-                                          
-                       </TextBlock.Style>
-            </TextBlock>
-
-            <TextBlock Grid.Row="2" HorizontalAlignment="Right" Foreground="{DynamicResource PrimaryTextColor}">
-                <TextBlock.Style>
-                    <Style TargetType="{x:Type TextBlock}">
-                        <Setter Property="Text" Value="{Binding UploadSpeed, 
-                                      ElementName=this, StringFormat={}{0}Kb/sec}"/>
-
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding FallbackValue, 
-                                            ElementName=Pb}" Value="100">
-                                <Setter Property="Text" Value=""/>
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-
-                    </Style>
-
-                </TextBlock.Style>
-            </TextBlock>
+           
         </Grid>
     </Grid>
 </UserControl>
