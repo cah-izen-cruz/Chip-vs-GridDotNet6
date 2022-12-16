@@ -19,6 +19,8 @@ namespace GRIDLibraries.Libraries
 
         public List<QAQuestionForm> _lstQAQuestions = new List<QAQuestionForm>();
 
+        public List<QAQuestionForm> _lstQAAttachments = new List<QAQuestionForm>();
+
 
         public DataTable dtActivity { get; set; } = new DataTable();
 

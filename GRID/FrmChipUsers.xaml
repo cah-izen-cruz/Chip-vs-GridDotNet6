@@ -9,7 +9,7 @@
         ResizeMode="NoResize" 
          xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         xmlns:matDes="http://materialdesigninxaml.net/winfx/xaml/themes"
-        Title="FrmChipUsers" Height="350" Width="400">
+        Title="FrmChipUsers" Height="350" Width="600">
     
     <Border Background="{DynamicResource SecundaryBackgroundColor}" matDes:ShadowAssist.ShadowDepth="Depth5">
         <GroupBox Header="Search Agent's Name">
@@ -39,8 +39,10 @@
                         <ListView.View>
                             <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
                                 <GridView.Columns>
-                                    <GridViewColumn Header="ID" DisplayMemberBinding="{Binding UserId}" Width="70"/>
-                                    <GridViewColumn Header="NAME" DisplayMemberBinding="{Binding EmpName}" Width="300"/>
+                                    <GridViewColumn Header="ID" DisplayMemberBinding="{Binding UserId}" Width="0"/>
+                                    <GridViewColumn Header="NAME" DisplayMemberBinding="{Binding EmpName}" Width="Auto"/>
+                                    <GridViewColumn Header="SupEmpNo" DisplayMemberBinding="{Binding SupEmpNo}" Width="0"/>
+                                    <GridViewColumn Header="SUPERVISOR" DisplayMemberBinding="{Binding Supervisor}" Width="Auto"/>
                                 </GridView.Columns>
                             </GridView>
                         </ListView.View>

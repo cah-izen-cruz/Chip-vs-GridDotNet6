@@ -2,7 +2,8 @@
   "profiles": {
     "GRID": {
       "commandName": "Project",
-      "nativeDebugging": true
+      "nativeDebugging": true,
+      "hotReloadEnabled": true
     }
   }
 }

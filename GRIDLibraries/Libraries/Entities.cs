@@ -438,7 +438,6 @@ namespace GRIDLibraries.Libraries
     {
         public List<QAPerfConfig>? ListOfQA { get; set; }
 
-        public DataTable dtLOB = new DataTable();
         public DataTable dtQAQuestionnaire = new DataTable();
         public DataTable dtQASelection = new DataTable();
         public DataTable dtQAMarkdownSelection = new DataTable();
@@ -457,9 +456,14 @@ namespace GRIDLibraries.Libraries
             //DataTable dtQAMarkdownSelection;
         }
 
-
+        public DateTime QADate { get; set; }
+        public int ItemId { get; set; }
+        public int SSId { get; set; }
+        public string SSFileName { get; set; }
         public int UserId { get; set; }
         public string EmpName { get; set; }
+        public int SupEmpNo { get; set; }
+        public string Supervisor { get; set; }
         public int LOBId { get; set; }
         public string Name { get; set; }
         public int QID { get; set; }

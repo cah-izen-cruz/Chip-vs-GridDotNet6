@@ -198,6 +198,7 @@
                     </TabItem>-->
 
                 </TabControl>
+            
             </matDes:TransitioningContent>
 
 
@@ -218,7 +219,7 @@
                                 </StackPanel>
                             </TabItem.Header>
 
-                            <GroupBox Header="Fill up details" Margin="0 8 4 4" >
+                            <GroupBox x:Name="GroupQAItem" Header="Fill up details" Margin="0 8 4 4" >
                                 <Grid Margin="10 0 10 0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="200"/>
@@ -252,7 +253,7 @@
                                     </matDes:TransitioningContent>
 
                                     <TextBlock Text="Interaction Date" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Foreground="{DynamicResource PrimaryTextColor}"/>
-                                    <telerik:RadDatePicker Width="100" Height="28" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left"/>
+                                    <telerik:RadDatePicker x:Name="cmbQADate" Width="100" Height="28" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left"/>
 
                                     <TextBlock Text="Agent Name" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Foreground="{DynamicResource PrimaryTextColor}"/>
                                     <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
@@ -291,15 +292,19 @@
                                                     BorderThickness="1" Width="200" Padding="2"                                                 
                                                     Foreground="{DynamicResource PrimaryTextColor}"/>
 
-                                    <TextBlock Text="Channel (Call/Email/Backoffice)" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" Foreground="{DynamicResource PrimaryTextColor}"/>
-                                    <TextBox x:Name="txtChannel" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="5" Grid.Column="1"
-                                                    FontSize="12"
-                                                    HorizontalContentAlignment="Stretch"
-                                                    BorderThickness="1" Width="200" Padding="2"                                                 
-                                                    Foreground="{DynamicResource PrimaryTextColor}"/>
+                                    <TextBlock Text="Channel" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" Foreground="{DynamicResource PrimaryTextColor}"/>
+                                    <ComboBox x:Name="cmbChannel" Grid.Row="5" Grid.Column="1" BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="1"
+                                          matDes:HintAssist.Hint="Choose Channel"
+                                          HorizontalAlignment="Left"
+                                          Foreground="{DynamicResource PrimaryTextColor}"
+                                          IsEditable="False" Padding="4" Width="200">
+                                        <ComboBoxItem Content="Backoffice"/>
+                                        <ComboBoxItem Content="Call" />
+                                        <ComboBoxItem Content="Email" />
+                                    </ComboBox>
 
                                     <TextBlock Text="Type of Evaluation" Grid.Row="6" Grid.Column="0" VerticalAlignment="Center" Foreground="{DynamicResource PrimaryTextColor}"/>
-                                    <ComboBox Grid.Row="6" Grid.Column="1" BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="1"
+                                    <ComboBox x:Name="cmbEvaluationType" Grid.Row="6" Grid.Column="1" BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="1"
                                           matDes:HintAssist.Hint="Choose Evaluation"
                                           HorizontalAlignment="Left"
                                           Foreground="{DynamicResource PrimaryTextColor}"
@@ -310,13 +315,13 @@
                                     </ComboBox>
 
                                     <StackPanel Grid.Row="8" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                        <Button Name="btnCancel" BorderThickness="0" Style="{StaticResource AddButtonQForm}" Margin="-3 0 0 0">
+                                        <Button Name="btnCancel" BorderThickness="0" Style="{StaticResource AddButtonQForm}" Margin="-3 0 0 0" Click="btnCancel_Click">
                                             <StackPanel Orientation="Horizontal">
                                                 <iconPacks:PackIconMaterial Kind="Cancel" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
                                                 <TextBlock Text="Cancel"/>
                                             </StackPanel>
                                         </Button>
-                                        <Button Name="btnNext" BorderThickness="0" Style="{StaticResource AddButtonQForm}" Margin="6 0 0 0">
+                                        <Button Name="btnNext" BorderThickness="0" Style="{StaticResource AddButtonQForm}" Margin="6 0 0 0" Click="btnNext_Click">
                                             <StackPanel Orientation="Horizontal">
                                                 <iconPacks:PackIconMaterial Kind="PageNext" VerticalAlignment="Center" Margin="0 1 8 0" Width="18" Height="18"/>
                                                 <TextBlock Text="Next"/>
@@ -337,8 +342,33 @@
                             </TabItem.Header>
 
                             <GroupBox Header="Double Click a Questionnaire to Start" Margin="0 8 4 4">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="50"/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
 
-                                <ScrollViewer>
+                                    <WrapPanel x:Name="WrapQAComboBox" Grid.Row="0" FlowDirection="LeftToRight" HorizontalAlignment="Left">
+                                        <ComboBox  x:Name="cmbQAForm" Padding="8"
+                                          matDes:HintAssist.Hint="Choose Question Form"
+                                          HorizontalAlignment="Stretch"                                                                                    
+                                          Width="330"
+                                          BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="1"
+                                          Foreground="{DynamicResource PrimaryTextColor}"
+                                          IsEditable="False"
+                                          ToolTip="Choose Questionnaire Name" DisplayMemberPath="Name" SelectedValuePath="LOBId" SelectionChanged="cmbQAForm_SelectionChanged" />
+                                    </WrapPanel>
+
+                                    <ScrollViewer Grid.Row="1">
+                                        <WrapPanel x:Name="QAWrapPanel" Grid.Column="0" Grid.ColumnSpan="2" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Orientation="Vertical" Width="Auto"/>
+                                    </ScrollViewer>
+                                </Grid>
+                               
+                              
+
+
+
+                                <!--<ScrollViewer>
                                     <ListView ItemsSource="{Binding}" Name="lstQAForm" Cursor="Hand" ScrollViewer.HorizontalScrollBarVisibility="Visible" MouseDoubleClick="lstQAForm_MouseDoubleClick" >
                                         <ListView.View>
                                             <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
@@ -351,7 +381,7 @@
                                             </GridView>
                                         </ListView.View>
                                     </ListView>
-                                </ScrollViewer>
+                                </ScrollViewer>-->
 
                             </GroupBox>
 
@@ -413,29 +443,47 @@
                                                 <matDes:TransitionEffect Kind="SlideInFromBottom"/>
                                             </matDes:TransitioningContent.OpeningEffects>
 
-                                            <Button Name="btnUploadSS" BorderThickness="0" Width="120" Margin="10 10 10 0" Click="btnUploadSS_Click">
-                                            <StackPanel Orientation="Horizontal">
-                                                <iconPacks:PackIconMaterial Kind="CloudUpload" VerticalAlignment="Center" Margin="0 1 8 0" Width="18" Height="18"/>
-                                                <TextBlock Text="Upload"/>
-                                            </StackPanel>
-                                        </Button>
+                                            <Button Name="btnUploadSS" BorderThickness="0" Width="120" Margin="10 8 10 0" Click="btnUploadSS_Click">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <iconPacks:PackIconMaterial Kind="CloudUpload" VerticalAlignment="Center" Margin="0 1 8 0" Width="18" Height="18"/>
+                                                    <TextBlock Text="Upload"/>
+                                                </StackPanel>
+                                            </Button>
                                         </matDes:TransitioningContent>
                                     </StackPanel>
 
-
-
-
                                     <ScrollViewer Grid.Column="1" Grid.RowSpan="2">
                                         <Grid>
-                                            <ItemsControl x:Name="UploadFileList" VerticalAlignment="Top">
-                                                <TextBlock Text="Uploading Screenshot" FontSize="20" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}"/>
-                                            </ItemsControl>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Orientation="Vertical">
+                                                <TextBlock Text="Uploading Screenshots" FontSize="20" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextColor}"/>
+                                                <ItemsControl x:Name="UploadFileList" VerticalAlignment="Top"/>
+
+
+                                                <StackPanel x:Name="AttContorls" Orientation="Horizontal" Margin="10" HorizontalAlignment="Right">
+                                                    <Button Name="btnSaveAtt" BorderThickness="0" Width="120" Click="btnSaveAtt_Click" >
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <iconPacks:PackIconMaterial Kind="Attachment" VerticalAlignment="Center" Margin="0 1 8 0" Width="18" Height="18"/>
+                                                            <TextBlock Text="Attach"/>
+                                                        </StackPanel>
+                                                    </Button>
+
+                                                    <Button Name="btnCancelAtt" BorderThickness="0" Width="120" Margin="10 0 0 0" Click="btnCancelAtt_Click">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <iconPacks:PackIconMaterial Kind="UploadOff" VerticalAlignment="Center" Margin="0 1 8 0" Width="18" Height="18"/>
+                                                            <TextBlock Text="Cancel"/>
+                                                        </StackPanel>
+                                                    </Button>
+                                                </StackPanel>
+                                            </StackPanel>
                                         </Grid>
                                     </ScrollViewer>
+
                                 </Grid>
-
                             </GroupBox>
-
                         </TabItem>
 
                     </TabControl>
@@ -448,22 +496,15 @@
 
             <Border x:Name="GridDynamicObjects" Grid.Row="1"  CornerRadius="10" BorderBrush="{DynamicResource PrimaryTextColor}" BorderThickness="0" Background="{DynamicResource SecundaryBackgroundColor}" Padding="4" VerticalAlignment="Top" HorizontalAlignment="Left" Width="Auto" Margin="0 0 0 10">
                 <ScrollViewer>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-
-
-                                <WrapPanel Grid.Column="0" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="WrapPanelMain"/>
-                                <WrapPanel Grid.Column="1" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="WrapPanelMain2"/>
-
-
-                        <WrapPanel x:Name="QAWrapPanel" Grid.Column="0" Grid.ColumnSpan="2" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Orientation="Vertical" Width="Auto" />
-
+                        <WrapPanel Grid.Column="0" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="WrapPanelMain"/>
+                        <WrapPanel Grid.Column="1" FlowDirection="LeftToRight" Height="Auto" HorizontalAlignment="Left" Margin="0" Name="WrapPanelMain2"/>
                     </Grid>
-
                 </ScrollViewer>
 
             </Border>

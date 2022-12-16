@@ -13,7 +13,6 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Threading;
 using Telerik.Windows.Controls;
-using Telerik.Windows.Controls.FileDialogs;
 using ToastNotifications;
 using ToastNotifications.Lifetime;
 using ToastNotifications.Messages;
@@ -73,11 +72,11 @@ namespace GRID.Pages
 
             lvMyActivities.ItemsSource = null;
             lvProductivity.ItemsSource = null;
-            lstQAForm.ItemsSource = null;
+            cmbQAForm.ItemsSource = null;
 
             lvProductivity.ItemsSource = grd.grdData._lstProductivityOrig;
             lvMyActivities.ItemsSource = grd.grdData._lstMyActivitiesOrig;
-            lstQAForm.ItemsSource = grd.grdData._lstQAQuestions;
+            cmbQAForm.ItemsSource = grd.grdData._lstQAQuestions;
 
             this.PopulateProcessAndSubProcessMyActivities();
             this.PopulateProcessAndSubProcessProductivity();
@@ -108,11 +107,9 @@ namespace GRID.Pages
             ActivityElapsedTimer.Interval = new TimeSpan(0, 0, 1);
 
             this.GridDynamicObjects.Visibility = Visibility.Collapsed;
-
             this.MatDesGridQA.Visibility = Visibility.Collapsed;
-            //this.TabAcc.IsSelected = true;
-            //this.TabQuestion.IsEnabled = false;
-            //this.TabSS.IsEnabled = false;
+            this.AttContorls.Visibility = Visibility.Collapsed;
+            grd.grdData._lstQAAttachments.Clear();
         }
 
         Notifier notifier = new Notifier(msg =>
@@ -177,18 +174,18 @@ namespace GRID.Pages
         #region "Populate Question Forms"
         private void PopulateQuestionForms()
         {
-            lstQAForm.Items.Clear();
-            string _Formula;
-            foreach (DataRow row in grd.grdData.QuestionForm.dtLOB.Rows)
-            {
-                if (Convert.ToInt32(row["Formula"].ToString()) == 1)
-                    _Formula = "Sum";
-                else
-                    _Formula = "Average";
+            //lstQAForm.Items.Clear();
+            //string _Formula;
+            //foreach (DataRow row in grd.grdData.QuestionForm.dtLOB.Rows)
+            //{
+            //    if (Convert.ToInt32(row["Formula"].ToString()) == 1)
+            //        _Formula = "Sum";
+            //    else
+            //        _Formula = "Average";
 
-                lstQAForm.Items.Add(new { Id = row["Id"], Name = row["Name"], Formula = _Formula, Target = row["Target"] });
+            //    lstQAForm.Items.Add(new { Id = row["Id"], Name = row["Name"], Formula = _Formula, Target = row["Target"] });
 
-            }
+            //}
 
             //lstQAForm.ItemsSource = grd.grdData.QuestionForm.dtLOB.DefaultView;
         }
@@ -351,6 +348,7 @@ namespace GRID.Pages
         #endregion
 
         #region "MAIN PROCESS"
+        [Obsolete]
         public void StartActivity()
         {
             grd.grdData.MainWindowAction = "";
@@ -385,17 +383,12 @@ namespace GRID.Pages
 
                     if (curAct.Id == 17)
                     {
-                        this.SetupQADynamicConfigInfo();
-
-                        if (QADynamicObjectsHandler())
-                        {
-                            this.GridDynamicObjects.Visibility = Visibility.Visible;
-                            this.QAWrapPanel.Visibility = Visibility.Visible;
-                        }
-
-
-
-                        return;
+                        this.MatDesGridQA.Visibility = Visibility.Visible;
+                        this.QAWrapPanel.Visibility = Visibility.Visible;
+                        this.MatDesActivityList.Visibility = Visibility.Collapsed;
+                        this.GridDynamicObjects.Visibility = Visibility.Collapsed;
+                        this.WrapPanelMain.Visibility = Visibility.Collapsed;
+                        this.WrapPanelMain2.Visibility = Visibility.Collapsed;
                     }
                     else
                     {
@@ -425,12 +418,6 @@ namespace GRID.Pages
                 catch (Exception ex)
                 {
                 }
-
-
-                btnStop.Visibility = Visibility.Visible;
-                btnPause.Visibility = Visibility.Visible;
-                btnChange.Visibility = Visibility.Visible;
-
             }
 
             grd.grdData.CurrentActivity.Id = newPerf.Id;
@@ -443,9 +430,9 @@ namespace GRID.Pages
             idleCtr = 0;
 
             notifier.ShowInformation("  Your Activity Started @ " + this.MainScrn.lblStartTime.Content);
-
         }
 
+        [Obsolete]
         public void StartSameActivity()
         {
             grd.grdData.MainWindowAction = "";
@@ -590,11 +577,9 @@ namespace GRID.Pages
 
         public void StopActivity()
         {
-
             if (!(grd.grdData.CurrentActivity.Id > 0))
             {
                 new MessagesBox("You have no running activity To Stop.", MessageType.Error, MessageButtons.Ok).ShowDialog();
-                //Interaction.MsgBox("You have no running activity To Stop.", Constants.vbExclamation, grd.AppName);
                 return;
             }
 
@@ -618,8 +603,6 @@ namespace GRID.Pages
             withBlock.PerfStatus = 2;
             withBlock.ReferenceId = grd.grdData.CurrentActivity.ReferenceId;
 
-
-
             if (!(grd.grdData.CurrentActivity.Activity.ConfigInfo == null))
             {
                 if (grd.grdData.CurrentActivity.Activity.ConfigInfo.Count > 0)
@@ -629,7 +612,6 @@ namespace GRID.Pages
 
                     curStopPerf.PerfConfigData = this.GetDynamicConfigData();
                     curStopPerf.PerfConfigData.PerfId = curStopPerf.Id;
-
                 }
             }
 
@@ -658,21 +640,13 @@ namespace GRID.Pages
                 {
                 }
 
-                //grd.MEditPerformanceLocal(curStopPerf);
-
-                //if (grd.MUpdatePerfInfoLocal((int)curStopPerf.Id, curStopPerf.PerfConfigData))
-                //{
                 grd.MUpdatePerfInfoMain((int)curStopPerf.Id, curStopPerf.PerfConfigData);
-                //}
+         
             }
             else
             {
                 new MessagesBox("Activity was Not successfully saved. Please Try again", MessageType.Warning, MessageButtons.Ok).ShowDialog();
-
-                //Interaction.MsgBox("Activity was Not successfully saved. Please Try again", Constants.vbInformation, grd.AppName);
-
                 grd.grdData.MainWindowAction = "";
-
                 return;
             }
 
@@ -715,15 +689,6 @@ namespace GRID.Pages
 
             grd.grdData.CurrentUser.LogOut = grd.grdData.CurrentActivity.TimeEnd2;
 
-            this.GridDynamicObjects.Visibility = Visibility.Collapsed;
-            this.WrapPanelMain.Visibility = Visibility.Collapsed;
-            this.WrapPanelMain2.Visibility = Visibility.Collapsed;
-            this.QAWrapPanel.Visibility = Visibility.Collapsed;
-
-            btnStop.Visibility = Visibility.Collapsed;
-            btnPause.Visibility = Visibility.Collapsed;
-            btnChange.Visibility = Visibility.Collapsed;
-
             grd.grdData.CurrentActivity.Started = false;
             this.MainScrn.PopulateAgentMetrics();
 
@@ -736,12 +701,6 @@ namespace GRID.Pages
 
             if (PrevActId > 0)
             {
-                //var ans2 = Interaction.MsgBox("Activity successfully saved!" + '\r' + '\r' + "Do you want to load the same activity?", Constants.vbYesNo, grd.AppName);
-
-
-
-                //var ans2 = Interaction.MsgBox("Do you want to load the same activity?", Constants.vbYesNo, grd.AppName);
-
                 bool? Result = new MessagesBox("Do you want to work on the same activity?", MessageType.Confirmation, MessageButtons.YesNo).ShowDialog();
 
                 if (Result.Value)
@@ -753,9 +712,6 @@ namespace GRID.Pages
                     //this.GoToActivitityList();
                     return;
                 }
-
-
-
 
             }
 
@@ -917,88 +873,7 @@ namespace GRID.Pages
 
         }
 
-
-        public void StartQAQuestion()
-        {
-            grd.grdData.MainWindowAction = "";
-
-            this.ClearWrapPanel();
-
-            idleCtr = 0;
-
-            var newPerf = new gridPerformance();
-
-            newPerf.Id = 1;
-            newPerf.UserId = grd.grdData.CurrentUser.EmpNo;
-            newPerf.TransDate = Convert.ToDateTime(grd.grdData.CurrentUser.TransactionDate2).ToString("MM/dd/yyyy");
-            newPerf.ActivityId = grd.grdData.CurrentActivity.ActivityId;
-            newPerf.TimeStart = Strings.Format(grd.grdData.CurrentActivity.TimeStart2, "MM/dd/yyyy h:mm:ss tt").ToString();
-            newPerf.TimeEnd = Strings.Format(grd.grdData.CurrentActivity.TimeEnd2, "MM/dd/yyyy h:mm:ss tt").ToString();
-            newPerf.TransDate2 = grd.grdData.CurrentUser.TransactionDate2;
-            newPerf.TimeStart2 = grd.grdData.CurrentActivity.TimeStart2;
-            newPerf.TimeEnd2 = grd.grdData.CurrentActivity.TimeEnd2;
-            newPerf.TimeElapsed = Strings.LTrim(Strings.RTrim((string)MainScrn.lblTimeElapsed.Content));
-            newPerf.IdleTime = grd.grdData.CurrentActivity.IdleTime;
-            newPerf.Status = "0";
-            newPerf.IsPaused = false;
-            newPerf.ReferenceId = grd.grdData.CurrentActivity.ReferenceId;
-            newPerf.PerfStatus = 0;
-
-
-
-
-            if (curAct.Id == 17)
-            {
-                this.SetupQADynamicConfigInfo();
-
-                if (QADynamicObjectsHandler())
-                {
-                    this.GridDynamicObjects.Visibility = Visibility.Visible;
-                    this.QAWrapPanel.Visibility = Visibility.Visible;
-
-                    this.MatDesGridQA.Visibility = Visibility.Collapsed;
-                    this.MatDesActivityList.Visibility = Visibility.Collapsed;
-                    this.WrapPanelMain.Visibility = Visibility.Collapsed;
-                    this.WrapPanelMain2.Visibility = Visibility.Collapsed;
-                }
-
-
-
-                return;
-            }
-
-
-
-            newPerf.Id = grd.AddPerformanceInfo(newPerf);
-
-            if (newPerf.Id > 0)
-            {
-                try
-                {
-                    grd.grdData.PerformanceList.Add(newPerf);
-                }
-                catch (Exception ex)
-                {
-                }
-
-                btnStop.Visibility = Visibility.Visible;
-                btnPause.Visibility = Visibility.Visible;
-                btnChange.Visibility = Visibility.Visible;
-
-            }
-
-            grd.grdData.CurrentActivity.Id = newPerf.Id;
-
-            MainScrn.lblActivityName.Content = grd.grdData.CurrentActivity.Activity.ActName;
-            MainScrn.lblAHT.Content = grd.grdData.CurrentActivity.Activity.AHT;
-            MainScrn.lblProcessName.Content = grd.grdData.CurrentActivity.Activity.Process;
-            MainScrn.lblStartTime.Content = grd.grdData.CurrentActivity.TimeStart2.ToLongTimeString();
-            MainScrn.MinuteTimer = 0;
-            idleCtr = 0;
-
-            notifier.ShowInformation("  Your Activity Started @ " + this.MainScrn.lblStartTime.Content);
-
-        }
+     
         #endregion
 
         #region "Level4 SetupDynamicConfigInfo"
@@ -1048,56 +923,49 @@ namespace GRID.Pages
             grd.grdData.QuestionForm.dtObjContainer.Columns.Add("DDNameMD");
             grd.grdData.QuestionForm.dtObjContainer.Columns.Add("Remarks");
 
-            for (int i = lstQAForm.SelectedItems.Count - 1; i >= 0; i -= 1)
+            QAQuestionForm QA = (QAQuestionForm)cmbQAForm.SelectedItem;
+
+            grd.grdData.QuestionForm.LOBId = QA.LOBId;
+            grd.grdData.QuestionForm.Formula = QA.Formula.ToString();
+            grd.grdData.QuestionForm.Name = QA.Name.ToString();
+            grd.grdData.QuestionForm.Target = Convert.ToInt32(QA.Target);
+
+            if (grd.grdData.QuestionForm.LOBId.ToString() != "")
             {
-                var obj = lstQAForm.SelectedItems[i];
-                var id = obj.GetType().GetProperties().First(o => o.Name == "LOBId").GetValue(obj, null);
-                var Name = obj.GetType().GetProperties().First(o => o.Name == "Name").GetValue(obj, null);
-                var Formula = obj.GetType().GetProperties().First(o => o.Name == "Formula").GetValue(obj, null);
-                var Target = obj.GetType().GetProperties().First(o => o.Name == "Target").GetValue(obj, null);
-
-                grd.grdData.QuestionForm.Formula = Formula.ToString();
-                grd.grdData.QuestionForm.Name = Name.ToString();
-                grd.grdData.QuestionForm.Target = Convert.ToInt32(Target);
-
-
-                if (id.ToString() != "")
+                DataRow[] result = grd.grdData.QuestionForm.dtQAQuestionnaire.Select("LOBId = '" + grd.grdData.QuestionForm.LOBId + "'");
+                foreach (DataRow row in result)
                 {
-                    DataRow[] result = grd.grdData.QuestionForm.dtQAQuestionnaire.Select("LOBId = '" + id + "'");
-                    foreach (DataRow row in result)
+                    if (dt.Rows.Count == 0)
                     {
-                        if (dt.Rows.Count == 0)
-                        {
-                            dt.Columns.Add("Name");
-                            dt.Columns.Add("QID");
-                            dt.Columns.Add("Question");
-                            dt.Columns.Add("ObjectType");
-                            dt.Columns.Add("Category");
-                            dt.Columns.Add("Description");
+                        dt.Columns.Add("Name");
+                        dt.Columns.Add("QID");
+                        dt.Columns.Add("Question");
+                        dt.Columns.Add("ObjectType");
+                        dt.Columns.Add("Category");
+                        dt.Columns.Add("Description");
 
-                            dr = dt.NewRow();
-                            dr["Name"] = row["Name"];
-                            dr["QID"] = row["FormId"];
-                            dr["Question"] = row["Question"];
-                            dr["ObjectType"] = row["ObjectType"];
-                            dr["Category"] = row["Category"];
-                            dr["Description"] = row["Description"];
-                            dt.Rows.Add(dr);
-                        }
-                        else
-                        {
-                            dr = dt.NewRow();
-                            dr["Name"] = row["Name"];
-                            dr["QID"] = row["FormId"];
-                            dr["Question"] = row["Question"];
-                            dr["ObjectType"] = row["ObjectType"];
-                            dr["Category"] = row["Category"];
-                            dr["Description"] = row["Description"];
-                            dt.Rows.Add(dr);
-                        }
-
-                        dt.AcceptChanges();
+                        dr = dt.NewRow();
+                        dr["Name"] = row["Name"];
+                        dr["QID"] = row["FormId"];
+                        dr["Question"] = row["Question"];
+                        dr["ObjectType"] = row["ObjectType"];
+                        dr["Category"] = row["Category"];
+                        dr["Description"] = row["Description"];
+                        dt.Rows.Add(dr);
                     }
+                    else
+                    {
+                        dr = dt.NewRow();
+                        dr["Name"] = row["Name"];
+                        dr["QID"] = row["FormId"];
+                        dr["Question"] = row["Question"];
+                        dr["ObjectType"] = row["ObjectType"];
+                        dr["Category"] = row["Category"];
+                        dr["Description"] = row["Description"];
+                        dt.Rows.Add(dr);
+                    }
+
+                    dt.AcceptChanges();
                 }
             }
 
@@ -1273,6 +1141,276 @@ namespace GRID.Pages
                 xx.Margin = new Thickness(4, 6, 1, 1);
                 xx.Orientation = Orientation.Vertical;
             }
+
+            //#region "Clean"
+            //this.QAWrapPanel.Children.Clear();
+            //try
+            //{
+            //    for (int i = 1; i <= 50; i++)
+            //    {
+
+            //        object tempObj = this.FindName("objScore" + Strings.Format(i, "00"));
+            //        if (!(tempObj == null))
+            //        {
+            //            this.UnregisterName("objScore" + Strings.Format(i, "00"));
+            //        }
+
+            //        object tempObj2 = this.FindName("objMd" + Strings.Format(i, "00"));
+            //        if (!(tempObj2 == null))
+            //        {
+            //            this.UnregisterName("objMd" + Strings.Format(i, "00"));
+            //        }
+
+            //        object tempObj3 = this.FindName("objRemarks" + Strings.Format(i, "00"));
+            //        if (!(tempObj3 == null))
+            //        {
+            //            this.UnregisterName("objRemarks" + Strings.Format(i, "00"));
+            //        }
+
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message);
+            //}
+
+            //#endregion
+
+            //dt = new DataTable();
+            //grd.grdData.QuestionForm.dtObjContainer = new DataTable();
+            //grd.grdData.QuestionForm.dtObjContainer.Columns.Add("Name");
+            //grd.grdData.QuestionForm.dtObjContainer.Columns.Add("QID");
+            //grd.grdData.QuestionForm.dtObjContainer.Columns.Add("Category");
+            //grd.grdData.QuestionForm.dtObjContainer.Columns.Add("Question");
+            //grd.grdData.QuestionForm.dtObjContainer.Columns.Add("DDNameSel");
+            //grd.grdData.QuestionForm.dtObjContainer.Columns.Add("DDNameMD");
+            //grd.grdData.QuestionForm.dtObjContainer.Columns.Add("Remarks");
+
+            //for (int i = lstQAForm.SelectedItems.Count - 1; i >= 0; i -= 1)
+            //{
+            //    var obj = lstQAForm.SelectedItems[i];
+            //    var id = obj.GetType().GetProperties().First(o => o.Name == "LOBId").GetValue(obj, null);
+            //    var Name = obj.GetType().GetProperties().First(o => o.Name == "Name").GetValue(obj, null);
+            //    var Formula = obj.GetType().GetProperties().First(o => o.Name == "Formula").GetValue(obj, null);
+            //    var Target = obj.GetType().GetProperties().First(o => o.Name == "Target").GetValue(obj, null);
+
+            //    grd.grdData.QuestionForm.Formula = Formula.ToString();
+            //    grd.grdData.QuestionForm.Name = Name.ToString();
+            //    grd.grdData.QuestionForm.Target = Convert.ToInt32(Target);
+
+
+            //    if (id.ToString() != "")
+            //    {
+            //        DataRow[] result = grd.grdData.QuestionForm.dtQAQuestionnaire.Select("LOBId = '" + id + "'");
+            //        foreach (DataRow row in result)
+            //        {
+            //            if (dt.Rows.Count == 0)
+            //            {
+            //                dt.Columns.Add("Name");
+            //                dt.Columns.Add("QID");
+            //                dt.Columns.Add("Question");
+            //                dt.Columns.Add("ObjectType");
+            //                dt.Columns.Add("Category");
+            //                dt.Columns.Add("Description");
+
+            //                dr = dt.NewRow();
+            //                dr["Name"] = row["Name"];
+            //                dr["QID"] = row["FormId"];
+            //                dr["Question"] = row["Question"];
+            //                dr["ObjectType"] = row["ObjectType"];
+            //                dr["Category"] = row["Category"];
+            //                dr["Description"] = row["Description"];
+            //                dt.Rows.Add(dr);
+            //            }
+            //            else
+            //            {
+            //                dr = dt.NewRow();
+            //                dr["Name"] = row["Name"];
+            //                dr["QID"] = row["FormId"];
+            //                dr["Question"] = row["Question"];
+            //                dr["ObjectType"] = row["ObjectType"];
+            //                dr["Category"] = row["Category"];
+            //                dr["Description"] = row["Description"];
+            //                dt.Rows.Add(dr);
+            //            }
+
+            //            dt.AcceptChanges();
+            //        }
+            //    }
+            //}
+
+            //_ConfigCtr = dt.Rows.Count;
+
+            //int loopCtr = 0;
+            //int loopMd = 0;
+            //int loopTb = 0;
+
+            //for (int k = 0; k < dt.Rows.Count; k++)
+            //{
+
+            //    grd.grdData.QuestionForm.drObjContainer = grd.grdData.QuestionForm.dtObjContainer.NewRow();
+            //    grd.grdData.QuestionForm.drObjContainer["Name"] = dt.Rows[k]["Name"];
+            //    grd.grdData.QuestionForm.drObjContainer["QID"] = dt.Rows[k]["QID"];
+            //    grd.grdData.QuestionForm.drObjContainer["Category"] = dt.Rows[k]["Category"];
+
+            //    grd.grdData.QuestionForm.QID = Convert.ToInt32(dt.Rows[k]["QID"]);
+
+            //    var z = new TextBlock();
+            //    z.Text = dt.Rows[k]["Category"].ToString();
+            //    z.TextWrapping = TextWrapping.Wrap;
+            //    z.Width = 400;
+            //    z.Height = 24;
+            //    z.FontSize = 13;
+            //    z.FontWeight = FontWeights.Bold;
+            //    z.HorizontalAlignment = HorizontalAlignment.Left;
+            //    z.Foreground = System.Windows.Media.Brushes.YellowGreen;
+            //    z.Margin = new Thickness(4, 2, 0, 0);
+            //    z.VerticalAlignment = VerticalAlignment.Top;
+
+            //    if (dt.Rows[k]["Category"].ToString() != Category)
+            //        this.QAWrapPanel.Children.Add(z);
+
+            //    Category = dt.Rows[k]["Category"].ToString();
+            //    Question = dt.Rows[k]["Question"].ToString();
+            //    int Q;
+
+            //    for (int r = 0; r < dt.Rows.Count; r++)
+            //    {
+            //        Q = r + 1;
+            //        if (Question.ToString() == dt.Rows[r]["Question"].ToString())
+            //        {
+            //            var x = new WrapPanel();
+            //            x.Background = System.Windows.Media.Brushes.Transparent;
+            //            x.VerticalAlignment = VerticalAlignment.Top;
+            //            x.HorizontalAlignment = HorizontalAlignment.Left;
+            //            x.Margin = new Thickness(4, -10, 1, 1);
+            //            x.Orientation = Orientation.Horizontal;
+
+            //            grd.grdData.QuestionForm.drObjContainer["Question"] = dt.Rows[r]["Question"];
+
+            //            var y = new TextBlock();
+            //            y.Text = "Q" + Q + ": " + dt.Rows[r]["Question"].ToString();
+            //            y.TextWrapping = TextWrapping.Wrap;
+            //            y.Width = 250;
+            //            y.FontSize = 13;
+            //            y.HorizontalAlignment = HorizontalAlignment.Left;
+            //            y.Foreground = System.Windows.Media.Brushes.White;
+            //            y.Margin = new Thickness(1, 6, 1, 1);
+            //            y.VerticalAlignment = VerticalAlignment.Top;
+
+            //            dd = new RadComboBox();
+            //            dd.Width = 100;
+            //            dd.Height = 24;
+            //            dd.FontSize = 11;
+            //            dd.HorizontalContentAlignment = HorizontalAlignment.Left;
+            //            dd.VerticalContentAlignment = VerticalAlignment.Center;
+            //            dd.VerticalAlignment = VerticalAlignment.Top;
+            //            dd.Foreground = System.Windows.Media.Brushes.Black;
+            //            dd.Margin = new Thickness(8, -1, 1, 1);
+            //            dd.IsEditable = false;
+            //            dd.SelectedValuePath = "Score";
+            //            dd.DisplayMemberPath = "Value";
+
+            //            dd.SelectionChanged += btnHandler_Click;
+
+            //            dd.Name = QAGetObjectNameScore(loopCtr);
+            //            this.RegisterName(dd.Name, dd);
+
+            //            x.Children.Add(y);
+            //            x.Children.Add(dd);
+
+            //            grd.grdData.QuestionForm.drObjContainer["DDNameSel"] = dd.Name;
+
+            //            mdd = new RadComboBox();
+            //            mdd.Width = 100;
+            //            mdd.Height = 24;
+            //            mdd.FontSize = 11;
+            //            mdd.HorizontalContentAlignment = HorizontalAlignment.Left;
+            //            mdd.VerticalContentAlignment = VerticalAlignment.Center;
+            //            mdd.VerticalAlignment = VerticalAlignment.Top;
+            //            mdd.Foreground = System.Windows.Media.Brushes.Black;
+            //            mdd.Margin = new Thickness(4, -1, 1, 1);
+            //            mdd.IsEditable = false;
+            //            mdd.SelectedValuePath = "Id";
+            //            mdd.DisplayMemberPath = "Value";
+
+            //            mdd.SelectionChanged += btnHandler_Click;
+
+            //            mdd.Name = QAGetObjectNameMd(loopMd);
+            //            this.RegisterName(mdd.Name, mdd);
+
+            //            x.Children.Add(mdd);
+
+            //            grd.grdData.QuestionForm.drObjContainer["DDNameMD"] = mdd.Name;
+
+            //            tb = new RadWatermarkTextBox();
+            //            tb.Text = "Put a remarks here..."; /*dt.Rows[r]["Description"].ToString();*/
+            //            tb.Width = 250;
+            //            tb.Height = 24;
+            //            tb.FontSize = 11;
+            //            tb.HorizontalContentAlignment = HorizontalAlignment.Left;
+            //            tb.VerticalContentAlignment = VerticalAlignment.Center;
+            //            tb.VerticalAlignment = VerticalAlignment.Top;
+            //            tb.Foreground = System.Windows.Media.Brushes.Black;
+            //            tb.Margin = new Thickness(4, -1, 1, 1);
+
+            //            tb.Name = QAGetObjectNameRem(loopTb);
+            //            this.RegisterName(tb.Name, tb);
+
+            //            x.Children.Add(tb);
+
+            //            grd.grdData.QuestionForm.drObjContainer["Remarks"] = tb.Name;
+
+            //            this.QAWrapPanel.Children.Add(x);
+
+            //            DataRow[] res = grd.grdData.QuestionForm.dtQASelection.Select("FormId = '" + dt.Rows[k]["QID"] + "'");
+            //            foreach (DataRow row in res)
+            //            {
+            //                dd.Items.Add(new { Value = row["Value"], Score = row["Score"] });
+            //            }
+
+            //            DataRow[] resMd = grd.grdData.QuestionForm.dtQAMarkdownSelection.Select("QID = '" + grd.grdData.QuestionForm.QID + "'");
+            //            foreach (DataRow row in resMd)
+            //            {
+            //                mdd.Items.Add(new { Value = row["Value"], Id = row["Id"] });
+            //            }
+
+            //            grd.grdData.QuestionForm.dtObjContainer.Rows.Add(grd.grdData.QuestionForm.drObjContainer);
+            //            grd.grdData.QuestionForm.dtObjContainer.AcceptChanges();
+
+            //            loopCtr = loopCtr + 1;
+            //            loopMd = loopMd + 1;
+            //            loopTb = loopTb + 1;
+            //        }
+            //    }
+
+            //    var l = new TextBlock();
+            //    l.Text = "Description: " + dt.Rows[k]["Description"].ToString();
+            //    l.TextWrapping = TextWrapping.Wrap;
+            //    l.Width = 400;
+            //    l.Height = 24;
+            //    l.FontSize = 11;
+            //    l.FontStyle = FontStyles.Italic;
+            //    //l.FontWeight = FontWeights.Bold;
+            //    l.HorizontalAlignment = HorizontalAlignment.Left;
+            //    l.Foreground = System.Windows.Media.Brushes.White;
+            //    l.Margin = new Thickness(6, -1, 1, 1);
+            //    l.VerticalAlignment = VerticalAlignment.Top;
+
+            //    this.QAWrapPanel.Children.Add(l);
+
+
+            //}
+
+            //if (_ConfigCtr > 0)
+            //{
+            //    xx = new WrapPanel();
+            //    xx.Background = System.Windows.Media.Brushes.Transparent;
+            //    xx.VerticalAlignment = VerticalAlignment.Top;
+            //    xx.HorizontalAlignment = HorizontalAlignment.Left;
+            //    xx.Margin = new Thickness(4, 6, 1, 1);
+            //    xx.Orientation = Orientation.Vertical;
+            //}
 
 
         }
@@ -2707,6 +2845,363 @@ namespace GRID.Pages
 
         #endregion
 
+        #region "QA QUESTION TABS"
+        [Obsolete]
+        private void lstQAForm_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            this.StartQAQuestion();
+
+            if (_ConfigCtr == 0)
+            {
+                new MessagesBox("You've Selected a Form" + Constants.vbNewLine + "With No Configuration.", MessageType.Error, MessageButtons.Ok).ShowDialog();
+                return;
+            }
+
+            btnStop.Visibility = Visibility.Visible;
+            btnPause.Visibility = Visibility.Visible;
+            btnChange.Visibility = Visibility.Visible;
+
+            this.MatDesActivityList.Visibility = Visibility.Collapsed;
+        }
+
+        private void btnHandler_Click(object sender, RoutedEventArgs e)
+        {
+            //notifier.ShowError(objRF01.SelectedValue.ToString());
+
+
+            //for (int i = grd.grdData.QuestionForm.dtObjContainer.Rows.Count - 1; i >= 0; i--)
+            //{
+            //    DataRow dr = grd.grdData.QuestionForm.dtObjContainer.Rows[i];
+            //    if (dr["Name"] == row1["Name"].ToString())
+            //        dr.Delete();
+            //}
+            //grd.grdData.QuestionForm.dtObjContainer.AcceptChanges();
+
+            QADynamicObjectsHandler();
+        }
+
+        private void btnEmpNo_Click(object sender, RoutedEventArgs e)
+        {
+            FrmChipUsers aa = new FrmChipUsers();
+            aa.ShowDialog();
+
+            txtAgentName.Text = grd.grdData.QuestionForm.EmpName;
+            txtWorkgroup.Focus();
+
+        }
+
+        private void btnUploadSS_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog OpenFileDialog = new OpenFileDialog() { Multiselect = true };
+            OpenFileDialog.Filter = "JPG Files (*.jpg)|*.jpg| PNG Files (*.png)| All Files (*.*)";
+            OpenFileDialog.Title = "Browse Screenshot";
+
+            bool? response = OpenFileDialog.ShowDialog();
+
+            if (response == true)
+            {
+                string[] files = OpenFileDialog.FileNames;
+
+
+                for (int i = 0; i < files.Length; i++)
+                {
+                    string filename = System.IO.Path.GetFileName(files[i]);
+                    FileInfo fileInfo = new FileInfo(files[i]);
+
+                    UploadFileList.Items.Add(new Upload()
+                    {
+                        //FileName = filename,
+                        FileName = fileInfo.ToString(),
+                        FileSize = string.Format("{0} {1}", (fileInfo.Length / 1.049e+6).ToString("0.0"), "Mb"),
+                        UploadProgress = 100
+
+                    });
+                }
+
+                this.AttContorls.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void Rectangle_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                string filename = System.IO.Path.GetFileName(files[0]);
+
+
+
+                for (int i = 0; i < files.Length; i++)
+                {
+                    string fileName = System.IO.Path.GetFileName(files[i]);
+                    FileInfo fileInfo = new FileInfo(files[i]);
+
+                    UploadFileList.Items.Add(new Upload()
+                    {
+                        //FileName = filename,
+                        FileName = fileInfo.ToString(),
+                        FileSize = string.Format("{0} {1}", (fileInfo.Length / 1.049e+6).ToString("0.0"), "Mb"),
+                        UploadProgress = 100
+
+                    });
+                }
+
+                this.AttContorls.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void btnCancelAtt_Click(object sender, RoutedEventArgs e)
+        {
+            if (UploadFileList.Items.Count > 0)
+            {
+                bool? Result = new MessagesBox("Remove Attachments?", MessageType.Confirmation, MessageButtons.YesNo).ShowDialog();
+                if (Result.Value)
+                {
+                    grd.grdData._lstQAAttachments.Clear();
+                    UploadFileList.Items.Clear();
+                    this.AttContorls.Visibility = Visibility.Collapsed;
+                }
+            }
+            else
+            {
+                new MessagesBox("No Attachment(s) to remove.", MessageType.Error, MessageButtons.Ok).ShowDialog();
+            }
+        }
+
+        [Obsolete]
+        private void btnSaveAtt_Click(object sender, RoutedEventArgs e)
+        {
+            if (UploadFileList.Items.Count > 0)
+            {
+                for (int i = 0, loopTo = UploadFileList.Items.Count - 1; i <= loopTo; i++)
+                {
+                    var obj = UploadFileList.Items[i];
+                    var FileName = Convert.ToString(obj.GetType().GetProperties().First(o => o.Name == "FileName").GetValue(obj, null));
+
+
+
+                    grd.grdData._lstQAAttachments.Add(new QAQuestionForm { SSId = i, SSFileName = FileName.ToString() });
+                }
+
+                bool? Result = new MessagesBox("This will save the uploaded Screenshots(" + UploadFileList.Items.Count + ")." + Constants.vbNewLine + "Are all Attachments correct?", MessageType.Confirmation, MessageButtons.YesNo).ShowDialog();
+                if (Result.Value)
+                {
+                    for (int i = 0, loopTo = grd.grdData._lstQAAttachments.Count - 1; i <= loopTo; i++)
+                    {
+                        FileInfo fileInfo = new FileInfo(grd.grdData._lstQAAttachments[i].SSFileName);
+                        byte[] ss = null;
+                        FileStream fs = new FileStream(fileInfo.ToString(), FileMode.Open, FileAccess.Read);
+                        BinaryReader br = new BinaryReader(fs);
+
+                        ss = br.ReadBytes((int)fs.Length);
+                        br.Close();
+                        fs.Close();
+
+                        this.grd.SaveQAAttachments(grd.grdData.QuestionForm.ItemId, ss);
+                    }
+
+                    this.AttContorls.Visibility = Visibility.Collapsed;
+                    grd.grdData._lstQAAttachments.Clear();
+                    UploadFileList.Items.Clear();
+
+                    notifier.ShowSuccess("Attactments Saved.");
+                }
+            }
+            else
+            {
+                new MessagesBox("No Screenshot(s) to attach.", MessageType.Error, MessageButtons.Ok).ShowDialog();
+            }
+
+
+        }
+
+        private void cmbQAForm_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            this.SetupQADynamicConfigInfo();
+            if (QADynamicObjectsHandler())
+            {
+                this.QAWrapPanel.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void btnNext_Click(object sender, RoutedEventArgs e)
+        {
+            if (cmbQADate == null || txtAgentName.Text == "" || txtWorkgroup.Text == "" || txtCustomer.Text == "" || txtRecordId.Text == "" || cmbChannel.Text == "" || cmbEvaluationType.Text == "")
+                new MessagesBox("One or more fields were empty." + Constants.vbNewLine + "Please Check.", MessageType.Error, MessageButtons.Ok).ShowDialog();
+            else
+            {
+                this.grd.SaveQAItemsSCOPE_IDENTITY(grd.grdData.QuestionForm.QADate, grd.grdData.QuestionForm.UserId, txtWorkgroup.Text); //-- Getting ItemId
+
+                this.TabQuestion.IsSelected = true;
+                this.TabQuestion.IsEnabled = true;
+                this.TabSS.IsEnabled = true;
+                this.GroupQAItem.IsEnabled = false;
+            }
+
+        }
+
+        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            this.ClearItemFields();
+        }
+
+        public void ClearItemFields()
+        {
+            cmbQADate.SelectedDate = null;
+            txtAgentName.Text = "";
+            txtWorkgroup.Text = "";
+            txtCustomer.Text = "";
+            txtRecordId.Text = "";
+            cmbChannel.Text = "";
+            cmbEvaluationType.Text = "";
+        }
+
+        [Obsolete]
+        public void StartQAQuestion()
+        {
+            grd.grdData.MainWindowAction = "";
+
+            this.ClearWrapPanel();
+
+            idleCtr = 0;
+
+            var newPerf = new gridPerformance();
+
+            newPerf.Id = 1;
+            newPerf.UserId = grd.grdData.CurrentUser.EmpNo;
+            newPerf.TransDate = Convert.ToDateTime(grd.grdData.CurrentUser.TransactionDate2).ToString("MM/dd/yyyy");
+            newPerf.ActivityId = grd.grdData.CurrentActivity.ActivityId;
+            newPerf.TimeStart = Strings.Format(grd.grdData.CurrentActivity.TimeStart2, "MM/dd/yyyy h:mm:ss tt").ToString();
+            newPerf.TimeEnd = Strings.Format(grd.grdData.CurrentActivity.TimeEnd2, "MM/dd/yyyy h:mm:ss tt").ToString();
+            newPerf.TransDate2 = grd.grdData.CurrentUser.TransactionDate2;
+            newPerf.TimeStart2 = grd.grdData.CurrentActivity.TimeStart2;
+            newPerf.TimeEnd2 = grd.grdData.CurrentActivity.TimeEnd2;
+            newPerf.TimeElapsed = Strings.LTrim(Strings.RTrim((string)MainScrn.lblTimeElapsed.Content));
+            newPerf.IdleTime = grd.grdData.CurrentActivity.IdleTime;
+            newPerf.Status = "0";
+            newPerf.IsPaused = false;
+            newPerf.ReferenceId = grd.grdData.CurrentActivity.ReferenceId;
+            newPerf.PerfStatus = 0;
+
+            newPerf.Id = grd.AddPerformanceInfo(newPerf);
+
+            if (newPerf.Id > 0)
+            {
+                try
+                {
+                    grd.grdData.PerformanceList.Add(newPerf);
+                }
+                catch (Exception ex)
+                {
+                }
+
+                btnStop.Visibility = Visibility.Visible;
+                btnPause.Visibility = Visibility.Visible;
+                btnChange.Visibility = Visibility.Visible;
+
+            }
+
+            grd.grdData.CurrentActivity.Id = newPerf.Id;
+
+            MainScrn.lblActivityName.Content = grd.grdData.CurrentActivity.Activity.ActName;
+            MainScrn.lblAHT.Content = grd.grdData.CurrentActivity.Activity.AHT;
+            MainScrn.lblProcessName.Content = grd.grdData.CurrentActivity.Activity.Process;
+            MainScrn.lblStartTime.Content = grd.grdData.CurrentActivity.TimeStart2.ToLongTimeString();
+            MainScrn.MinuteTimer = 0;
+            idleCtr = 0;
+
+            notifier.ShowInformation("  Your Activity Started @ " + this.MainScrn.lblStartTime.Content);
+
+        }
+
+        private void StopQAActivity()
+        {
+            if (grd.grdData.QuestionForm.dtObjContainer.Rows.Count == _ConfigCtr)
+            {
+                dt = new DataTable();
+
+                dt.Columns.Add("QID");
+                dt.Columns.Add("Category");
+                dt.Columns.Add("Question");
+                dt.Columns.Add("Value");
+                dt.Columns.Add("Score");
+                dt.Columns.Add("Markdown");
+                dt.Columns.Add("Remarks");
+
+                int _Score = 0;
+
+                foreach (DataRow row in grd.grdData.QuestionForm.dtObjContainer.Rows)
+                {
+                    DataRow[] fQ = dt.Select("Question = '" + row["Question"].ToString() + "'");
+                    RadComboBox cbValue = (RadComboBox)this.FindName(row["DDNameSel"].ToString());
+                    RadComboBox cbMd = (RadComboBox)this.FindName(row["DDNameMD"].ToString());
+                    RadWatermarkTextBox tbRemarks = (RadWatermarkTextBox)this.FindName(row["Remarks"].ToString());
+
+                    if (fQ.Length == 0)
+                    {
+                        dr = dt.NewRow();
+                        dr["QID"] = Convert.ToInt32(row["QID"]);
+                        dr["Category"] = row["Category"].ToString();
+                        dr["Question"] = row["Question"].ToString();
+                        dr["Value"] = cbValue.Text;
+                        dr["Score"] = Convert.ToInt32(cbValue.SelectedValue);
+                        dr["Markdown"] = cbMd.Text;
+                        dr["Remarks"] = tbRemarks.Text;
+                        dt.Rows.Add(dr);
+                        dt.AcceptChanges();
+                    }
+
+                    _Score = _Score + Convert.ToInt32(cbValue.SelectedValue);
+                }
+
+
+                if (dt.Rows.Count > 0)
+                {
+                    string Markdown;
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        int QID = Convert.ToInt32(dt.Rows[i]["QID"]);
+                        string Category = (string)dt.Rows[i]["Category"];
+                        string Question = (string)dt.Rows[i]["Question"];
+                        int Score = Convert.ToInt32(dt.Rows[i]["Score"]);
+
+                        if (dt.Rows[i]["Markdown"].ToString() == "")
+                            Markdown = "NA";
+                        else
+                        {
+                            Markdown = (string)dt.Rows[i]["Markdown"];
+                        }
+
+                        string Remarks = (string)dt.Rows[i]["Remarks"];
+
+                        this.grd.SaveQAScores(grd.grdData.QuestionForm.ItemId, (int)cmbQAForm.SelectedValue, cmbQAForm.Text, Category, QID, Question, Score, Markdown, Remarks);
+                    }
+
+                    this.grd.grdData.QuestionForm.dtObjContainer.Rows.Clear();
+                    this.ClearItemFields();
+                    this.ClearWrapPanel();
+                    this.ResetValues();
+
+                    this.btnStart.Visibility = Visibility.Collapsed;
+                    this.btnStop.Visibility = Visibility.Collapsed;
+                    this.btnPause.Visibility = Visibility.Collapsed;
+                    this.btnChange.Visibility = Visibility.Collapsed;
+
+                    this.GroupQAItem.IsEnabled = true;
+                    this.MatDesGridQA.Visibility = Visibility.Collapsed;
+                    this.MatDesActivityList.Visibility = Visibility.Visible;
+
+
+                    notifier.ShowSuccess("QA Questions Successfully Saved.");
+
+                }
+
+
+            }
+        }
+
+        #endregion
+
         private void ElapsedTimer_Tick(object sender, EventArgs e)
         {
             DateTime timeEndNow = Conversions.ToDate(Strings.Format(grd.ConvertTimeZone(grd.grdData.TeamInfo.OffSet), "MM/dd/yyyy h:mm:ss tt"));
@@ -2772,6 +3267,7 @@ namespace GRID.Pages
 
         }
 
+        [Obsolete]
         private void _eMsgBox(params string[] errorMsg)
         {
             string msg = string.Format("Unhandled error has been found. " + "Please contact your system administrator. Error:{0}{0}{1}", Constants.vbNewLine, Strings.Join(errorMsg, ""));
@@ -2875,9 +3371,25 @@ namespace GRID.Pages
                     this.MatDesGridQA.Visibility = Visibility.Visible;
                     this.MatDesActivityList.Visibility = Visibility.Collapsed;
 
-                    grd.grdData.CurrentActivity.Started = false;
-                    IsActivityStarted = false;
+                    grd.grdData.CurrentActivity.Started = true;
+                    if (grd.grdData.CurrentActivity.Id > 0)
+                    {
+                        grd.grdData.MainWindowAction = "CHANGE";
+                    }
+                    else
+                    {
+                        grd.grdData.MainWindowAction = "START";
+                        IsActivityStarted = true;
+                    }
 
+                    var withBlock = grd.grdData.CurrentActivity;
+                    withBlock.Activity = curAct;
+                    withBlock.ActivityId = curAct.Id;
+                    withBlock.LOBId = curAct.LOBId;
+                    withBlock.LOBItemId = 0;
+
+                    if (IsActivityStarted)
+                        this.MainWindowActivated();
 
                 }
                 else
@@ -2902,19 +3414,20 @@ namespace GRID.Pages
                     if (IsActivityStarted)
                         this.MainWindowActivated();
 
-
-                    btnStop.Visibility = Visibility.Visible;
-                    btnPause.Visibility = Visibility.Visible;
-                    btnChange.Visibility = Visibility.Visible;
-                    grd.grdData.ScrContent.IsActivityRunning = true;
-                    grd.grdData.ScrContent.IsMyDataChanged = true;
                 }
 
 
             }
 
+            this.TabAcc.IsSelected = true;
+            this.TabQuestion.IsEnabled = false;
+            this.TabSS.IsEnabled = false;
 
-
+            btnStop.Visibility = Visibility.Visible;
+            btnPause.Visibility = Visibility.Visible;
+            btnChange.Visibility = Visibility.Visible;
+            grd.grdData.ScrContent.IsActivityRunning = true;
+            //grd.grdData.ScrContent.IsMyDataChanged = true;
 
         }
 
@@ -2979,11 +3492,6 @@ namespace GRID.Pages
                 MainScrn.cmbOpenActName.ItemsSource = grd.GetDistinctPerfActivity(grd.grdData.CurrentUser.EmpNo, grd.grdData.CurrentUser.TransactionDate2, 1);
                 MainScrn.cmbOpenActName.SelectedIndex = 0;
 
-                grd.grdData.ScrContent.IsActivityRunning = false;
-                this.GridDynamicObjects.Visibility = Visibility.Collapsed;
-                this.QAWrapPanel.Visibility = Visibility.Collapsed;
-                this.ActivityMainTab.Visibility = Visibility.Visible;
-
                 if (grd.grdData.ScrContent.IsBreakStarted)
                     grd.grdData.ScrContent.IsBreakStarted = false;
             }
@@ -2996,14 +3504,10 @@ namespace GRID.Pages
 
         private void btnStart_Click(object sender, RoutedEventArgs e)
         {
-            //WrapActivityList.Visibility = Visibility.Visible;
-
             btnStart.Visibility = Visibility.Collapsed;
-            btnStop.Visibility = Visibility.Collapsed;
-            btnPause.Visibility = Visibility.Collapsed;
-            btnChange.Visibility = Visibility.Collapsed;
 
-            MatDesActivityList.Visibility = Visibility.Visible;
+            this.MatDesActivityList.Visibility = Visibility.Visible;
+            this.MatDesGridQA.Visibility = Visibility.Collapsed;
         }
 
         private void GvProductivity_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -3053,13 +3557,11 @@ namespace GRID.Pages
         {
             if (cmbProcessProd.SelectedValue is not null)
             {
-
                 var q = from p in grd.grdData._lstProductivityOrig
                         where p.Process.Equals(cmbProcessProd.SelectedValue.ToString())
                         select p;
 
                 lvProductivity.ItemsSource = q;
-
             }
         }
 
@@ -3098,118 +3600,103 @@ namespace GRID.Pages
 
         private void btnChange_Click(object sender, RoutedEventArgs e)
         {
+            if (grd.grdData.QuestionForm.dtObjContainer.Rows.Count == _ConfigCtr)
+            {
+                dt = new DataTable();
 
+                dt.Columns.Add("QID");
+                dt.Columns.Add("Category");
+                dt.Columns.Add("Question");
+                dt.Columns.Add("Value");
+                dt.Columns.Add("Score");
+                dt.Columns.Add("Markdown");
+                dt.Columns.Add("Remarks");
+
+                int _Score = 0;
+
+                foreach (DataRow row in grd.grdData.QuestionForm.dtObjContainer.Rows)
+                {
+                    DataRow[] fQ = dt.Select("Question = '" + row["Question"].ToString() + "'");
+                    RadComboBox cbValue = (RadComboBox)this.FindName(row["DDNameSel"].ToString());
+                    RadComboBox cbMd = (RadComboBox)this.FindName(row["DDNameMD"].ToString());
+                    RadWatermarkTextBox tbRemarks = (RadWatermarkTextBox)this.FindName(row["Remarks"].ToString());
+
+                    if (fQ.Length == 0)
+                    {
+                        dr = dt.NewRow();
+                        dr["QID"] = Convert.ToInt32(row["QID"]);
+                        dr["Category"] = row["Category"].ToString();
+                        dr["Question"] = row["Question"].ToString();
+                        dr["Value"] = cbValue.Text;
+                        dr["Score"] = Convert.ToInt32(cbValue.SelectedValue);
+                        dr["Markdown"] = cbMd.Text;
+                        dr["Remarks"] = tbRemarks.Text;
+                        dt.Rows.Add(dr);
+                        dt.AcceptChanges();
+                    }
+
+                    _Score = _Score + Convert.ToInt32(cbValue.SelectedValue);
+                }
+             
+
+                if (dt.Rows.Count > 0)
+                {
+                    string Markdown;
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {                       
+                        int QID = Convert.ToInt32(dt.Rows[i]["QID"]);
+                        string Category = (string)dt.Rows[i]["Category"];
+                        string Question = (string)dt.Rows[i]["Question"];
+                        int Score = Convert.ToInt32(dt.Rows[i]["Score"]);
+
+                        if (dt.Rows[i]["Markdown"].ToString() == "")
+                            Markdown = "NA";
+                        else
+                        {
+                            Markdown = (string)dt.Rows[i]["Markdown"];
+                        }
+                    
+                        string Remarks = (string)dt.Rows[i]["Remarks"];
+
+                        this.grd.SaveQAScores(grd.grdData.QuestionForm.ItemId, (int)cmbQAForm.SelectedValue, cmbQAForm.Text, Category, QID, Question, Score, Markdown, Remarks);
+                    }
+
+                    this.grd.grdData.QuestionForm.dtObjContainer.Rows.Clear();
+                    this.ClearItemFields();
+                    this.ClearWrapPanel();
+                    this.ResetValues();
+
+                    this.btnStart.Visibility = Visibility.Collapsed;
+                    this.btnStop.Visibility = Visibility.Collapsed;
+                    this.btnPause.Visibility = Visibility.Collapsed;
+                    this.btnChange.Visibility = Visibility.Collapsed;
+
+                    this.GroupQAItem.IsEnabled = true;
+                    this.MatDesGridQA.Visibility = Visibility.Collapsed;
+                    this.MatDesActivityList.Visibility = Visibility.Visible;
+
+
+                    notifier.ShowSuccess("QA Questions Successfully Saved.");
+
+                }
+
+            
+            }
         }
 
         private void cmbProcess_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (cmbProcess.SelectedValue is not null)
             {
-
                 var q = from p in grd.grdData._lstMyActivitiesOrig
                         where p.Process.Equals(cmbProcess.SelectedValue.ToString())
                         select p;
 
                 lvMyActivities.ItemsSource = q;
-
             }
         }
 
-        private void btnHandler_Click(object sender, RoutedEventArgs e)
-        {
-            //notifier.ShowError(objRF01.SelectedValue.ToString());
-
-
-            //for (int i = grd.grdData.QuestionForm.dtObjContainer.Rows.Count - 1; i >= 0; i--)
-            //{
-            //    DataRow dr = grd.grdData.QuestionForm.dtObjContainer.Rows[i];
-            //    if (dr["Name"] == row1["Name"].ToString())
-            //        dr.Delete();
-            //}
-            //grd.grdData.QuestionForm.dtObjContainer.AcceptChanges();
-
-            QADynamicObjectsHandler();
-        }
-
-        private void btnEmpNo_Click(object sender, RoutedEventArgs e)
-        {
-
-            FrmChipUsers aa = new FrmChipUsers();
-            aa.ShowDialog();
-
-            txtAgentName.Text = grd.grdData.QuestionForm.EmpName;
-
-            if (Convert.ToInt32(grd.grdData.QuestionForm.UserId) != 0)
-                txtWorkgroup.Text = Convert.ToInt32(grd.grdData.QuestionForm.UserId).ToString();
-            else
-                txtWorkgroup.Text = "";
-        }
-
-        private void lstQAForm_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-
-            this.StartQAQuestion();
-
-            if (_ConfigCtr == 0)
-            {
-                new MessagesBox("You've Selected a Form" + Constants.vbNewLine + "With No Configuration.", MessageType.Error, MessageButtons.Ok).ShowDialog();
-                return;
-            }
-
-            btnStop.Visibility = Visibility.Visible;
-            btnPause.Visibility = Visibility.Visible;
-            btnChange.Visibility = Visibility.Visible;
-
-            this.ActivityMainTab.Visibility = Visibility.Collapsed;
-        }
-
-        private void Rectangle_Drop(object sender, DragEventArgs e)
-        {
-            if(e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                string filename = System.IO.Path.GetFileName(files[0]);
-
-                for (int i = 0; i < files.Length; i++)
-                {
-                    string fileName = System.IO.Path.GetFileName(files[i]);
-                    FileInfo fileInfo = new FileInfo(files[i]);
-
-                    UploadFileList.Items.Add(new Upload()
-                    {
-                        FileName = filename,
-                        FileSize = string.Format("{0} {1}", (fileInfo.Length / 1.049e+6).ToString("0.0"), "Mb"),
-                        UploadProgress = 100
-
-                    });
-                }
-            }
-        }
-
-        private void btnUploadSS_Click(object sender, RoutedEventArgs e)
-        {   
-            OpenFileDialog radOpenFileDialog = new OpenFileDialog() {Multiselect = true };
-            bool? response = radOpenFileDialog.ShowDialog();
-
-            if(response==true)
-            {
-                string[] files = radOpenFileDialog.FileNames;
-
-                for(int i =0; i < files.Length; i++)
-                {
-                    string filename = System.IO.Path.GetFileName(files[i]);
-                    FileInfo fileInfo = new FileInfo(files[i]);
-
-                    UploadFileList.Items.Add(new Upload()
-                    {
-                        FileName = filename,
-                        FileSize = string.Format("{0} {1}", (fileInfo.Length / 1.049e+6).ToString("0.0"), "Mb"),
-                        UploadProgress = 100
-
-                    }); 
-                }
-            }
-
-        }
+      
+   
     }
 }

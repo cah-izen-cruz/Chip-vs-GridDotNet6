@@ -14,6 +14,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using static GRID.MessagesBox;
 
 namespace GRID
 {
@@ -33,7 +34,7 @@ namespace GRID
         private void btnEmpNo_Click(object sender, RoutedEventArgs e)
         {
             if(txtAgentName.Text != "")
-            lstOwner.ItemsSource =  grd.GetEmployeePerTeamId(grd.grdData.CurrentUser.TeamId, txtAgentName.Text);
+            lstOwner.ItemsSource =  grd.GetEmployee(txtAgentName.Text);
         }
 
         private void btnSelect_Click(object sender, RoutedEventArgs e)
@@ -45,10 +46,20 @@ namespace GRID
                 {
                     grd.grdData.QuestionForm.UserId = obj.UserId;
                     grd.grdData.QuestionForm.EmpName = obj.EmpName;
+                    grd.grdData.QuestionForm.SupEmpNo = obj.SupEmpNo;
+                    grd.grdData.QuestionForm.Supervisor = obj.Supervisor;
+
+                    this.Close();
                 }
 
             }
-            this.Close();
+            else
+            {
+                new MessagesBox("Please choose the Owner of your Questionnaire.", MessageType.Error, MessageButtons.Ok).ShowDialog();
+                txtAgentName.Focus();
+                return;
+            }
+           
         }
 
         private void btnUpdateQForm_Click(object sender, RoutedEventArgs e)

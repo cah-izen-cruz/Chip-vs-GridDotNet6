@@ -80,13 +80,5 @@ namespace GRID.Controls
             DependencyProperty.Register("UploadSpeed", typeof(int), typeof(Upload));
 
 
-
-
-
-
-
-
-
-
     }
 }
