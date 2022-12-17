@@ -44,10 +44,10 @@ namespace GRID
                 QAQuestionForm obj = (QAQuestionForm)lstOwner.SelectedItem;
                 if (obj != null)
                 {
-                    grd.grdData.QuestionForm.UserId = obj.UserId;
-                    grd.grdData.QuestionForm.EmpName = obj.EmpName;
-                    grd.grdData.QuestionForm.SupEmpNo = obj.SupEmpNo;
-                    grd.grdData.QuestionForm.Supervisor = obj.Supervisor;
+                    grd.grdData.QAQuestion.UserId = obj.UserId;
+                    grd.grdData.QAQuestion.EmpName = obj.EmpName;
+                    grd.grdData.QAQuestion.SupEmpNo = obj.SupEmpNo;
+                    grd.grdData.QAQuestion.Supervisor = obj.Supervisor;
 
                     this.Close();
                 }
@@ -64,8 +64,8 @@ namespace GRID
 
         private void btnUpdateQForm_Click(object sender, RoutedEventArgs e)
         {
-            grd.grdData.QuestionForm.UserId = 0;
-            grd.grdData.QuestionForm.EmpName = "";
+            grd.grdData.QAQuestion.UserId = 0;
+            grd.grdData.QAQuestion.EmpName = "";
             this.Close();
         }
     }

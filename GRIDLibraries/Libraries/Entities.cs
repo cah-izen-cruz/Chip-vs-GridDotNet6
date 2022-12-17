@@ -457,7 +457,7 @@ namespace GRIDLibraries.Libraries
         }
 
         public DateTime QADate { get; set; }
-        public int ItemId { get; set; }
+        public int ItemId { get; set; } = 00;
         public int SSId { get; set; }
         public string SSFileName { get; set; }
         public int UserId { get; set; }
@@ -479,7 +479,8 @@ namespace GRIDLibraries.Libraries
         public string MarkdownType { get; set; }
         public string Formula { get; set; }
         public int Target { get; set; }
-        public string ScoreRemarks { get; set; }
+        public int ScoreAverage { get; set; }
+        public string ScoreMarkings { get; set; }
 
     }
 

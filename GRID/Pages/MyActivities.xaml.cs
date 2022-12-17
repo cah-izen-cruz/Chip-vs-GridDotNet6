@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Threading;
 using Telerik.Windows.Controls;
+using Telerik.Windows.Documents.Spreadsheet.Expressions.Functions;
 using ToastNotifications;
 using ToastNotifications.Lifetime;
 using ToastNotifications.Messages;
@@ -176,7 +177,7 @@ namespace GRID.Pages
         {
             //lstQAForm.Items.Clear();
             //string _Formula;
-            //foreach (DataRow row in grd.grdData.QuestionForm.dtLOB.Rows)
+            //foreach (DataRow row in grd.grdData.QAQuestion.dtLOB.Rows)
             //{
             //    if (Convert.ToInt32(row["Formula"].ToString()) == 1)
             //        _Formula = "Sum";
@@ -187,7 +188,7 @@ namespace GRID.Pages
 
             //}
 
-            //lstQAForm.ItemsSource = grd.grdData.QuestionForm.dtLOB.DefaultView;
+            //lstQAForm.ItemsSource = grd.grdData.QAQuestion.dtLOB.DefaultView;
         }
         #endregion
 
@@ -607,57 +608,80 @@ namespace GRID.Pages
             {
                 if (grd.grdData.CurrentActivity.Activity.ConfigInfo.Count > 0)
                 {
-                    if (CheckDynamicConfigData() == false)
-                        return;
-
-                    curStopPerf.PerfConfigData = this.GetDynamicConfigData();
-                    curStopPerf.PerfConfigData.PerfId = curStopPerf.Id;
-                }
-            }
-
-            if (grd.MEditPerformanceMain(curStopPerf))
-            {
-                try
-                {
-                    var tempPerf = new gridPerformance();
-                    var q = from p in grd.gridData.PerformanceList
-                            where p.Id == curStopPerf.Id
-                            select p;
-
-                    if (!(q == null))
+                    if(curStopPerf.ActivityId == 17)
                     {
-                        if (q.Count() > 0)
+                        grd.grdData.CurrentPerfInfo = new gridPerfInfo();
+                        grd.grdData.CurrentPerfInfo.PerfId = curStopPerf.Id;
+
+                        if (!(grd.grdData.QAQuestion.ItemId == 0))
                         {
-                            tempPerf = q.First();
-                            grd.grdData.PerformanceList.Remove(tempPerf);
+                            this.grd.UpdateQAItem(grd.grdData.QAQuestion.ItemId, grd.grdData.QAQuestion.ScoreAverage, grd.grdData.QAQuestion.ScoreMarkings, grd.grdData.CurrentPerfInfo.PerfId);
+                            StopQAActivity();
+                        }
+
+                        else
+                            return;
+                        
+                        
+                    }
+                    else
+                    {
+                        if (CheckDynamicConfigData() == false)
+                            return;
+
+                        curStopPerf.PerfConfigData = this.GetDynamicConfigData();
+                        curStopPerf.PerfConfigData.PerfId = curStopPerf.Id;
+
+
+                        if (grd.MEditPerformanceMain(curStopPerf))
+                        {
+                            try
+                            {
+                                var tempPerf = new gridPerformance();
+                                var q = from p in grd.gridData.PerformanceList
+                                        where p.Id == curStopPerf.Id
+                                        select p;
+
+                                if (!(q == null))
+                                {
+                                    if (q.Count() > 0)
+                                    {
+                                        tempPerf = q.First();
+                                        grd.grdData.PerformanceList.Remove(tempPerf);
+                                    }
+                                }
+
+                                grd.grdData.PerformanceList.Add(curStopPerf); //-look up ng open and completed
+                            }
+
+                            catch (Exception ex)
+                            {
+                            }
+
+                            grd.MUpdatePerfInfoMain((int)curStopPerf.Id, curStopPerf.PerfConfigData);
+
+                        }
+                        else
+                        {
+                            new MessagesBox("Activity was Not successfully saved. Please Try again", MessageType.Warning, MessageButtons.Ok).ShowDialog();
+                            grd.grdData.MainWindowAction = "";
+                            return;
+                        }
+
+                        if (grd.grdData.CurrentActivity.Activity.Type.ToUpper() == "PRODUCTIVE" & grd.grdData.CurrentActivity.Activity.IsPublic)
+                        {
+                            PrevActId = grd.grdData.CurrentActivity.Activity.Id;
+                        }
+                        else
+                        {
+                            PrevActId = 0;
                         }
                     }
-
-                    grd.grdData.PerformanceList.Add(curStopPerf); //-look up ng open and completed
+                   
                 }
-
-                catch (Exception ex)
-                {
-                }
-
-                grd.MUpdatePerfInfoMain((int)curStopPerf.Id, curStopPerf.PerfConfigData);
-         
-            }
-            else
-            {
-                new MessagesBox("Activity was Not successfully saved. Please Try again", MessageType.Warning, MessageButtons.Ok).ShowDialog();
-                grd.grdData.MainWindowAction = "";
-                return;
             }
 
-            if (grd.grdData.CurrentActivity.Activity.Type.ToUpper() == "PRODUCTIVE" & grd.grdData.CurrentActivity.Activity.IsPublic)
-            {
-                PrevActId = grd.grdData.CurrentActivity.Activity.Id;
-            }
-            else
-            {
-                PrevActId = 0;
-            }
+      
 
             this.ClearWrapPanel();
 
@@ -688,14 +712,9 @@ namespace GRID.Pages
             this.changelblbg();
 
             grd.grdData.CurrentUser.LogOut = grd.grdData.CurrentActivity.TimeEnd2;
-
             grd.grdData.CurrentActivity.Started = false;
-            this.MainScrn.PopulateAgentMetrics();
 
             notifier.ShowSuccess("Activity successfully saved!");
-
-            new MessagesBox("Activity Successfully Saved.", MessageType.Success, MessageButtons.Ok).ShowDialog();
-
 
             idleCtr = 0;
 
@@ -914,25 +933,25 @@ namespace GRID.Pages
             #endregion
 
             dt = new DataTable();
-            grd.grdData.QuestionForm.dtObjContainer = new DataTable();
-            grd.grdData.QuestionForm.dtObjContainer.Columns.Add("Name");
-            grd.grdData.QuestionForm.dtObjContainer.Columns.Add("QID");
-            grd.grdData.QuestionForm.dtObjContainer.Columns.Add("Category");
-            grd.grdData.QuestionForm.dtObjContainer.Columns.Add("Question");
-            grd.grdData.QuestionForm.dtObjContainer.Columns.Add("DDNameSel");
-            grd.grdData.QuestionForm.dtObjContainer.Columns.Add("DDNameMD");
-            grd.grdData.QuestionForm.dtObjContainer.Columns.Add("Remarks");
+            grd.grdData.QAQuestion.dtObjContainer = new DataTable();
+            grd.grdData.QAQuestion.dtObjContainer.Columns.Add("Name");
+            grd.grdData.QAQuestion.dtObjContainer.Columns.Add("QID");
+            grd.grdData.QAQuestion.dtObjContainer.Columns.Add("Category");
+            grd.grdData.QAQuestion.dtObjContainer.Columns.Add("Question");
+            grd.grdData.QAQuestion.dtObjContainer.Columns.Add("DDNameSel");
+            grd.grdData.QAQuestion.dtObjContainer.Columns.Add("DDNameMD");
+            grd.grdData.QAQuestion.dtObjContainer.Columns.Add("Remarks");
 
             QAQuestionForm QA = (QAQuestionForm)cmbQAForm.SelectedItem;
 
-            grd.grdData.QuestionForm.LOBId = QA.LOBId;
-            grd.grdData.QuestionForm.Formula = QA.Formula.ToString();
-            grd.grdData.QuestionForm.Name = QA.Name.ToString();
-            grd.grdData.QuestionForm.Target = Convert.ToInt32(QA.Target);
+            grd.grdData.QAQuestion.LOBId = QA.LOBId;
+            grd.grdData.QAQuestion.Formula = QA.Formula.ToString();
+            grd.grdData.QAQuestion.Name = QA.Name.ToString();
+            grd.grdData.QAQuestion.Target = Convert.ToInt32(QA.Target);
 
-            if (grd.grdData.QuestionForm.LOBId.ToString() != "")
+            if (grd.grdData.QAQuestion.LOBId.ToString() != "")
             {
-                DataRow[] result = grd.grdData.QuestionForm.dtQAQuestionnaire.Select("LOBId = '" + grd.grdData.QuestionForm.LOBId + "'");
+                DataRow[] result = grd.grdData.QAQuestion.dtQAQuestionnaire.Select("LOBId = '" + grd.grdData.QAQuestion.LOBId + "'");
                 foreach (DataRow row in result)
                 {
                     if (dt.Rows.Count == 0)
@@ -978,12 +997,12 @@ namespace GRID.Pages
             for (int k = 0; k < dt.Rows.Count; k++)
             {
 
-                grd.grdData.QuestionForm.drObjContainer = grd.grdData.QuestionForm.dtObjContainer.NewRow();
-                grd.grdData.QuestionForm.drObjContainer["Name"] = dt.Rows[k]["Name"];
-                grd.grdData.QuestionForm.drObjContainer["QID"] = dt.Rows[k]["QID"];
-                grd.grdData.QuestionForm.drObjContainer["Category"] = dt.Rows[k]["Category"];
+                grd.grdData.QAQuestion.drObjContainer = grd.grdData.QAQuestion.dtObjContainer.NewRow();
+                grd.grdData.QAQuestion.drObjContainer["Name"] = dt.Rows[k]["Name"];
+                grd.grdData.QAQuestion.drObjContainer["QID"] = dt.Rows[k]["QID"];
+                grd.grdData.QAQuestion.drObjContainer["Category"] = dt.Rows[k]["Category"];
 
-                grd.grdData.QuestionForm.QID = Convert.ToInt32(dt.Rows[k]["QID"]);
+                grd.grdData.QAQuestion.QID = Convert.ToInt32(dt.Rows[k]["QID"]);
 
                 var z = new TextBlock();
                 z.Text = dt.Rows[k]["Category"].ToString();
@@ -1016,7 +1035,7 @@ namespace GRID.Pages
                         x.Margin = new Thickness(4, -10, 1, 1);
                         x.Orientation = Orientation.Horizontal;
 
-                        grd.grdData.QuestionForm.drObjContainer["Question"] = dt.Rows[r]["Question"];
+                        grd.grdData.QAQuestion.drObjContainer["Question"] = dt.Rows[r]["Question"];
 
                         var y = new TextBlock();
                         y.Text = "Q" + Q + ": " + dt.Rows[r]["Question"].ToString();
@@ -1049,7 +1068,7 @@ namespace GRID.Pages
                         x.Children.Add(y);
                         x.Children.Add(dd);
 
-                        grd.grdData.QuestionForm.drObjContainer["DDNameSel"] = dd.Name;
+                        grd.grdData.QAQuestion.drObjContainer["DDNameSel"] = dd.Name;
 
                         mdd = new RadComboBox();
                         mdd.Width = 100;
@@ -1071,7 +1090,7 @@ namespace GRID.Pages
 
                         x.Children.Add(mdd);
 
-                        grd.grdData.QuestionForm.drObjContainer["DDNameMD"] = mdd.Name;
+                        grd.grdData.QAQuestion.drObjContainer["DDNameMD"] = mdd.Name;
 
                         tb = new RadWatermarkTextBox();
                         tb.Text = "Put a remarks here..."; /*dt.Rows[r]["Description"].ToString();*/
@@ -1089,24 +1108,24 @@ namespace GRID.Pages
 
                         x.Children.Add(tb);
 
-                        grd.grdData.QuestionForm.drObjContainer["Remarks"] = tb.Name;
+                        grd.grdData.QAQuestion.drObjContainer["Remarks"] = tb.Name;
 
                         this.QAWrapPanel.Children.Add(x);
 
-                        DataRow[] res = grd.grdData.QuestionForm.dtQASelection.Select("FormId = '" + dt.Rows[k]["QID"] + "'");
+                        DataRow[] res = grd.grdData.QAQuestion.dtQASelection.Select("FormId = '" + dt.Rows[k]["QID"] + "'");
                         foreach (DataRow row in res)
                         {
                             dd.Items.Add(new { Value = row["Value"], Score = row["Score"] });
                         }
 
-                        DataRow[] resMd = grd.grdData.QuestionForm.dtQAMarkdownSelection.Select("QID = '" + grd.grdData.QuestionForm.QID + "'");
+                        DataRow[] resMd = grd.grdData.QAQuestion.dtQAMarkdownSelection.Select("QID = '" + grd.grdData.QAQuestion.QID + "'");
                         foreach (DataRow row in resMd)
                         {
                             mdd.Items.Add(new { Value = row["Value"], Id = row["Id"] });
                         }
 
-                        grd.grdData.QuestionForm.dtObjContainer.Rows.Add(grd.grdData.QuestionForm.drObjContainer);
-                        grd.grdData.QuestionForm.dtObjContainer.AcceptChanges();
+                        grd.grdData.QAQuestion.dtObjContainer.Rows.Add(grd.grdData.QAQuestion.drObjContainer);
+                        grd.grdData.QAQuestion.dtObjContainer.AcceptChanges();
 
                         loopCtr = loopCtr + 1;
                         loopMd = loopMd + 1;
@@ -1177,14 +1196,14 @@ namespace GRID.Pages
             //#endregion
 
             //dt = new DataTable();
-            //grd.grdData.QuestionForm.dtObjContainer = new DataTable();
-            //grd.grdData.QuestionForm.dtObjContainer.Columns.Add("Name");
-            //grd.grdData.QuestionForm.dtObjContainer.Columns.Add("QID");
-            //grd.grdData.QuestionForm.dtObjContainer.Columns.Add("Category");
-            //grd.grdData.QuestionForm.dtObjContainer.Columns.Add("Question");
-            //grd.grdData.QuestionForm.dtObjContainer.Columns.Add("DDNameSel");
-            //grd.grdData.QuestionForm.dtObjContainer.Columns.Add("DDNameMD");
-            //grd.grdData.QuestionForm.dtObjContainer.Columns.Add("Remarks");
+            //grd.grdData.QAQuestion.dtObjContainer = new DataTable();
+            //grd.grdData.QAQuestion.dtObjContainer.Columns.Add("Name");
+            //grd.grdData.QAQuestion.dtObjContainer.Columns.Add("QID");
+            //grd.grdData.QAQuestion.dtObjContainer.Columns.Add("Category");
+            //grd.grdData.QAQuestion.dtObjContainer.Columns.Add("Question");
+            //grd.grdData.QAQuestion.dtObjContainer.Columns.Add("DDNameSel");
+            //grd.grdData.QAQuestion.dtObjContainer.Columns.Add("DDNameMD");
+            //grd.grdData.QAQuestion.dtObjContainer.Columns.Add("Remarks");
 
             //for (int i = lstQAForm.SelectedItems.Count - 1; i >= 0; i -= 1)
             //{
@@ -1194,14 +1213,14 @@ namespace GRID.Pages
             //    var Formula = obj.GetType().GetProperties().First(o => o.Name == "Formula").GetValue(obj, null);
             //    var Target = obj.GetType().GetProperties().First(o => o.Name == "Target").GetValue(obj, null);
 
-            //    grd.grdData.QuestionForm.Formula = Formula.ToString();
-            //    grd.grdData.QuestionForm.Name = Name.ToString();
-            //    grd.grdData.QuestionForm.Target = Convert.ToInt32(Target);
+            //    grd.grdData.QAQuestion.Formula = Formula.ToString();
+            //    grd.grdData.QAQuestion.Name = Name.ToString();
+            //    grd.grdData.QAQuestion.Target = Convert.ToInt32(Target);
 
 
             //    if (id.ToString() != "")
             //    {
-            //        DataRow[] result = grd.grdData.QuestionForm.dtQAQuestionnaire.Select("LOBId = '" + id + "'");
+            //        DataRow[] result = grd.grdData.QAQuestion.dtQAQuestionnaire.Select("LOBId = '" + id + "'");
             //        foreach (DataRow row in result)
             //        {
             //            if (dt.Rows.Count == 0)
@@ -1248,12 +1267,12 @@ namespace GRID.Pages
             //for (int k = 0; k < dt.Rows.Count; k++)
             //{
 
-            //    grd.grdData.QuestionForm.drObjContainer = grd.grdData.QuestionForm.dtObjContainer.NewRow();
-            //    grd.grdData.QuestionForm.drObjContainer["Name"] = dt.Rows[k]["Name"];
-            //    grd.grdData.QuestionForm.drObjContainer["QID"] = dt.Rows[k]["QID"];
-            //    grd.grdData.QuestionForm.drObjContainer["Category"] = dt.Rows[k]["Category"];
+            //    grd.grdData.QAQuestion.drObjContainer = grd.grdData.QAQuestion.dtObjContainer.NewRow();
+            //    grd.grdData.QAQuestion.drObjContainer["Name"] = dt.Rows[k]["Name"];
+            //    grd.grdData.QAQuestion.drObjContainer["QID"] = dt.Rows[k]["QID"];
+            //    grd.grdData.QAQuestion.drObjContainer["Category"] = dt.Rows[k]["Category"];
 
-            //    grd.grdData.QuestionForm.QID = Convert.ToInt32(dt.Rows[k]["QID"]);
+            //    grd.grdData.QAQuestion.QID = Convert.ToInt32(dt.Rows[k]["QID"]);
 
             //    var z = new TextBlock();
             //    z.Text = dt.Rows[k]["Category"].ToString();
@@ -1286,7 +1305,7 @@ namespace GRID.Pages
             //            x.Margin = new Thickness(4, -10, 1, 1);
             //            x.Orientation = Orientation.Horizontal;
 
-            //            grd.grdData.QuestionForm.drObjContainer["Question"] = dt.Rows[r]["Question"];
+            //            grd.grdData.QAQuestion.drObjContainer["Question"] = dt.Rows[r]["Question"];
 
             //            var y = new TextBlock();
             //            y.Text = "Q" + Q + ": " + dt.Rows[r]["Question"].ToString();
@@ -1319,7 +1338,7 @@ namespace GRID.Pages
             //            x.Children.Add(y);
             //            x.Children.Add(dd);
 
-            //            grd.grdData.QuestionForm.drObjContainer["DDNameSel"] = dd.Name;
+            //            grd.grdData.QAQuestion.drObjContainer["DDNameSel"] = dd.Name;
 
             //            mdd = new RadComboBox();
             //            mdd.Width = 100;
@@ -1341,7 +1360,7 @@ namespace GRID.Pages
 
             //            x.Children.Add(mdd);
 
-            //            grd.grdData.QuestionForm.drObjContainer["DDNameMD"] = mdd.Name;
+            //            grd.grdData.QAQuestion.drObjContainer["DDNameMD"] = mdd.Name;
 
             //            tb = new RadWatermarkTextBox();
             //            tb.Text = "Put a remarks here..."; /*dt.Rows[r]["Description"].ToString();*/
@@ -1359,24 +1378,24 @@ namespace GRID.Pages
 
             //            x.Children.Add(tb);
 
-            //            grd.grdData.QuestionForm.drObjContainer["Remarks"] = tb.Name;
+            //            grd.grdData.QAQuestion.drObjContainer["Remarks"] = tb.Name;
 
             //            this.QAWrapPanel.Children.Add(x);
 
-            //            DataRow[] res = grd.grdData.QuestionForm.dtQASelection.Select("FormId = '" + dt.Rows[k]["QID"] + "'");
+            //            DataRow[] res = grd.grdData.QAQuestion.dtQASelection.Select("FormId = '" + dt.Rows[k]["QID"] + "'");
             //            foreach (DataRow row in res)
             //            {
             //                dd.Items.Add(new { Value = row["Value"], Score = row["Score"] });
             //            }
 
-            //            DataRow[] resMd = grd.grdData.QuestionForm.dtQAMarkdownSelection.Select("QID = '" + grd.grdData.QuestionForm.QID + "'");
+            //            DataRow[] resMd = grd.grdData.QAQuestion.dtQAMarkdownSelection.Select("QID = '" + grd.grdData.QAQuestion.QID + "'");
             //            foreach (DataRow row in resMd)
             //            {
             //                mdd.Items.Add(new { Value = row["Value"], Id = row["Id"] });
             //            }
 
-            //            grd.grdData.QuestionForm.dtObjContainer.Rows.Add(grd.grdData.QuestionForm.drObjContainer);
-            //            grd.grdData.QuestionForm.dtObjContainer.AcceptChanges();
+            //            grd.grdData.QAQuestion.dtObjContainer.Rows.Add(grd.grdData.QAQuestion.drObjContainer);
+            //            grd.grdData.QAQuestion.dtObjContainer.AcceptChanges();
 
             //            loopCtr = loopCtr + 1;
             //            loopMd = loopMd + 1;
@@ -1434,7 +1453,7 @@ namespace GRID.Pages
 
                 int _Score = 0;
 
-                foreach (DataRow row in grd.grdData.QuestionForm.dtObjContainer.Rows)
+                foreach (DataRow row in grd.grdData.QAQuestion.dtObjContainer.Rows)
                 {
                     DataRow[] fQ = dt.Select("Question = '" + row["Question"].ToString() + "'");
                     RadComboBox cbValue = (RadComboBox)this.FindName(row["DDNameSel"].ToString());
@@ -1457,14 +1476,14 @@ namespace GRID.Pages
                     _Score = _Score + Convert.ToInt32(cbValue.SelectedValue);
                 }
 
-                switch (grd.grdData.QuestionForm.Formula.ToUpper())
+                switch (grd.grdData.QAQuestion.Formula.ToUpper())
                 {
                     case "SUM":
                         {
                             if (_Score <= 99)
-                                grd.grdData.QuestionForm.ScoreRemarks = "FAILED!";
+                                grd.grdData.QAQuestion.ScoreMarkings = "FAILED!";
                             else
-                                grd.grdData.QuestionForm.ScoreRemarks = "PASSED!";
+                                grd.grdData.QAQuestion.ScoreMarkings = "PASSED!";
 
                             _ScoreAverage = _Score;
                             break;
@@ -1474,9 +1493,9 @@ namespace GRID.Pages
                             _ScoreAverage = _Score / _ConfigCtr;
 
                             if (_ScoreAverage <= 99)
-                                grd.grdData.QuestionForm.ScoreRemarks = "FAILED!";
+                                grd.grdData.QAQuestion.ScoreMarkings = "FAILED!";
                             else
-                                grd.grdData.QuestionForm.ScoreRemarks = "PASSED!";
+                                grd.grdData.QAQuestion.ScoreMarkings = "PASSED!";
 
                             break;
                         }
@@ -1485,12 +1504,14 @@ namespace GRID.Pages
                 this.xx.Children.Clear();
                 this.QAWrapPanel.Children.Remove(xx);
 
+                grd.grdData.QAQuestion.ScoreAverage = _ScoreAverage;
+
                 var s = new TextBlock();
                 if (_ScoreAverage == 0)
                     s.Text = "SCORE : ";
                 else
-                    s.Text = "SCORE : " + _ScoreAverage;
-                //s.Text = "SCORE: " + _ScoreAverage + " out of (" + grd.grdData.QuestionForm.Target + " Target Score)";
+                    s.Text = "SCORE : " + grd.grdData.QAQuestion.ScoreAverage;
+                //s.Text = "SCORE: " + _ScoreAverage + " out of (" + grd.grdData.QAQuestion.Target + " Target Score)";
                 s.TextWrapping = TextWrapping.Wrap;
                 s.Width = 400;
                 s.Height = 24;
@@ -1505,8 +1526,8 @@ namespace GRID.Pages
                 if (_ScoreAverage == 0)
                     s1.Text = "MARKING : ";
                 else
-                    s1.Text = "MARKING : " + grd.grdData.QuestionForm.ScoreRemarks;
-                //s1.Text = "Remarks: " + grd.grdData.QuestionForm.ScoreRemarks + " (Formula: " + grd.grdData.QuestionForm.Formula + ")";
+                    s1.Text = "MARKING : " + grd.grdData.QAQuestion.ScoreMarkings;
+                //s1.Text = "Remarks: " + grd.grdData.QAQuestion.ScoreRemarks + " (Formula: " + grd.grdData.QAQuestion.Formula + ")";
 
                 s1.TextWrapping = TextWrapping.Wrap;
                 s1.Width = 400;
@@ -2869,13 +2890,13 @@ namespace GRID.Pages
             //notifier.ShowError(objRF01.SelectedValue.ToString());
 
 
-            //for (int i = grd.grdData.QuestionForm.dtObjContainer.Rows.Count - 1; i >= 0; i--)
+            //for (int i = grd.grdData.QAQuestion.dtObjContainer.Rows.Count - 1; i >= 0; i--)
             //{
-            //    DataRow dr = grd.grdData.QuestionForm.dtObjContainer.Rows[i];
+            //    DataRow dr = grd.grdData.QAQuestion.dtObjContainer.Rows[i];
             //    if (dr["Name"] == row1["Name"].ToString())
             //        dr.Delete();
             //}
-            //grd.grdData.QuestionForm.dtObjContainer.AcceptChanges();
+            //grd.grdData.QAQuestion.dtObjContainer.AcceptChanges();
 
             QADynamicObjectsHandler();
         }
@@ -2885,7 +2906,7 @@ namespace GRID.Pages
             FrmChipUsers aa = new FrmChipUsers();
             aa.ShowDialog();
 
-            txtAgentName.Text = grd.grdData.QuestionForm.EmpName;
+            txtAgentName.Text = grd.grdData.QAQuestion.EmpName;
             txtWorkgroup.Focus();
 
         }
@@ -2997,7 +3018,7 @@ namespace GRID.Pages
                         br.Close();
                         fs.Close();
 
-                        this.grd.SaveQAAttachments(grd.grdData.QuestionForm.ItemId, ss);
+                        this.grd.SaveQAAttachments(grd.grdData.QAQuestion.ItemId, ss);
                     }
 
                     this.AttContorls.Visibility = Visibility.Collapsed;
@@ -3030,7 +3051,7 @@ namespace GRID.Pages
                 new MessagesBox("One or more fields were empty." + Constants.vbNewLine + "Please Check.", MessageType.Error, MessageButtons.Ok).ShowDialog();
             else
             {
-                this.grd.SaveQAItemsSCOPE_IDENTITY(grd.grdData.QuestionForm.QADate, grd.grdData.QuestionForm.UserId, txtWorkgroup.Text); //-- Getting ItemId
+                this.grd.SaveQAItemsSCOPE_IDENTITY(grd.grdData.QAQuestion.QADate, grd.grdData.QAQuestion.UserId, txtWorkgroup.Text, txtCustomer.Text,txtRecordId.Text,cmbChannel.Text,cmbEvaluationType.Text); //-- Getting ItemId
 
                 this.TabQuestion.IsSelected = true;
                 this.TabQuestion.IsEnabled = true;
@@ -3047,6 +3068,8 @@ namespace GRID.Pages
 
         public void ClearItemFields()
         {
+            cmbQAForm.SelectedItem = null;
+            
             cmbQADate.SelectedDate = null;
             txtAgentName.Text = "";
             txtWorkgroup.Text = "";
@@ -3116,7 +3139,7 @@ namespace GRID.Pages
 
         private void StopQAActivity()
         {
-            if (grd.grdData.QuestionForm.dtObjContainer.Rows.Count == _ConfigCtr)
+            if (grd.grdData.QAQuestion.dtObjContainer.Rows.Count == _ConfigCtr)
             {
                 dt = new DataTable();
 
@@ -3130,7 +3153,7 @@ namespace GRID.Pages
 
                 int _Score = 0;
 
-                foreach (DataRow row in grd.grdData.QuestionForm.dtObjContainer.Rows)
+                foreach (DataRow row in grd.grdData.QAQuestion.dtObjContainer.Rows)
                 {
                     DataRow[] fQ = dt.Select("Question = '" + row["Question"].ToString() + "'");
                     RadComboBox cbValue = (RadComboBox)this.FindName(row["DDNameSel"].ToString());
@@ -3174,10 +3197,12 @@ namespace GRID.Pages
 
                         string Remarks = (string)dt.Rows[i]["Remarks"];
 
-                        this.grd.SaveQAScores(grd.grdData.QuestionForm.ItemId, (int)cmbQAForm.SelectedValue, cmbQAForm.Text, Category, QID, Question, Score, Markdown, Remarks);
+                        this.grd.SaveQAScores(grd.grdData.QAQuestion.ItemId, (int)cmbQAForm.SelectedValue, cmbQAForm.Text, Category, QID, Question, Score, Markdown, Remarks);
                     }
 
-                    this.grd.grdData.QuestionForm.dtObjContainer.Rows.Clear();
+
+                    this.grd.grdData.QAQuestion.dtObjContainer.Rows.Clear();
+                    this.dt.Clear();
                     this.ClearItemFields();
                     this.ClearWrapPanel();
                     this.ResetValues();
@@ -3600,7 +3625,7 @@ namespace GRID.Pages
 
         private void btnChange_Click(object sender, RoutedEventArgs e)
         {
-            if (grd.grdData.QuestionForm.dtObjContainer.Rows.Count == _ConfigCtr)
+            if (grd.grdData.QAQuestion.dtObjContainer.Rows.Count == _ConfigCtr)
             {
                 dt = new DataTable();
 
@@ -3614,7 +3639,7 @@ namespace GRID.Pages
 
                 int _Score = 0;
 
-                foreach (DataRow row in grd.grdData.QuestionForm.dtObjContainer.Rows)
+                foreach (DataRow row in grd.grdData.QAQuestion.dtObjContainer.Rows)
                 {
                     DataRow[] fQ = dt.Select("Question = '" + row["Question"].ToString() + "'");
                     RadComboBox cbValue = (RadComboBox)this.FindName(row["DDNameSel"].ToString());
@@ -3658,10 +3683,11 @@ namespace GRID.Pages
                     
                         string Remarks = (string)dt.Rows[i]["Remarks"];
 
-                        this.grd.SaveQAScores(grd.grdData.QuestionForm.ItemId, (int)cmbQAForm.SelectedValue, cmbQAForm.Text, Category, QID, Question, Score, Markdown, Remarks);
-                    }
+                        this.grd.SaveQAScores(grd.grdData.QAQuestion.ItemId, (int)cmbQAForm.SelectedValue, cmbQAForm.Text, Category, QID, Question, Score, Markdown, Remarks);
+                    }          
 
-                    this.grd.grdData.QuestionForm.dtObjContainer.Rows.Clear();
+                    this.grd.grdData.QAQuestion.dtObjContainer.Rows.Clear();
+                    this.dt.Clear();
                     this.ClearItemFields();
                     this.ClearWrapPanel();
                     this.ResetValues();

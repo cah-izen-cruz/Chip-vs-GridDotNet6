@@ -78,7 +78,7 @@ namespace GRID.Pages.QAQuestion
                 btnSaveQForm.Visibility = Visibility.Collapsed;
                 btnUpdateQForm.Visibility = Visibility.Visible;
 
-                if (grd.grdData.QuestionForm.Formula.ToString() == "1")
+                if (grd.grdData.QAQuestion.Formula.ToString() == "1")
                 {
                     rdoSum.IsChecked = true;
                     rdoAve.IsChecked = false;
@@ -92,9 +92,9 @@ namespace GRID.Pages.QAQuestion
 
 
                 txtQAFormName.Text = _FormName;
-                txtQAFormTarget.Text = Convert.ToInt32(grd.grdData.QuestionForm.Target).ToString();
+                txtQAFormTarget.Text = Convert.ToInt32(grd.grdData.QAQuestion.Target).ToString();
 
-                //grd.grdData.QuestionForm.Formula, grd.grdData.QuestionForm.Target
+                //grd.grdData.QAQuestion.Formula, grd.grdData.QAQuestion.Target
             }
         }
 
@@ -129,7 +129,7 @@ namespace GRID.Pages.QAQuestion
                             {
                                 grd.AddQAForm(txtQAFormName.Text, Formula, Convert.ToInt32(Strings.Trim(txtQAFormTarget.Text)));
                                 grd.grdData._lstQAQuestions = grd.GetQAFormList();
-                                //grd.grdData.QuestionForm.dtLOB = grd.GetQALob();
+                                //grd.grdData.QAQuestion.dtLOB = grd.GetQALob();
                                 MainScrn.fContainer.Content = "";
                                 MainScrn.fContainer.Navigate(new QAQuestionnaire());
                             }
@@ -175,7 +175,7 @@ namespace GRID.Pages.QAQuestion
                             try
                             {
                                 grd.UpdateQAForm(FormId, txtQAFormName.Text, Formula, Convert.ToInt32(Strings.Trim(txtQAFormTarget.Text)));
-                                //grd.grdData.QuestionForm.dtLOB = grd.GetQALob();
+                                //grd.grdData.QAQuestion.dtLOB = grd.GetQALob();
                                 grd.grdData._lstQAQuestions = grd.GetQAFormList();
                                 MainScrn.fContainer.Content = "";
                                 MainScrn.fContainer.Navigate(new QAQuestionnaire());

@@ -48,7 +48,7 @@ namespace GRIDLibraries.Libraries
 
         public gridMainAgentMetrics MainAgentMetrics;
 
-        public QAQuestionForm QuestionForm { get; set; } = new QAQuestionForm();
+        public QAQuestionForm QAQuestion { get; set; } = new QAQuestionForm();
 
         public object ActList { get; internal set; }
 

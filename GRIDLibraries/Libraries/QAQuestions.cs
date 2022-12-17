@@ -182,7 +182,7 @@ namespace GRIDLibraries.Libraries
 
         }
 
-        public bool SaveQAItemsSCOPE_IDENTITY(DateTime _InteractionDate, int _Owner, string _Workgroup)
+        public bool SaveQAItemsSCOPE_IDENTITY(DateTime _InteractionDate, int _Owner, string _Workgroup, string _Customer, string _RecordId, string _Channel, string _EvaluationType)
         {
 
             bool temp = false;
@@ -194,14 +194,19 @@ namespace GRIDLibraries.Libraries
                 this.gridMainDbCommand.Parameters.AddWithValue("@InteractionDate", Strings.Format(_InteractionDate, "MM/dd/yyyy").ToString()); //Strings.Format(TransDate, "MM/dd/yyyy").ToString()
                 this.gridMainDbCommand.Parameters.AddWithValue("@Owner", _Owner);
                 this.gridMainDbCommand.Parameters.AddWithValue("@Workgroup", _Workgroup);
-                this.gridMainDbCommand.CommandText = "INSERT INTO [dbo].[tblQAItem] ([InteractionDate],[Owner],[Workgroup]) VALUES (@InteractionDate,@Owner,@Workgroup);" + "SELECT IDENT_CURRENT('[dbo].[tblQAItem]')";
+                this.gridMainDbCommand.Parameters.AddWithValue("@Customer", _Customer);
+                this.gridMainDbCommand.Parameters.AddWithValue("@RecordId", _RecordId);
+                this.gridMainDbCommand.Parameters.AddWithValue("@Channel", _Channel);
+                this.gridMainDbCommand.Parameters.AddWithValue("@EvaluationType", _EvaluationType);
+                this.gridMainDbCommand.CommandText = "INSERT INTO [dbo].[tblQAItem] ([InteractionDate],[Owner],[Workgroup],[Customer],[RecordId],[Channel],[Type]) VALUES (@InteractionDate,@Owner," +
+                                                        "@Workgroup,@Customer,@RecordId,@Channel,@EvaluationType);" + "SELECT IDENT_CURRENT('[dbo].[tblQAItem]')";
                     
                 try
                 {
                     //if (this.gridMainDbCommand.ExecuteNonQuery() > 0)
                     //temp = true;
                     var izen = this.gridMainDbCommand.ExecuteScalar();
-                    grdData.QuestionForm.ItemId = Convert.ToInt32(izen.ToString());
+                    grdData.QAQuestion.ItemId = Convert.ToInt32(izen.ToString());
 
                 }
                 catch (Exception)
@@ -213,6 +218,38 @@ namespace GRIDLibraries.Libraries
 
           
 
+            this.grdMutexx.ReleaseMutex();
+
+            return temp;
+
+        }
+
+        public bool UpdateQAItem(int _Id, int _Score, string _Marking, long _PerfId)
+        {
+
+            bool temp = false;
+            this.grdMutexx.WaitOne();
+
+            if (this.OpenMainAHSQAConnection())
+            {
+                this.gridMainDbCommand.Parameters.Clear();
+                this.gridMainDbCommand.Parameters.AddWithValue("@Id", _Id); //-- From Account Tab           
+                this.gridMainDbCommand.Parameters.AddWithValue("@Score", _Score);
+                this.gridMainDbCommand.Parameters.AddWithValue("@Marking", _Marking);
+
+                this.gridMainDbCommand.CommandText = "UPDATE [dbo].[tblQAItem] SET [Score]=@Score,[Marking]=@Marking WHERE [Id]=@Id";
+
+                try
+                {
+                    if (this.gridMainDbCommand.ExecuteNonQuery() > 0)
+                        temp = true;
+
+                }
+                catch (Exception)
+                {
+                }
+                this.CloseMainDbConnection();
+            }
             this.grdMutexx.ReleaseMutex();
 
             return temp;
@@ -302,8 +339,8 @@ namespace GRIDLibraries.Libraries
                     SqlDataReader dr = this.gridMainDbCommand.ExecuteReader();
                     while (dr.Read())
                     {
-                        this.grdData.QuestionForm.Formula = dr["Formula"].ToString();
-                        this.grdData.QuestionForm.Target = Convert.ToInt32(dr["Target"].ToString());
+                        this.grdData.QAQuestion.Formula = dr["Formula"].ToString();
+                        this.grdData.QAQuestion.Target = Convert.ToInt32(dr["Target"].ToString());
                         temp = true;
                     }
                     dr.Close();
@@ -374,13 +411,13 @@ namespace GRIDLibraries.Libraries
                     SqlDataReader dr = this.gridMainDbCommand.ExecuteReader();
                     while (dr.Read())
                     {
-                        this.grdData.QuestionForm.MaxQID = Convert.ToInt32(dr["MAXQID"]);
+                        this.grdData.QAQuestion.MaxQID = Convert.ToInt32(dr["MAXQID"]);
                     }
                     dr.Close();
 
                     this.gridMainDbCommand.Parameters.Clear();
-                    this.gridMainDbCommand.Parameters.AddWithValue("@Id", this.grdData.QuestionForm.LOBId);
-                    this.gridMainDbCommand.Parameters.AddWithValue("@FormId", this.grdData.QuestionForm.MaxQID);
+                    this.gridMainDbCommand.Parameters.AddWithValue("@Id", this.grdData.QAQuestion.LOBId);
+                    this.gridMainDbCommand.Parameters.AddWithValue("@FormId", this.grdData.QAQuestion.MaxQID);
                     this.gridMainDbCommand.Parameters.AddWithValue("@Category", _Category);
                     this.gridMainDbCommand.Parameters.AddWithValue("@Question", _QAQuestion);
                     this.gridMainDbCommand.Parameters.AddWithValue("@ObjType", _QAObjType);
@@ -402,11 +439,11 @@ namespace GRIDLibraries.Libraries
 
                     foreach (DataRow row in dt1.Rows)
                     {
-                        this.grdData.QuestionForm.SelectionValue = row["Value"].ToString();
-                        this.grdData.QuestionForm.Score = Convert.ToInt32(row["Score"].ToString());
+                        this.grdData.QAQuestion.SelectionValue = row["Value"].ToString();
+                        this.grdData.QAQuestion.Score = Convert.ToInt32(row["Score"].ToString());
 
                         this.gridMainDbCommand.CommandText = "INSERT INTO [dbo].[tblQAScoring] ([QID],[Value],[Score])" +
-                                        " VALUES ('" + this.grdData.QuestionForm.MaxQID + "','" + this.grdData.QuestionForm.SelectionValue + "','" + this.grdData.QuestionForm.Score + "');";
+                                        " VALUES ('" + this.grdData.QAQuestion.MaxQID + "','" + this.grdData.QAQuestion.SelectionValue + "','" + this.grdData.QAQuestion.Score + "');";
                         try
                         {
                             this.gridMainDbCommand.ExecuteNonQuery();
@@ -418,10 +455,10 @@ namespace GRIDLibraries.Libraries
 
                     foreach (DataRow row2 in dt2.Rows)
                     {
-                        this.grdData.QuestionForm.MarkdownType = row2["Value"].ToString();
+                        this.grdData.QAQuestion.MarkdownType = row2["Value"].ToString();
 
                         this.gridMainDbCommand.CommandText = "INSERT INTO [dbo].[tblQAMarkdown] ([QID],[Value])" +
-                                        " VALUES ('" + this.grdData.QuestionForm.MaxQID + "','" + this.grdData.QuestionForm.MarkdownType + "');";
+                                        " VALUES ('" + this.grdData.QAQuestion.MaxQID + "','" + this.grdData.QAQuestion.MarkdownType + "');";
                         try
                         {
                             this.gridMainDbCommand.ExecuteNonQuery();
@@ -452,8 +489,8 @@ namespace GRIDLibraries.Libraries
                 try
                 {
                     this.gridMainDbCommand.Parameters.Clear();
-                    this.gridMainDbCommand.Parameters.AddWithValue("@Id", this.grdData.QuestionForm.LOBId);
-                    this.gridMainDbCommand.Parameters.AddWithValue("@FormId", this.grdData.QuestionForm.QID);
+                    this.gridMainDbCommand.Parameters.AddWithValue("@Id", this.grdData.QAQuestion.LOBId);
+                    this.gridMainDbCommand.Parameters.AddWithValue("@FormId", this.grdData.QAQuestion.QID);
                     this.gridMainDbCommand.Parameters.AddWithValue("@Category", _Category);
                     this.gridMainDbCommand.Parameters.AddWithValue("@Question", _QAQuestion);
                     this.gridMainDbCommand.Parameters.AddWithValue("@ObjType", _QAObjType);

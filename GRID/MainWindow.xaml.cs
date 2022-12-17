@@ -1257,10 +1257,10 @@ namespace GRID
             try
             {
                 grd.grdData._lstQAQuestions = grd.GetQAFormList();
-                //grd.grdData.QuestionForm.dtLOB = grd.GetQALob();
-                grd.grdData.QuestionForm.dtQAQuestionnaire = grd.GetQAQuestionnaires();
-                grd.grdData.QuestionForm.dtQASelection = grd.GetQASelection();
-                grd.grdData.QuestionForm.dtQAMarkdownSelection = grd.GetQAMarkdown();
+                //grd.grdData.QAQuestion.dtLOB = grd.GetQALob();
+                grd.grdData.QAQuestion.dtQAQuestionnaire = grd.GetQAQuestionnaires();
+                grd.grdData.QAQuestion.dtQASelection = grd.GetQASelection();
+                grd.grdData.QAQuestion.dtQAMarkdownSelection = grd.GetQAMarkdown();
             }
             catch (Exception ex)
             {

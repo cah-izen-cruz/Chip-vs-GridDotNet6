@@ -83,10 +83,10 @@ namespace GRID.Pages
         {
             this.QAMutex.WaitOne();
 
-            //grd.grdData.QuestionForm.dtLOB = grd.GetQALob();
-            //grd.grdData.QuestionForm.dtQAQuestionnaire = grd.GetQAQuestionnaires();
-            //grd.grdData.QuestionForm.dtQASelection = grd.GetQASelection();
-            //grd.grdData.QuestionForm.dtQAMarkdownSelection = grd.GetQAMarkdown();
+            //grd.grdData.QAQuestion.dtLOB = grd.GetQALob();
+            //grd.grdData.QAQuestion.dtQAQuestionnaire = grd.GetQAQuestionnaires();
+            //grd.grdData.QAQuestion.dtQASelection = grd.GetQASelection();
+            //grd.grdData.QAQuestion.dtQAMarkdownSelection = grd.GetQAMarkdown();
 
             //dtLOB = grd.GetQALob();
             //dtQAQuestionnaire = grd.GetQAQuestionnaires();
@@ -174,11 +174,11 @@ namespace GRID.Pages
                 DataRow[] result;
                 if (maxQID == 0)
                 {
-                    result = grd.grdData.QuestionForm.dtQAQuestionnaire.Select("LOBId = '" + cmbQuestionnaire.SelectedValue + "'");
+                    result = grd.grdData.QAQuestion.dtQAQuestionnaire.Select("LOBId = '" + cmbQuestionnaire.SelectedValue + "'");
                 }
                 else
                 {
-                    result = grd.grdData.QuestionForm.dtQAQuestionnaire.Select("LOBId = '" + maxQID + "'");
+                    result = grd.grdData.QAQuestion.dtQAQuestionnaire.Select("LOBId = '" + maxQID + "'");
                 }
 
                 foreach (DataRow row in result)
@@ -186,7 +186,7 @@ namespace GRID.Pages
                     lstQuestions.Items.Add(new { Id = row["LOBId"], FormId = row["FormId"], QQuestionName = row["Question"], QCategory = row["Category"] });
                 }
 
-                this.grd.grdData.QuestionForm.LOBId = (int)cmbQuestionnaire.SelectedValue;
+                this.grd.grdData.QAQuestion.LOBId = (int)cmbQuestionnaire.SelectedValue;
             }
         }
 
@@ -223,7 +223,7 @@ namespace GRID.Pages
                     var obj = lstQuestions.SelectedItems[i];
                     var id = obj.GetType().GetProperties().First(o => o.Name == "FormId").GetValue(obj, null);
 
-                    DataRow[] result = grd.grdData.QuestionForm.dtQASelection.Select("FormId = '" + id + "'");
+                    DataRow[] result = grd.grdData.QAQuestion.dtQASelection.Select("FormId = '" + id + "'");
                     lstSelection.Items.Clear();
 
                    
@@ -237,13 +237,13 @@ namespace GRID.Pages
                         lstSelection.Items.Add(new { Id = row["SId"].ToString(), Value = row["Value"].ToString(), Score = row["Score"].ToString() });
                     }
 
-                    DataRow[] result1 = grd.grdData.QuestionForm.dtQAMarkdownSelection.Select("QID = '" + id + "'");
+                    DataRow[] result1 = grd.grdData.QAQuestion.dtQAMarkdownSelection.Select("QID = '" + id + "'");
                     lstMardownType.Items.Clear();
 
                     foreach (DataRow row1 in result1)
                         lstMardownType.Items.Add(new { Id = row1["Id"].ToString(), Value = row1["Value"].ToString() });
 
-                    this.grd.grdData.QuestionForm.QID = Convert.ToInt32(id.ToString());
+                    this.grd.grdData.QAQuestion.QID = Convert.ToInt32(id.ToString());
                 }
 
 
@@ -285,28 +285,28 @@ namespace GRID.Pages
                 var obj = lstQuestions.SelectedItems[i];
                 var id = obj.GetType().GetProperties().First(o => o.Name == "FormId").GetValue(obj, null);
 
-                DataRow[] result = grd.grdData.QuestionForm.dtQAQuestionnaire.Select("FormId = '" + id + "'");
+                DataRow[] result = grd.grdData.QAQuestion.dtQAQuestionnaire.Select("FormId = '" + id + "'");
 
                 foreach (DataRow row in result)
                 {
                     strQAForm = row["Question"].ToString();
                 }
 
-                this.grd.grdData.QuestionForm.QID = Convert.ToInt32(id.ToString());
+                this.grd.grdData.QAQuestion.QID = Convert.ToInt32(id.ToString());
             }
 
             bool? Result = new MessagesBox("Deleting this template will also delete its configuration." + Constants.vbNewLine + "Do you want to proceed?", MessageType.Confirmation, MessageButtons.YesNo).ShowDialog();
 
             if (Result.Value)
             {
-                this.grd.DeleteQATemplate(this.grd.grdData.QuestionForm.QID);
+                this.grd.DeleteQATemplate(this.grd.grdData.QAQuestion.QID);
 
                 this.QAMutex.WaitOne();
-                //grd.grdData.QuestionForm.dtLOB = grd.GetQALob();
+                //grd.grdData.QAQuestion.dtLOB = grd.GetQALob();
                 grd.grdData._lstQAQuestions = grd.GetQAFormList();
-                grd.grdData.QuestionForm.dtQAQuestionnaire = grd.GetQAQuestionnaires();
-                grd.grdData.QuestionForm.dtQASelection = grd.GetQASelection();
-                grd.grdData.QuestionForm.dtQAMarkdownSelection = grd.GetQAMarkdown();
+                grd.grdData.QAQuestion.dtQAQuestionnaire = grd.GetQAQuestionnaires();
+                grd.grdData.QAQuestion.dtQASelection = grd.GetQASelection();
+                grd.grdData.QAQuestion.dtQAMarkdownSelection = grd.GetQAMarkdown();
 
                 //dtLOB = grd.GetQALob();
                 //dtQAQuestionnaire = grd.GetQAQuestionnaires();
@@ -326,7 +326,7 @@ namespace GRID.Pages
             if (cmbQuestionnaire.Text != "")
             {
 
-                this.grd.grdData.QuestionForm.LOBId = (int)cmbQuestionnaire.SelectedValue;
+                this.grd.grdData.QAQuestion.LOBId = (int)cmbQuestionnaire.SelectedValue;
                 grpTemplate.IsEnabled = false;
 
                 cmbQuestionnaire.IsEnabled = false;
@@ -363,15 +363,15 @@ namespace GRID.Pages
 
                 if (id.ToString() != "")
                 {
-                    DataRow[] result = grd.grdData.QuestionForm.dtQAMarkdownSelection.Select("Id = '" + id + "'");
+                    DataRow[] result = grd.grdData.QAQuestion.dtQAMarkdownSelection.Select("Id = '" + id + "'");
 
-                    this.grd.grdData.QuestionForm.MarkId = Convert.ToInt32(id.ToString());
+                    this.grd.grdData.QAQuestion.MarkId = Convert.ToInt32(id.ToString());
                     MarkId = true;
                 }
             }
 
             if (MarkId)
-                grd.DeleteMarkdown(this.grd.grdData.QuestionForm.MarkId);
+                grd.DeleteMarkdown(this.grd.grdData.QAQuestion.MarkId);
 
             var selected = lstMardownType.SelectedItems.Cast<Object>().ToArray();
             foreach (var item in selected)
@@ -390,7 +390,7 @@ namespace GRID.Pages
 
                 if (IsEdit)
                 {
-                    grd.AddScore(this.grd.grdData.QuestionForm.QID, qAQuestionForm.SelectionValue, (int)qAQuestionForm.Score);
+                    grd.AddScore(this.grd.grdData.QAQuestion.QID, qAQuestionForm.SelectionValue, (int)qAQuestionForm.Score);
                 }
                 else
                 {
@@ -441,7 +441,7 @@ namespace GRID.Pages
 
                 if (IsEdit)
                 {
-                    grd.AddMarkdown(this.grd.grdData.QuestionForm.QID, qAQuestionForm.MarkdownType);
+                    grd.AddMarkdown(this.grd.grdData.QAQuestion.QID, qAQuestionForm.MarkdownType);
                 }
                 else
                 {
@@ -490,15 +490,15 @@ namespace GRID.Pages
 
                 if (id.ToString() != "")
                 {
-                    DataRow[] result = grd.grdData.QuestionForm.dtQASelection.Select("SId = '" + id + "'");
+                    DataRow[] result = grd.grdData.QAQuestion.dtQASelection.Select("SId = '" + id + "'");
 
-                    this.grd.grdData.QuestionForm.SelId = Convert.ToInt32(id.ToString());
+                    this.grd.grdData.QAQuestion.SelId = Convert.ToInt32(id.ToString());
                     selId = true;
                 }
             }
 
             if (selId)
-                grd.DeleteScore(this.grd.grdData.QuestionForm.SelId);
+                grd.DeleteScore(this.grd.grdData.QAQuestion.SelId);
 
             var selected = lstSelection.SelectedItems.Cast<Object>().ToArray();
             foreach (var item in selected)
@@ -533,14 +533,14 @@ namespace GRID.Pages
             {
                 try
                 {
-                    grd.UpdateQATemplate(grd.grdData.QuestionForm.LOBId, txtCategory.Text, txtQuestion.Text, "Selectionlist", txtDescription.Text);
+                    grd.UpdateQATemplate(grd.grdData.QAQuestion.LOBId, txtCategory.Text, txtQuestion.Text, "Selectionlist", txtDescription.Text);
                     this.QAMutex.WaitOne();
 
-                    //grd.grdData.QuestionForm.dtLOB = grd.GetQALob();
+                    //grd.grdData.QAQuestion.dtLOB = grd.GetQALob();
                     grd.grdData._lstQAQuestions = grd.GetQAFormList();
-                    grd.grdData.QuestionForm.dtQAQuestionnaire = grd.GetQAQuestionnaires();
-                    grd.grdData.QuestionForm.dtQASelection = grd.GetQASelection();
-                    grd.grdData.QuestionForm.dtQAMarkdownSelection = grd.GetQAMarkdown();
+                    grd.grdData.QAQuestion.dtQAQuestionnaire = grd.GetQAQuestionnaires();
+                    grd.grdData.QAQuestion.dtQASelection = grd.GetQASelection();
+                    grd.grdData.QAQuestion.dtQAMarkdownSelection = grd.GetQAMarkdown();
 
                     //dtLOB = grd.GetQALob();
                     //dtQAQuestionnaire = grd.GetQAQuestionnaires();
@@ -583,13 +583,13 @@ namespace GRID.Pages
 
                     this.QAMutex.WaitOne();
 
-                    grd.AddQATemplate(grd.grdData.QuestionForm.LOBId, txtCategory.Text, txtQuestion.Text, "Selectionlist", txtDescription.Text, dtSelection, dtMarkdown);
+                    grd.AddQATemplate(grd.grdData.QAQuestion.LOBId, txtCategory.Text, txtQuestion.Text, "Selectionlist", txtDescription.Text, dtSelection, dtMarkdown);
 
-                    //grd.grdData.QuestionForm.dtLOB = grd.GetQALob();
+                    //grd.grdData.QAQuestion.dtLOB = grd.GetQALob();
                     grd.grdData._lstQAQuestions = grd.GetQAFormList();
-                    grd.grdData.QuestionForm.dtQAQuestionnaire = grd.GetQAQuestionnaires();
-                    grd.grdData.QuestionForm.dtQASelection = grd.GetQASelection();
-                    grd.grdData.QuestionForm.dtQAMarkdownSelection = grd.GetQAMarkdown();
+                    grd.grdData.QAQuestion.dtQAQuestionnaire = grd.GetQAQuestionnaires();
+                    grd.grdData.QAQuestion.dtQASelection = grd.GetQASelection();
+                    grd.grdData.QAQuestion.dtQAMarkdownSelection = grd.GetQAMarkdown();
 
                     //dtLOB = grd.GetQALob();
                     //dtQAQuestionnaire = grd.GetQAQuestionnaires();
