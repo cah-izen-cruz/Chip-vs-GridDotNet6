@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Numerics;
 
 namespace GRIDLibraries.Libraries
 {
@@ -191,7 +192,7 @@ namespace GRIDLibraries.Libraries
             if (this.OpenMainAHSQAConnection())
             {
                 this.gridMainDbCommand.Parameters.Clear();
-                this.gridMainDbCommand.Parameters.AddWithValue("@InteractionDate", Strings.Format(_InteractionDate, "MM/dd/yyyy").ToString()); //Strings.Format(TransDate, "MM/dd/yyyy").ToString()
+                this.gridMainDbCommand.Parameters.AddWithValue("@InteractionDate", _InteractionDate); //Strings.Format(TransDate, "MM/dd/yyyy").ToString()
                 this.gridMainDbCommand.Parameters.AddWithValue("@Owner", _Owner);
                 this.gridMainDbCommand.Parameters.AddWithValue("@Workgroup", _Workgroup);
                 this.gridMainDbCommand.Parameters.AddWithValue("@Customer", _Customer);
@@ -236,8 +237,9 @@ namespace GRIDLibraries.Libraries
                 this.gridMainDbCommand.Parameters.AddWithValue("@Id", _Id); //-- From Account Tab           
                 this.gridMainDbCommand.Parameters.AddWithValue("@Score", _Score);
                 this.gridMainDbCommand.Parameters.AddWithValue("@Marking", _Marking);
+                this.gridMainDbCommand.Parameters.AddWithValue("@PerfId", Convert.ToInt32(_PerfId));
 
-                this.gridMainDbCommand.CommandText = "UPDATE [dbo].[tblQAItem] SET [Score]=@Score,[Marking]=@Marking WHERE [Id]=@Id";
+                this.gridMainDbCommand.CommandText = "UPDATE [dbo].[tblQAItem] SET [Score]=@Score,[Marking]=@Marking,[PerfId]=@PerfId WHERE [Id]=@Id";
 
                 try
                 {

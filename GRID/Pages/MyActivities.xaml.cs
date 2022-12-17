@@ -3038,11 +3038,18 @@ namespace GRID.Pages
 
         private void cmbQAForm_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            this.SetupQADynamicConfigInfo();
-            if (QADynamicObjectsHandler())
+            int idx = cmbQAForm.SelectedIndex;
+            if (idx == -1)
+                return;
+            else
             {
-                this.QAWrapPanel.Visibility = Visibility.Visible;
+                this.SetupQADynamicConfigInfo();
+                if (QADynamicObjectsHandler())
+                {
+                    this.QAWrapPanel.Visibility = Visibility.Visible;
+                }
             }
+  
         }
 
         private void btnNext_Click(object sender, RoutedEventArgs e)
@@ -3051,6 +3058,7 @@ namespace GRID.Pages
                 new MessagesBox("One or more fields were empty." + Constants.vbNewLine + "Please Check.", MessageType.Error, MessageButtons.Ok).ShowDialog();
             else
             {
+                grd.grdData.QAQuestion.QADate = cmbQADate.SelectedDate.Value;
                 this.grd.SaveQAItemsSCOPE_IDENTITY(grd.grdData.QAQuestion.QADate, grd.grdData.QAQuestion.UserId, txtWorkgroup.Text, txtCustomer.Text,txtRecordId.Text,cmbChannel.Text,cmbEvaluationType.Text); //-- Getting ItemId
 
                 this.TabQuestion.IsSelected = true;
@@ -3068,7 +3076,7 @@ namespace GRID.Pages
 
         public void ClearItemFields()
         {
-            cmbQAForm.SelectedItem = null;
+            cmbQAForm.Text = "";
             
             cmbQADate.SelectedDate = null;
             txtAgentName.Text = "";
