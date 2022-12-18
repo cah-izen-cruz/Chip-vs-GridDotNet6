@@ -1,4 +1,5 @@
-﻿using GRIDLibraries.Libraries;
+﻿using GRID.Pages;
+using GRIDLibraries.Libraries;
 using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;

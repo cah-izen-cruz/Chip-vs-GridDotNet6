@@ -92,7 +92,6 @@
 
                 <!-- Top Info-->
                 <StackPanel Orientation="Horizontal" Grid.Column="2" VerticalAlignment="Top" Margin="50 12 0 0" Height="30">
-
                     <iconPacks:PackIconModern Kind="Tower" Foreground="{DynamicResource PrimaryTextColor}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="2 0 0 0"/>
                     <Label x:Name="lblTower" Content="Test" FontSize="14" FontWeight="SemiBold"  Foreground="{DynamicResource PrimaryTextColor}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
@@ -102,11 +101,6 @@
                     <iconPacks:PackIconBootstrapIcons Kind="ArrowBarRight" Foreground="{DynamicResource PrimaryTextColor}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="2,0,0,0"/>
                     <Label x:Name="lblSegment" Content="Test" FontSize="14" FontWeight="SemiBold"  Foreground="{DynamicResource PrimaryTextColor}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
-                    <!--<Image x:Name="imgBreakAlert"  Source="Images/Icons/BreakAlert.png" Height="20" Width="20" Margin="10,14,0,0"/>
-                <Label x:Name="lblBreakTime" FontSize="14" FontWeight="SemiBold"  Foreground="{DynamicResource PrimaryTextColor}" Margin="2,14,0,0"/>-->
-                    <!--<Image x:Name="imgLiveAct"  Source="Images/Icons/LiveActivity.png" Height="20" Width="20" Margin="10,-4,0,0"/>
-                            <Label x:Name="lblLiveActivity" FontSize="14" FontWeight="SemiBold"  Foreground="{DynamicResource PrimaryTextColor}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-10,-6,0,0"/>-->
-                    <Label x:Name="lblEfficiency" FontSize="14" FontWeight="SemiBold"  Foreground="{DynamicResource PrimaryTextColor}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-10,-6,0,0"/>
                 </StackPanel>
                 <!-- End Top Info-->
                 
@@ -234,7 +228,7 @@
                                                             <ListView.View>
                                                                 <GridView x:Name="GvCompleted" ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
                                                                     <GridView.Columns>
-                                                                        <GridViewColumn Header="ID" DisplayMemberBinding="{Binding Id}" Width="0"/>
+                                                                        <GridViewColumn Header="ID" DisplayMemberBinding="{Binding Id}" Width="100"/>
                                                                         <GridViewColumn Header="DESCRIPTION" DisplayMemberBinding="{Binding Activity.ActName}" Width="200"/>
                                                                         <GridViewColumn Header="TYPE" DisplayMemberBinding="{Binding Activity.Type}" Width="80"/>
                                                                         <GridViewColumn Header="PROCESS" DisplayMemberBinding="{Binding Activity.Process}" Width="100"/>

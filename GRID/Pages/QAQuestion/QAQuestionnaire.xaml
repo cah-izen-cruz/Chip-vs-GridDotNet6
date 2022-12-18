@@ -94,12 +94,15 @@
                             </Grid.RowDefinitions>
 
                             <ScrollViewer Grid.Row="0" >
+
+                   
+
                                 <DataGrid x:Name="lstQuestions" RowStyle="{DynamicResource DataGridRowStyle1}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle1}" CellStyle="{DynamicResource DataGridCellStyle1}" Style="{DynamicResource DataGridStyle1}" Margin="2 0 10 2">
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header="Id" IsReadOnly="True" CanUserResize="False" Width="Auto" Binding="{Binding Id}" Visibility="Collapsed"/>
                                         <DataGridTextColumn Header="QID" IsReadOnly="True" CanUserResize="False" Width="Auto" Binding="{Binding FormId}" Visibility="Collapsed"/>
 
-                                        <DataGridTemplateColumn Header="Category" IsReadOnly="True" Width="*">
+                                        <DataGridTemplateColumn Header="Category" IsReadOnly="True" Width="120">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Horizontal">
@@ -143,6 +146,8 @@
                                         </DataGridTemplateColumn>
                                     </DataGrid.Columns>
                                 </DataGrid>
+                            
+                            
                             </ScrollViewer>
 
                             <Border Grid.Row="1" HorizontalAlignment="Right" BorderBrush="#DEE4EC" BorderThickness="1" CornerRadius="3" Padding="0" Margin="0 10 2 2">

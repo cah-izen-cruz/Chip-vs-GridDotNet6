@@ -610,19 +610,22 @@ namespace GRID.Pages
                 {
                     if(curStopPerf.ActivityId == 17)
                     {
-                        grd.grdData.CurrentPerfInfo = new gridPerfInfo();
-                        grd.grdData.CurrentPerfInfo.PerfId = curStopPerf.Id;
-
-                        if (!(grd.grdData.QAQuestion.ItemId == 0))
+                        if (grd.grdData.QAQuestion.IsStopAllowed)
                         {
-                            this.grd.UpdateQAItem(grd.grdData.QAQuestion.ItemId, grd.grdData.QAQuestion.ScoreAverage, grd.grdData.QAQuestion.ScoreMarkings, grd.grdData.CurrentPerfInfo.PerfId);
-                            StopQAActivity();
-                        }
+                            grd.grdData.CurrentPerfInfo = new gridPerfInfo();
+                            grd.grdData.CurrentPerfInfo.PerfId = curStopPerf.Id;
 
+                            if (!(grd.grdData.QAQuestion.ItemId == 0))
+                            {
+                                this.grd.UpdateQAItem(grd.grdData.QAQuestion.ItemId, grd.grdData.QAQuestion.ScoreAverage, grd.grdData.QAQuestion.ScoreMarkings, grd.grdData.CurrentPerfInfo.PerfId);
+                                StopQAActivity();
+                            }
+                        }
                         else
+                        {
+                            new MessagesBox("You cannot stop this Activity right now." + Constants.vbNewLine + "Please complete the information above.", MessageType.Error, MessageButtons.Ok).ShowDialog();
                             return;
-                        
-                        
+                        }                     
                     }
                     else
                     {
@@ -630,54 +633,53 @@ namespace GRID.Pages
                             return;
 
                         curStopPerf.PerfConfigData = this.GetDynamicConfigData();
-                        curStopPerf.PerfConfigData.PerfId = curStopPerf.Id;
-
-
-                        if (grd.MEditPerformanceMain(curStopPerf))
-                        {
-                            try
-                            {
-                                var tempPerf = new gridPerformance();
-                                var q = from p in grd.gridData.PerformanceList
-                                        where p.Id == curStopPerf.Id
-                                        select p;
-
-                                if (!(q == null))
-                                {
-                                    if (q.Count() > 0)
-                                    {
-                                        tempPerf = q.First();
-                                        grd.grdData.PerformanceList.Remove(tempPerf);
-                                    }
-                                }
-
-                                grd.grdData.PerformanceList.Add(curStopPerf); //-look up ng open and completed
-                            }
-
-                            catch (Exception ex)
-                            {
-                            }
-
-                            grd.MUpdatePerfInfoMain((int)curStopPerf.Id, curStopPerf.PerfConfigData);
-
-                        }
-                        else
-                        {
-                            new MessagesBox("Activity was Not successfully saved. Please Try again", MessageType.Warning, MessageButtons.Ok).ShowDialog();
-                            grd.grdData.MainWindowAction = "";
-                            return;
-                        }
-
-                        if (grd.grdData.CurrentActivity.Activity.Type.ToUpper() == "PRODUCTIVE" & grd.grdData.CurrentActivity.Activity.IsPublic)
-                        {
-                            PrevActId = grd.grdData.CurrentActivity.Activity.Id;
-                        }
-                        else
-                        {
-                            PrevActId = 0;
-                        }
+                        curStopPerf.PerfConfigData.PerfId = curStopPerf.Id;                      
                     }
-                   
+
+                    if (grd.MEditPerformanceMain(curStopPerf))
+                    {
+                        try
+                        {
+                            var tempPerf = new gridPerformance();
+                            var q = from p in grd.gridData.PerformanceList
+                                    where p.Id == curStopPerf.Id
+                                    select p;
+
+                            if (!(q == null))
+                            {
+                                if (q.Count() > 0)
+                                {
+                                    tempPerf = q.First();
+                                    grd.grdData.PerformanceList.Remove(tempPerf);
+                                }
+                            }
+
+                            grd.grdData.PerformanceList.Add(curStopPerf); //-look up ng open and completed
+                        }
+
+                        catch (Exception ex)
+                        {
+                        }
+
+                        grd.MUpdatePerfInfoMain((int)curStopPerf.Id, curStopPerf.PerfConfigData);
+
+                    }
+                    else
+                    {
+                        new MessagesBox("Activity was Not successfully saved. Please Try again", MessageType.Warning, MessageButtons.Ok).ShowDialog();
+                        grd.grdData.MainWindowAction = "";
+                        return;
+                    }
+
+                    if (grd.grdData.CurrentActivity.Activity.Type.ToUpper() == "PRODUCTIVE" & grd.grdData.CurrentActivity.Activity.IsPublic)
+                    {
+                        PrevActId = grd.grdData.CurrentActivity.Activity.Id;
+                    }
+                    else
+                    {
+                        PrevActId = 0;
+                    }
+
                 }
             }
 
@@ -699,6 +701,7 @@ namespace GRID.Pages
             MainScrn.lblStartTime.Content = grd.grdData.CurrentActivity.TimeStart2.ToLongTimeString();
             grd.grdData.CurrentActivity.Id = 0;
 
+            grd.grdData.ScrContent.IsActivityRunning = false;
             grd.grdData.CurrentActivity.IsPaused = false;
             grd.grdData.CurrentActivity.IdleTime = 0;
             grd.grdData.CurrentActivity.Started = false;
@@ -708,8 +711,6 @@ namespace GRID.Pages
             MainScrn.ActivityElapsedTimer.Start();
 
             grd.gridData.MainWindowAction = "";
-
-            this.changelblbg();
 
             grd.grdData.CurrentUser.LogOut = grd.grdData.CurrentActivity.TimeEnd2;
             grd.grdData.CurrentActivity.Started = false;
@@ -774,8 +775,17 @@ namespace GRID.Pages
             {
                 if (grd.grdData.CurrentActivity.Activity.ConfigInfo.Count > 0)
                 {
-                    curPausePerf.PerfConfigData = this.GetDynamicConfigData();
-                    curPausePerf.PerfConfigData.PerfId = curPausePerf.Id;
+                    if(curAct.Id==17)
+                    {
+                        this.MatDesGridQA.Visibility = Visibility.Collapsed;
+                        this.MatDesActivityList.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        curPausePerf.PerfConfigData = this.GetDynamicConfigData();
+                        curPausePerf.PerfConfigData.PerfId = curPausePerf.Id;
+                    }
+                   
                 }
             }
 
@@ -836,16 +846,12 @@ namespace GRID.Pages
 
             this.ClearWrapPanel();
 
-
             grd.gridData.CurrentActivity.Reset();
             this.ResetValues();
 
             this.MainScrn.ActivityElapsedTimer.Stop();
 
             grd.gridData.LOBProcess = "";
-
-
-
             grd.grdData.CurrentActivity.TimeStart = Strings.Format(curPausePerf.TimeEnd2, "MM/dd/yyyy h:mm:ss tt").ToString();
             grd.grdData.CurrentActivity.TimeStart2 = curPausePerf.TimeEnd2;
             MainScrn.lblStartTime.Content = grd.grdData.CurrentActivity.TimeStart2.ToLongTimeString();
@@ -857,27 +863,12 @@ namespace GRID.Pages
             MainScrn.lblTimeElapsed.Content = "00:00:00";
             MainScrn.MinuteTimer = 0;
 
-
-            // grd.gridData.CurrentActivity.Activity.ConfigInfo = Nothing
-
             this.MainScrn.ActivityElapsedTimer.Start();
-            this.MainScrn.lblTimeElapsed.Content = "Izen";
 
-
-
-            this.changelblbg();
 
             grd.grdData.CurrentUser.LogOut = grd.grdData.CurrentActivity.TimeEnd2;
 
-
-            this.MainScrn.PopulateAgentMetrics();
-
             idleCtr = 0;
-
-            if (_IsAuto == false)
-            {
-                //this.GoToActivitityList();
-            }
 
             return PauseActivityRet;
         }
@@ -1093,7 +1084,7 @@ namespace GRID.Pages
                         grd.grdData.QAQuestion.drObjContainer["DDNameMD"] = mdd.Name;
 
                         tb = new RadWatermarkTextBox();
-                        tb.Text = "Put a remarks here..."; /*dt.Rows[r]["Description"].ToString();*/
+                        tb.Text = ""; /*dt.Rows[r]["Description"].ToString();*/
                         tb.Width = 250;
                         tb.Height = 24;
                         tb.FontSize = 11;
@@ -1440,8 +1431,7 @@ namespace GRID.Pages
 
             if (_ConfigCtr > 0)
             {
-                temp = true;
-
+   
                 dt = new DataTable();
 
                 dt.Columns.Add("QID");
@@ -1545,9 +1535,13 @@ namespace GRID.Pages
 
                 this.QAWrapPanel.Children.Add(xx);
 
+                temp = true;
+                grd.grdData.QAQuestion.IsStopAllowed = true;
+
             }
             else
             {
+                grd.grdData.QAQuestion.IsStopAllowed = false;
                 temp = false;
             }
 
@@ -2908,7 +2902,6 @@ namespace GRID.Pages
 
             txtAgentName.Text = grd.grdData.QAQuestion.EmpName;
             txtWorkgroup.Focus();
-
         }
 
         private void btnUploadSS_Click(object sender, RoutedEventArgs e)
@@ -3055,7 +3048,10 @@ namespace GRID.Pages
         private void btnNext_Click(object sender, RoutedEventArgs e)
         {
             if (cmbQADate == null || txtAgentName.Text == "" || txtWorkgroup.Text == "" || txtCustomer.Text == "" || txtRecordId.Text == "" || cmbChannel.Text == "" || cmbEvaluationType.Text == "")
+            {
+                grd.grdData.QAQuestion.IsStopAllowed = false;
                 new MessagesBox("One or more fields were empty." + Constants.vbNewLine + "Please Check.", MessageType.Error, MessageButtons.Ok).ShowDialog();
+            }
             else
             {
                 grd.grdData.QAQuestion.QADate = cmbQADate.SelectedDate.Value;
@@ -3208,7 +3204,6 @@ namespace GRID.Pages
                         this.grd.SaveQAScores(grd.grdData.QAQuestion.ItemId, (int)cmbQAForm.SelectedValue, cmbQAForm.Text, Category, QID, Question, Score, Markdown, Remarks);
                     }
 
-
                     this.grd.grdData.QAQuestion.dtObjContainer.Rows.Clear();
                     this.dt.Clear();
                     this.ClearItemFields();
@@ -3223,9 +3218,6 @@ namespace GRID.Pages
                     this.GroupQAItem.IsEnabled = true;
                     this.MatDesGridQA.Visibility = Visibility.Collapsed;
                     this.MatDesActivityList.Visibility = Visibility.Visible;
-
-
-                    notifier.ShowSuccess("QA Questions Successfully Saved.");
 
                 }
 
@@ -3339,6 +3331,7 @@ namespace GRID.Pages
             bool IsActivityStarted = false;
             int LOBItemId = 0;
 
+            
 
             if (_ctr == 1)
             {
@@ -3404,64 +3397,42 @@ namespace GRID.Pages
                     this.MatDesGridQA.Visibility = Visibility.Visible;
                     this.MatDesActivityList.Visibility = Visibility.Collapsed;
 
-                    grd.grdData.CurrentActivity.Started = true;
-                    if (grd.grdData.CurrentActivity.Id > 0)
-                    {
-                        grd.grdData.MainWindowAction = "CHANGE";
-                    }
-                    else
-                    {
-                        grd.grdData.MainWindowAction = "START";
-                        IsActivityStarted = true;
-                    }
-
-                    var withBlock = grd.grdData.CurrentActivity;
-                    withBlock.Activity = curAct;
-                    withBlock.ActivityId = curAct.Id;
-                    withBlock.LOBId = curAct.LOBId;
-                    withBlock.LOBItemId = 0;
-
-                    if (IsActivityStarted)
-                        this.MainWindowActivated();
-
+                    grd.grdData.QAQuestion.IsStopAllowed = false;
+                }
+           
+                grd.grdData.CurrentActivity.Started = true;
+                if (grd.grdData.CurrentActivity.Id > 0)
+                {
+                    grd.grdData.MainWindowAction = "CHANGE";
                 }
                 else
                 {
-                    grd.grdData.CurrentActivity.Started = true;
-                    if (grd.grdData.CurrentActivity.Id > 0)
-                    {
-                        grd.grdData.MainWindowAction = "CHANGE";
-                    }
-                    else
-                    {
-                        grd.grdData.MainWindowAction = "START";
-                        IsActivityStarted = true;
-                    }
-
-                    var withBlock = grd.grdData.CurrentActivity;
-                    withBlock.Activity = curAct;
-                    withBlock.ActivityId = curAct.Id;
-                    withBlock.LOBId = curAct.LOBId;
-                    withBlock.LOBItemId = 0;
-
-                    if (IsActivityStarted)
-                        this.MainWindowActivated();
-
+                    grd.grdData.MainWindowAction = "START";
+                    IsActivityStarted = true;
                 }
 
+                var withBlock = grd.grdData.CurrentActivity;
+                withBlock.Activity = curAct;
+                withBlock.ActivityId = curAct.Id;
+                withBlock.LOBId = curAct.LOBId;
+                withBlock.LOBItemId = 0;
 
-            }
+                if (IsActivityStarted)
+                    this.MainWindowActivated();
 
-            this.TabAcc.IsSelected = true;
-            this.TabQuestion.IsEnabled = false;
-            this.TabSS.IsEnabled = false;
 
-            btnStop.Visibility = Visibility.Visible;
-            btnPause.Visibility = Visibility.Visible;
-            btnChange.Visibility = Visibility.Visible;
-            grd.grdData.ScrContent.IsActivityRunning = true;
-            //grd.grdData.ScrContent.IsMyDataChanged = true;
 
+                this.TabAcc.IsSelected = true;
+                this.TabQuestion.IsEnabled = false;
+                this.TabSS.IsEnabled = false;
+
+                btnStop.Visibility = Visibility.Visible;
+                btnPause.Visibility = Visibility.Visible;
+                btnChange.Visibility = Visibility.Visible;
+                grd.grdData.ScrContent.IsActivityRunning = true;
+
+
+            }         
         }
 
         private void btnPause_Click(object sender, RoutedEventArgs e)
@@ -3482,8 +3453,8 @@ namespace GRID.Pages
                     MainScrn.cmbOpenActName.ItemsSource = grd.GetDistinctPerfActivity(grd.grdData.CurrentUser.EmpNo, grd.grdData.CurrentUser.TransactionDate2, 1);
                     MainScrn.cmbOpenActName.SelectedIndex = 0;
 
-                    //this.LoadOpenActivity();
-                    //this.LoadCompletedActivity();
+                    this.MainScrn.LoadOpenActivity();
+                    this.MainScrn.LoadCompletedActivity();
 
                     grd.grdData.CurrentActivity.Started = false;
 
@@ -3520,10 +3491,18 @@ namespace GRID.Pages
             {
                 StopActivity();
 
-                MainScrn.cmbCompletedActName.ItemsSource = grd.GetDistinctPerfActivity(grd.grdData.CurrentUser.EmpNo, grd.grdData.CurrentUser.TransactionDate2, 2);
-                MainScrn.cmbCompletedActName.SelectedIndex = 0;
-                MainScrn.cmbOpenActName.ItemsSource = grd.GetDistinctPerfActivity(grd.grdData.CurrentUser.EmpNo, grd.grdData.CurrentUser.TransactionDate2, 1);
-                MainScrn.cmbOpenActName.SelectedIndex = 0;
+                if(grd.grdData.QAQuestion.IsStopAllowed)
+                {
+                    MainScrn.cmbCompletedActName.ItemsSource = grd.GetDistinctPerfActivity(grd.grdData.CurrentUser.EmpNo, grd.grdData.CurrentUser.TransactionDate2, 2);
+                    MainScrn.cmbCompletedActName.SelectedIndex = 0;
+                    MainScrn.cmbOpenActName.ItemsSource = grd.GetDistinctPerfActivity(grd.grdData.CurrentUser.EmpNo, grd.grdData.CurrentUser.TransactionDate2, 1);
+                    MainScrn.cmbOpenActName.SelectedIndex = 0;
+
+                    this.MainScrn.LoadOpenActivity();
+                    this.MainScrn.LoadCompletedActivity();
+                }
+
+          
 
                 if (grd.grdData.ScrContent.IsBreakStarted)
                     grd.grdData.ScrContent.IsBreakStarted = false;
@@ -3633,89 +3612,89 @@ namespace GRID.Pages
 
         private void btnChange_Click(object sender, RoutedEventArgs e)
         {
-            if (grd.grdData.QAQuestion.dtObjContainer.Rows.Count == _ConfigCtr)
-            {
-                dt = new DataTable();
+            //if (grd.grdData.QAQuestion.dtObjContainer.Rows.Count == _ConfigCtr)
+            //{
+            //    dt = new DataTable();
 
-                dt.Columns.Add("QID");
-                dt.Columns.Add("Category");
-                dt.Columns.Add("Question");
-                dt.Columns.Add("Value");
-                dt.Columns.Add("Score");
-                dt.Columns.Add("Markdown");
-                dt.Columns.Add("Remarks");
+            //    dt.Columns.Add("QID");
+            //    dt.Columns.Add("Category");
+            //    dt.Columns.Add("Question");
+            //    dt.Columns.Add("Value");
+            //    dt.Columns.Add("Score");
+            //    dt.Columns.Add("Markdown");
+            //    dt.Columns.Add("Remarks");
 
-                int _Score = 0;
+            //    int _Score = 0;
 
-                foreach (DataRow row in grd.grdData.QAQuestion.dtObjContainer.Rows)
-                {
-                    DataRow[] fQ = dt.Select("Question = '" + row["Question"].ToString() + "'");
-                    RadComboBox cbValue = (RadComboBox)this.FindName(row["DDNameSel"].ToString());
-                    RadComboBox cbMd = (RadComboBox)this.FindName(row["DDNameMD"].ToString());
-                    RadWatermarkTextBox tbRemarks = (RadWatermarkTextBox)this.FindName(row["Remarks"].ToString());
+            //    foreach (DataRow row in grd.grdData.QAQuestion.dtObjContainer.Rows)
+            //    {
+            //        DataRow[] fQ = dt.Select("Question = '" + row["Question"].ToString() + "'");
+            //        RadComboBox cbValue = (RadComboBox)this.FindName(row["DDNameSel"].ToString());
+            //        RadComboBox cbMd = (RadComboBox)this.FindName(row["DDNameMD"].ToString());
+            //        RadWatermarkTextBox tbRemarks = (RadWatermarkTextBox)this.FindName(row["Remarks"].ToString());
 
-                    if (fQ.Length == 0)
-                    {
-                        dr = dt.NewRow();
-                        dr["QID"] = Convert.ToInt32(row["QID"]);
-                        dr["Category"] = row["Category"].ToString();
-                        dr["Question"] = row["Question"].ToString();
-                        dr["Value"] = cbValue.Text;
-                        dr["Score"] = Convert.ToInt32(cbValue.SelectedValue);
-                        dr["Markdown"] = cbMd.Text;
-                        dr["Remarks"] = tbRemarks.Text;
-                        dt.Rows.Add(dr);
-                        dt.AcceptChanges();
-                    }
+            //        if (fQ.Length == 0)
+            //        {
+            //            dr = dt.NewRow();
+            //            dr["QID"] = Convert.ToInt32(row["QID"]);
+            //            dr["Category"] = row["Category"].ToString();
+            //            dr["Question"] = row["Question"].ToString();
+            //            dr["Value"] = cbValue.Text;
+            //            dr["Score"] = Convert.ToInt32(cbValue.SelectedValue);
+            //            dr["Markdown"] = cbMd.Text;
+            //            dr["Remarks"] = tbRemarks.Text;
+            //            dt.Rows.Add(dr);
+            //            dt.AcceptChanges();
+            //        }
 
-                    _Score = _Score + Convert.ToInt32(cbValue.SelectedValue);
-                }
+            //        _Score = _Score + Convert.ToInt32(cbValue.SelectedValue);
+            //    }
              
 
-                if (dt.Rows.Count > 0)
-                {
-                    string Markdown;
-                    for (int i = 0; i < dt.Rows.Count; i++)
-                    {                       
-                        int QID = Convert.ToInt32(dt.Rows[i]["QID"]);
-                        string Category = (string)dt.Rows[i]["Category"];
-                        string Question = (string)dt.Rows[i]["Question"];
-                        int Score = Convert.ToInt32(dt.Rows[i]["Score"]);
+            //    if (dt.Rows.Count > 0)
+            //    {
+            //        string Markdown;
+            //        for (int i = 0; i < dt.Rows.Count; i++)
+            //        {                       
+            //            int QID = Convert.ToInt32(dt.Rows[i]["QID"]);
+            //            string Category = (string)dt.Rows[i]["Category"];
+            //            string Question = (string)dt.Rows[i]["Question"];
+            //            int Score = Convert.ToInt32(dt.Rows[i]["Score"]);
 
-                        if (dt.Rows[i]["Markdown"].ToString() == "")
-                            Markdown = "NA";
-                        else
-                        {
-                            Markdown = (string)dt.Rows[i]["Markdown"];
-                        }
+            //            if (dt.Rows[i]["Markdown"].ToString() == "")
+            //                Markdown = "NA";
+            //            else
+            //            {
+            //                Markdown = (string)dt.Rows[i]["Markdown"];
+            //            }
                     
-                        string Remarks = (string)dt.Rows[i]["Remarks"];
+            //            string Remarks = (string)dt.Rows[i]["Remarks"];
 
-                        this.grd.SaveQAScores(grd.grdData.QAQuestion.ItemId, (int)cmbQAForm.SelectedValue, cmbQAForm.Text, Category, QID, Question, Score, Markdown, Remarks);
-                    }          
+            //            this.grd.SaveQAScores(grd.grdData.QAQuestion.ItemId, (int)cmbQAForm.SelectedValue, cmbQAForm.Text, Category, QID, Question, Score, Markdown, Remarks);
+            //        }          
 
-                    this.grd.grdData.QAQuestion.dtObjContainer.Rows.Clear();
-                    this.dt.Clear();
-                    this.ClearItemFields();
-                    this.ClearWrapPanel();
-                    this.ResetValues();
+            //        this.grd.grdData.QAQuestion.dtObjContainer.Rows.Clear();
+            //        this.dt.Clear();
+            //        this.ClearItemFields();
+            //        this.ClearWrapPanel();
+            //        this.ResetValues();
 
-                    this.btnStart.Visibility = Visibility.Collapsed;
-                    this.btnStop.Visibility = Visibility.Collapsed;
-                    this.btnPause.Visibility = Visibility.Collapsed;
-                    this.btnChange.Visibility = Visibility.Collapsed;
+            //        this.btnStart.Visibility = Visibility.Collapsed;
+            //        this.btnStop.Visibility = Visibility.Collapsed;
+            //        this.btnPause.Visibility = Visibility.Collapsed;
+            //        this.btnChange.Visibility = Visibility.Collapsed;
 
-                    this.GroupQAItem.IsEnabled = true;
-                    this.MatDesGridQA.Visibility = Visibility.Collapsed;
-                    this.MatDesActivityList.Visibility = Visibility.Visible;
+            //        this.GroupQAItem.IsEnabled = true;
+            //        this.MatDesGridQA.Visibility = Visibility.Collapsed;
+            //        this.MatDesActivityList.Visibility = Visibility.Visible;
 
 
-                    notifier.ShowSuccess("QA Questions Successfully Saved.");
+            //        notifier.ShowSuccess("QA Questions Successfully Saved.");
 
-                }
+            //    }
 
             
-            }
+            //}
         }
 
         private void cmbProcess_SelectionChanged(object sender, SelectionChangedEventArgs e)

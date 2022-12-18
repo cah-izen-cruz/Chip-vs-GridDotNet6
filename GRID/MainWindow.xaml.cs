@@ -620,7 +620,7 @@ namespace GRID
         #endregion
 
         #region "OpenCompletedActivities"
-        private void LoadOpenActivity()
+        public void LoadOpenActivity()
         {
 
             lvOpenActivities.ItemsSource = null;
@@ -678,12 +678,12 @@ namespace GRID
             lvOpenActivities.ItemsSource = grd.GetPerformances(ActId, 1);
 
 
-            MDTabOpen.Text = "(" + lvOpenActivities.Items.Count + ") - " + " Open";
+            MDTabOpen.Text = "(" + lvOpenActivities.Items.Count + ")" + " Open";
             GroupOpen.Header = "(" + lvOpenActivities.Items.Count + ") - " + " Open";
 
         }
 
-        private void LoadCompletedActivity()
+        public void LoadCompletedActivity()
         {
 
 
@@ -691,8 +691,6 @@ namespace GRID
 
             lvClosedActivities.ItemsSource = null;
 
-            //lblTotalAudit.Visibility = Visibility.Hidden;
-            //btnExportCompleted.Visibility = Visibility.Hidden;
             var AddRF = new List<string>();
 
             int ActId = 0;
@@ -768,7 +766,7 @@ namespace GRID
 
             lvClosedActivities.ItemsSource = grd.GetPerformances(ActId, 2);
 
-            MDTabCompleted.Text = "(" + lvClosedActivities.Items.Count + ") - " + " Completed";
+            MDTabCompleted.Text = "(" + lvClosedActivities.Items.Count + ")" + " Completed";
             GroupCompleted.Header = "(" + lvClosedActivities.Items.Count + ") - " + " Completed";
         }
 
@@ -886,235 +884,6 @@ namespace GRID
 
         #endregion
 
-        #region "Agent Metrics"
-        private void PopulateOpenActivitiesMetrics()
-        {
-            //if ((int)lblOpenActivity.Content > 0)
-            //{
-            //    OpenAct.Background = System.Windows.Media.Brushes.Red; // G_red
-            //    OpenAct.Background = System.Windows.Media.Brushes.Green; // G_Green
-            //}
-
-        }
-
-        private void PopulateOpenAndCloseActivities()
-        {
-            //lblOpenActivity.Content = grd.GetOpenPerformancesLocalCount();
-            this.PopulateOpenActivitiesMetrics();
-
-            //lblCompletedActivity.Content = grd.GetClosedPerformancesLocalCount();
-            this.PopulateCompletedActivitiesMetrics();
-        }
-
-        private void PopulateCompletedActivitiesMetrics()
-        {
-
-            //if ((int)lblCompletedActivity.Content > 0)
-            //{
-            //    RadCompleted.Background = System.Windows.Media.Brushes.Green; // G_Green
-            //}
-            //else
-            //{
-            //    RadCompleted.Background = System.Windows.Media.Brushes.Red; // G_red
-            //}
-
-        }
-
-        private void PopulateTransDateMetrics()
-        {
-
-            if (grd.grdData.CurrentUser.IsLate == true)
-            {
-                //BorderTransDate.Background = System.Windows.Media.Brushes.Red; // G_red
-            }
-            else
-            {
-                //BorderTransDate.Background = System.Windows.Media.Brushes.Green; // G_Green
-            }
-
-        }
-
-        private void PopulateEfficiencyMetrics()
-        {
-
-
-            //lblEfficiency.Content = Interaction.IIf(grd.grdData.MainAgentMetrics.Efficiency > 0, Strings.Format(grd.grdData.MainAgentMetrics.Efficiency, "#0.##%"), "0.00%");
-
-            lblEfficiency.Foreground = System.Windows.Media.Brushes.White;
-            //lblEfficiency.Foreground = Brushes.White;
-
-            //if (grd.grdData.MainAgentMetrics.Efficiency >= 1.2d)
-            //{
-            //    //radButtonEff.Background = Brushes.Orange; // G_Orange
-            //    lblEfficiency.Foreground = System.Windows.Media.Brushes.Black;
-            //    lblEfficiency.Foreground = System.Windows.Media.Brushes.Orange;
-            //}
-            //else if (grd.grdData.MainAgentMetrics.Efficiency >= 0.95d)
-            //{
-            //    //radButtonEff.Background = Brushes.Green; // G_Green
-            //    lblEfficiency.Foreground = System.Windows.Media.Brushes.Green;
-            //}
-            //else
-            //{
-            //    //radButtonEff.Background = Brushes.Red; // G_red
-            //    lblEfficiency.Foreground = System.Windows.Media.Brushes.Red;
-            //} 
-
-        }
-
-        private void PopulateProdtimeMetrics()
-        {
-
-            //lblProductiveTime.Content = grd.grdData.MainAgentMetrics.ProductionTime;
-
-
-            //lblProductiveTime.Foreground = Brushes.White;
-            //lblProductiveTime.Foreground = Brushes.White;
-            if (grd.grdData.MainAgentMetrics.ProdTimeSec >= 24660)
-            {
-
-                //BorderProdTime.Background = System.Windows.Media.Brushes.Green; // G_Green
-            }
-
-
-            else if (grd.grdData.MainAgentMetrics.ProdTimeSec >= 23427)
-            {
-                //BorderProdTime.Background = System.Windows.Media.Brushes.Orange; // G_Orange
-                //lblProductiveTime.Foreground = Brushes.Black;
-                //lblProductiveTime.Foreground = Brushes.Black;
-            }
-            else
-            {
-                //BorderProdTime.Background = System.Windows.Media.Brushes.Red; // G_red
-
-            }
-
-
-
-        }
-
-        private void PopulateBreaktimeMetrics()
-        {
-
-            //lblBreaktime.Content = grd.grdData.MainAgentMetrics.BreakTime;
-
-            //txtBreakTime.Foreground = Brushes.White;
-            //lblBreakTime.Foreground = Brushes.White;
-
-
-            if (grd.grdData.MainAgentMetrics.BreakTimeSec > 5400)
-            {
-                //BorderBreaktime.Background = System.Windows.Media.Brushes.Red; // G_red
-            }
-            // ElseIf grd.griddata.MainAgentMetrics.BreakTimeSec >= 4860 Then
-            // txtBreakTimebg.Fill = G_Orange
-            else if (grd.grdData.MainAgentMetrics.BreakTimeSec >= 1)
-            {
-                //BorderBreaktime.Background = System.Windows.Media.Brushes.Green; // G_Green
-            }
-            else
-            {
-                //BorderBreaktime.Background = System.Windows.Media.Brushes.Orange; // G_Orange
-
-                //txtBreakTime.Foreground = Brushes.Black;
-                //lblBreakTime.Foreground = Brushes.Black;
-
-            }
-
-
-
-
-
-        }
-
-        private void PopulateShrinktimeMetrics()
-        {
-
-            //lblShrinkageTime.Content = grd.grdData.MainAgentMetrics.ShrinkageTime;
-
-
-            //if (grd.grdData.MainAgentMetrics.ShrinkTimeSec > 2340)
-            // {
-            //BorderShrinkage.Background = System.Windows.Media.Brushes.Red; // G_red
-            //}
-
-            // ElseIf grd.griddata.MainAgentMetrics.ShrinkTimeSec >= 1 Then
-            // txtShrinkageTimebg.Fill = Windows.Media.Brushes.Green
-            //else
-            //{
-            //BorderShrinkage.Background = System.Windows.Media.Brushes.Green; // G_Green
-            //} 
-
-
-        }
-
-        public void PopulateAgentMetrics()
-        {
-
-            //if (Conversion.Val(txtQuality.Text) > 95)
-            //{
-            //    radButtonQuality.Background = Brushes.Green; // G_Green 'Windows.Media.Brushes.Green
-            //}
-            //else if (Val(txtQuality.Text) < 96 & Val(txtQuality.Text) > 89)
-            //{
-            //    radButtonQuality.Background = Brushes.Orange; // G_Orange
-            //}
-            //else
-            //{
-            //    radButtonQuality.Background = Brushes.Red; // G_red
-            //} 
-
-
-
-
-            this.PopulateOpenAndCloseActivities();
-
-            //grd.UpdateMainAgentMetrics(grd.grdData.CurrentUser.TransactionDate); commented sept 6 2022
-
-
-            //this.PopulateEfficiencyMetrics();
-
-            //this.PopulateProdtimeMetrics();
-
-            //this.PopulateBreaktimeMetrics();
-
-            //this.PopulateTransDateMetrics();
-
-            //var _totalShrinkTime = DateTime.Parse("0001-01-01");
-
-            //long _tempTotalTime = grd.grdData.MainAgentMetrics.ProdTimeSec + grd.grdData.MainAgentMetrics.BreakTimeSec + grd.grdData.MainAgentMetrics.ShrinkTimeSec;
-            //long _tempTotalLogTime = GetTotalLogTime(Conversions.ToDate(grd.grdData.CurrentUser.LogIn).ToString(), Conversions.ToDate(grd.grdData.CurrentUser.LogOut).ToString());
-
-            //if (_tempTotalTime < _tempTotalLogTime)
-            //{
-            //    grd.grdData.MainAgentMetrics.ShrinkTimeSec = _tempTotalLogTime - grd.grdData.MainAgentMetrics.ProdTimeSec - grd.grdData.MainAgentMetrics.BreakTimeSec;
-            //    var newTime = new TimeSpan(0, 0, (int)grd.grdData.MainAgentMetrics.ShrinkTimeSec);
-
-            //    //_totalShrinkTime.Add(newTime);
-            //    grd.grdData.MainAgentMetrics.ShrinkageTime = newTime.ToString();
-
-
-            //}
-            //if (grd.grdData.MainAgentMetrics.ProdTimeSec > 0)
-            //{
-            //    grd.grdData.MainAgentMetrics.Utilization = grd.grdData.MainAgentMetrics.ProdTimeSec / _tempTotalLogTime;
-            //}
-            //else
-            //{
-            //    grd.grdData.MainAgentMetrics.Utilization = 0;
-            //}
-
-
-            //// MsgBox(CDate(grd.griddata.CurrentUser.ActualLogIn))
-            //lblProductiveTime.Content = grd.grdData.MainAgentMetrics.ProductionTime;
-            //lblShrinkageTime.Content = grd.grdData.MainAgentMetrics.ShrinkageTime;
-            //lblBreakTime.Content = grd.grdData.MainAgentMetrics.BreakTime;
-            //this.PopulateUtilizationMetrics();
-            //this.PopulateShrinktimeMetrics();
-
-        }
-
-        #endregion
 
         public MainWindow()
         {
@@ -1181,15 +950,6 @@ namespace GRID
 
                 this.LoadOpenActivity();
                 this.LoadCompletedActivity();
-
-                //if (TabCtr == 1)
-                //{
-                //    TabControl1.SelectedIndex = 1;
-                //}
-                //else
-                //{
-                //    TabControl1.SelectedIndex = 0;
-                //}
             }
             catch (Exception ex)
             {

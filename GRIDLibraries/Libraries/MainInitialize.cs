@@ -323,11 +323,11 @@ namespace GRIDLibraries.Libraries
 
         public void MIPopulateQAList()
         {
-            //var lstQuestions = new List<QAQuestionForm>();
+            //var lstQuestions = new List<QAQuestionnaire>();
 
             //lstQuestions = this.MIGetQAList();
 
-            //this.grdData.QALists = new List<QAQuestionForm>();
+            //this.grdData.QALists = new List<QAQuestionnaire>();
             //this.grdData.QALists = lstQuestions;
         }
         #endregion

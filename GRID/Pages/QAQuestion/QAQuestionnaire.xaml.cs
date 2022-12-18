@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using Telerik.Windows.Documents.Spreadsheet.Expressions.Functions;
 using ToastNotifications;
@@ -52,8 +53,6 @@ namespace GRID.Pages
 
         private readonly BackgroundWorker bw = new BackgroundWorker();
 
-
-
         long maxQID;
         string strQAForm;
 
@@ -73,12 +72,16 @@ namespace GRID.Pages
             objBusyIndicator.BusyContent = "Getting Questions...";
             objBusyIndicator.IsBusy = true;
 
+
+          
+
             bw.DoWork += bw_DoWork;
             bw.RunWorkerCompleted += bw_single_Complete;
 
             bw.RunWorkerAsync();
         }
 
+   
         private void bw_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             this.QAMutex.WaitOne();
@@ -163,6 +166,7 @@ namespace GRID.Pages
 
         public void GetDatafromQuestionnaireTemplate()
         {
+      
             int indexnum = cmbQuestionnaire.SelectedIndex;
             if (indexnum == -1)
             {
@@ -187,8 +191,11 @@ namespace GRID.Pages
                 }
 
                 this.grd.grdData.QAQuestion.LOBId = (int)cmbQuestionnaire.SelectedValue;
+
             }
         }
+
+
 
         private void cmbQuestionnaire_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

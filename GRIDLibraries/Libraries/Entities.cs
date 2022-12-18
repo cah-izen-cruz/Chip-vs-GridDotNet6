@@ -436,7 +436,6 @@ namespace GRIDLibraries.Libraries
 
     public class QAQuestionForm
     {
-        public List<QAPerfConfig>? ListOfQA { get; set; }
 
         public DataTable dtQAQuestionnaire = new DataTable();
         public DataTable dtQASelection = new DataTable();
@@ -444,17 +443,6 @@ namespace GRIDLibraries.Libraries
 
         public DataTable dtObjContainer = new DataTable();
         public DataRow drObjContainer;
-
-
-        public QAQuestionForm()
-        {
-            ListOfQA = new List<QAPerfConfig>();
-
-            //DataTable dtLOB;
-            //DataTable dtQAQuestionnaire;
-            //DataTable dtQASelection;
-            //DataTable dtQAMarkdownSelection;
-        }
 
         public DateTime QADate { get; set; }
         public int ItemId { get; set; } = 00;
@@ -467,10 +455,6 @@ namespace GRIDLibraries.Libraries
         public int LOBId { get; set; }
         public string Name { get; set; }
         public int QID { get; set; }
-        public string Question { get; set; }
-        public string ObjectType { get; set; }
-        public string Remarks { get; set; }          
-        public int MaxLOBId { get; set; }
         public int MaxQID { get; set; }       
         public int SelId { get; set; }
         public int MarkId { get; set; }
@@ -482,41 +466,16 @@ namespace GRIDLibraries.Libraries
         public int ScoreAverage { get; set; }
         public string ScoreMarkings { get; set; }
 
+        public bool IsStopAllowed { get; set; } = false;
+
+
+
+
     }
 
 
-    public class QAPerfConfig
-    {
-        public List<gridQAPerfConfigItem> QAConfigItem { get; set; }
-
-        public QAPerfConfig()
-        {
-            QAConfigItem = new List<gridQAPerfConfigItem>();
-        }
-
-        public int Id { get; set; }
-        public int ActivityId { get; set; }
-        public string FieldName { get; set; }
-        public string DataType { get; set; }
-        public string ObjectType { get; set; }
-        public bool IsRequired { get; set; }
-        public string Desc { get; set; }
-        public bool WithItem { get; set; }
-        public bool Status { get; set; }
-
-        public bool UseCurrentDate { get; set; }
-        public int Sequence { get; set; }
-
-        
-    }
 
 
-    public class gridQAPerfConfigItem
-    {
-        public int Id { get; set; }
-        public int PerfConfigId { get; set; }
-        public string Item { get; set; }
-    }
 
 
 
