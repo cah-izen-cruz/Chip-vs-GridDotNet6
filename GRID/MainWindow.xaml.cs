@@ -112,19 +112,12 @@ namespace GRID
 
         private void ElapsedTimer_Tick(object sender, EventArgs e)
         {
-
             DateTime timeEndNow = Conversions.ToDate(Strings.Format(grd.ConvertTimeZone(grd.grdData.TeamInfo.OffSet), "MM/dd/yyyy h:mm:ss tt"));
-
-            //lblCurrentDateTime.Content = Strings.Format(timeEndNow, "MMM. dd - h:mm tt");
-
-            //if (grd.grdData.CurrentUser.ActualTagging | Conversion.Val(lblCompletedActivity.Content) == 0 & Conversion.Val(lblOpenActivity.Content) == 0)
-            //{
 
             if (grd.grdData.CurrentActivity.Id <= 0)
             {
 
                 lblTimeElapsed.Content = "00:00:00";
-
 
                 grd.grdData.CurrentActivity.TimeStart = grd.ConvertTimeZone(grd.grdData.TeamInfo.OffSet).ToString();
                 grd.grdData.CurrentActivity.TimeEnd = grd.ConvertTimeZone(grd.grdData.TeamInfo.OffSet).ToString();
@@ -144,7 +137,6 @@ namespace GRID
                 lblStartTime.Content = grd.grdData.CurrentActivity.TimeStart2.ToLongTimeString();
             }
 
-            //}
 
             if (IsDoingOvertime == true)
             {
@@ -417,10 +409,6 @@ namespace GRID
 
         private void ShowLunchTimeReminder()
         {
-            //imgBreakAlert.Visibility = Visibility.Hidden;
-            //lblBreakTime.Content = "";
-            //lblBreakTime.Visibility = Visibility.Hidden;
-
             grd.grdData.ScrContent.IsBreaktime = false;
 
 
@@ -609,7 +597,6 @@ namespace GRID
             {
                 BorderTotalTime.Background = System.Windows.Media.Brushes.Green; // G_Green
             }
-
 
             if (grd.grdData.CurrentActivity.Id <= 0)
             {
