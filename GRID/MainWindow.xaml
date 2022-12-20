@@ -158,7 +158,7 @@
 
                                                 </StackPanel>
 
-                                                <GroupBox x:Name="GroupOpen" Grid.Row="1" Margin="0 8 4 4" matDes:ShadowAssist.ShadowDepth="Depth5">
+                                                <GroupBox x:Name="GroupOpen" Grid.Row="1" Margin="0 8 4 4">
                                                     <ScrollViewer>
                                                         <ListView x:Name="lvOpenActivities" IsSynchronizedWithCurrentItem="True">
                                                             <ListView.View>
@@ -222,7 +222,7 @@
 
                                                 </StackPanel>
 
-                                                <GroupBox x:Name="GroupCompleted" Grid.Row="1" Margin="0 8 4 4" matDes:ShadowAssist.ShadowDepth="Depth5">
+                                                <GroupBox x:Name="GroupCompleted" Grid.Row="1" Margin="0 8 4 4">
                                                     <ScrollViewer>
                                                         <ListView x:Name="lvClosedActivities" IsSynchronizedWithCurrentItem="True">
                                                             <ListView.View>
@@ -408,7 +408,7 @@
                                 <Separator Height="1" Margin="10,5,10,10" Background="White"/>
                             </StackPanel>
 
-                            <RadioButton x:Name="btnHammer" Content="GRID Level 5" Style="{DynamicResource MenuRadioButtonStyle}" Tag="{DynamicResource Hammer}" Cursor="Hand" Click="btnHammer_Click" MouseEnter="btnHammer_MouseEnter" MouseLeave="btnHammer_MouseLeave"/>
+                            <RadioButton x:Name="btnHammer" Content="Admin Config" Style="{DynamicResource MenuRadioButtonStyle}" Tag="{DynamicResource Hammer}" Cursor="Hand" Click="btnHammer_Click" MouseEnter="btnHammer_MouseEnter" MouseLeave="btnHammer_MouseLeave"/>
 
                             <StackPanel Height="Auto">
                                 <Separator Height="1" Margin="10,5,10,10" Background="White"/>
