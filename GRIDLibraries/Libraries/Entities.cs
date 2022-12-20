@@ -469,7 +469,7 @@ namespace GRIDLibraries.Libraries
         public bool IsStopAllowed { get; set; } = false;
 
 
-
+        public bool Git { get; set; } = false;
 
     }
 
