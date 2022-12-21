@@ -1,4 +1,4 @@
-﻿using GRID.Controls;
+﻿ using GRID.Controls;
 using GRIDLibraries.Libraries;
 using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
@@ -11,6 +11,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Telerik.Windows.Controls;
 using Telerik.Windows.Documents.Spreadsheet.Expressions.Functions;
@@ -60,6 +61,8 @@ namespace GRID.Pages
         public bool ReStartActivity = false;
 
         public int idleCtr;
+
+        public string ImgFileName;
         public MyActivities()
         {
             InitializeComponent();
@@ -68,8 +71,8 @@ namespace GRID.Pages
 
             grd.grdData.TeamInfo.DBName = grd.grdData.TeamInfo.DBName;
 
-            grd.conString = "Data Source=WPEC5009GRDRP01;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
-            //grd.conString = "Data Source=DESKTOP-A0R75AD;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
+            //grd.conString = "Data Source=WPEC5009GRDRP01;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
+            grd.conString = "Data Source=DESKTOP-A0R75AD;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
 
             lvMyActivities.ItemsSource = null;
             lvProductivity.ItemsSource = null;
@@ -2906,7 +2909,7 @@ namespace GRID.Pages
 
         private void btnUploadSS_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog OpenFileDialog = new OpenFileDialog() { Multiselect = true };
+            OpenFileDialog OpenFileDialog = new OpenFileDialog() { Multiselect = false };
             OpenFileDialog.Filter = "JPG Files (*.jpg)|*.jpg| PNG Files (*.png)| All Files (*.*)";
             OpenFileDialog.Title = "Browse Screenshot";
 
@@ -2921,10 +2924,11 @@ namespace GRID.Pages
                 {
                     string filename = System.IO.Path.GetFileName(files[i]);
                     FileInfo fileInfo = new FileInfo(files[i]);
-
+                    ImgFileName = fileInfo.ToString();
                     UploadFileList.Items.Add(new Upload()
                     {
                         //FileName = filename,
+                         
                         FileName = fileInfo.ToString(),
                         FileSize = string.Format("{0} {1}", (fileInfo.Length / 1.049e+6).ToString("0.0"), "Mb"),
                         UploadProgress = 100
@@ -2974,6 +2978,9 @@ namespace GRID.Pages
                     grd.grdData._lstQAAttachments.Clear();
                     UploadFileList.Items.Clear();
                     this.AttContorls.Visibility = Visibility.Collapsed;
+
+                    this.StackPreview.Visibility = Visibility.Collapsed;
+                    this.StackDrop.Visibility = Visibility.Visible;
                 }
             }
             else
@@ -3061,6 +3068,7 @@ namespace GRID.Pages
                 this.TabQuestion.IsEnabled = true;
                 this.TabSS.IsEnabled = true;
                 this.GroupQAItem.IsEnabled = false;
+                this.StackPreview.Visibility = Visibility.Collapsed;
             }
 
         }
@@ -3709,7 +3717,13 @@ namespace GRID.Pages
             }
         }
 
-      
-   
+        private void btnPreviewAtt_Click(object sender, RoutedEventArgs e)
+        {
+            this.ImgPreview.ImageSource = new BitmapImage(new Uri(ImgFileName));
+
+             
+            this.StackPreview.Visibility = Visibility.Visible;
+            this.StackDrop.Visibility = Visibility.Collapsed;
+        }
     }
 }

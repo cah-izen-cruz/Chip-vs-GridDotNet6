@@ -406,9 +406,8 @@
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
 
-                                    <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Left" Margin="20 20 0 0">
+                                    <StackPanel x:Name="StackDrop" Grid.Row="1" Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Left" Margin="20 20 0 0">
                                         <Grid>
-
                                             <Rectangle x:Name="Rec" Fill="Gray" Opacity="0.4"
                                                    RadiusX="10"
                                                    RadiusY="10"
@@ -452,7 +451,17 @@
                                         </matDes:TransitioningContent>
                                     </StackPanel>
 
-                                    <ScrollViewer Grid.Column="1" Grid.RowSpan="2">
+                                    <StackPanel x:Name="StackPreview" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" Margin="20 20 0 0">
+                                        <Border CornerRadius="12" Width="250" Height="250">
+                                            <Border.Background>
+                                                <ImageBrush x:Name="ImgPreview"/>
+                                            </Border.Background>
+                                        </Border>
+                                    </StackPanel>
+                                    
+                                    
+
+                                    <ScrollViewer Grid.Column="1" Grid.RowSpan="2"> 
                                         <Grid>
                                             <Grid.RowDefinitions>
                                                 <RowDefinition/>
@@ -464,19 +473,26 @@
 
 
                                                 <StackPanel x:Name="AttContorls" Orientation="Horizontal" Margin="10" HorizontalAlignment="Right">
-                                                    <Button Name="btnSaveAtt" BorderThickness="0" Width="120" Click="btnSaveAtt_Click" >
+                                                    <Button Name="btnPreviewAtt" BorderThickness="0" Width="108" Click="btnPreviewAtt_Click">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <iconPacks:PackIconMaterial Kind="ImageAreaClose" VerticalAlignment="Center" Margin="0 1 8 0" Width="18" Height="18"/>
+                                                            <TextBlock Text="Preview"/>
+                                                        </StackPanel>
+                                                    </Button>
+                                                    <Button Name="btnSaveAtt" BorderThickness="0" Width="100" Margin="10 0 0 0" Click="btnSaveAtt_Click" >
                                                         <StackPanel Orientation="Horizontal">
                                                             <iconPacks:PackIconMaterial Kind="Attachment" VerticalAlignment="Center" Margin="0 1 8 0" Width="18" Height="18"/>
                                                             <TextBlock Text="Attach"/>
                                                         </StackPanel>
                                                     </Button>
 
-                                                    <Button Name="btnCancelAtt" BorderThickness="0" Width="120" Margin="10 0 0 0" Click="btnCancelAtt_Click">
+                                                    <Button Name="btnCancelAtt" BorderThickness="0" Width="100" Margin="10 0 0 0" Click="btnCancelAtt_Click">
                                                         <StackPanel Orientation="Horizontal">
                                                             <iconPacks:PackIconMaterial Kind="UploadOff" VerticalAlignment="Center" Margin="0 1 8 0" Width="18" Height="18"/>
                                                             <TextBlock Text="Cancel"/>
                                                         </StackPanel>
                                                     </Button>
+                                           
                                                 </StackPanel>
                                             </StackPanel>
                                         </Grid>
