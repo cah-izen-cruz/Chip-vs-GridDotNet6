@@ -140,6 +140,9 @@ namespace GRIDLibraries.Libraries
         public long Id { get; set; }
         public string UserId { get; set; }
         public int ActivityId { get; set; }
+        public string ActivityName { get; set; }
+        public string Type { get; set; }
+        public string Process { get; set; }
         public string TransDate { get; set; }
         public string Status { get; set; }
         public string TimeStart { get; set; }

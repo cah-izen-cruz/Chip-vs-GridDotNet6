@@ -165,9 +165,9 @@
                                                                 <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
                                                                     <GridView.Columns>
                                                                         <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}" Width="0"/>
-                                                                        <GridViewColumn Header="DESCRIPTION" DisplayMemberBinding="{Binding Path=Activity.ActName}" Width="200"/>
-                                                                        <GridViewColumn Header="TYPE" DisplayMemberBinding="{Binding Path=Activity.Type}" Width="80"/>
-                                                                        <GridViewColumn Header="PROCESS" DisplayMemberBinding="{Binding Path=Activity.Process}" Width="100"/>
+                                                                        <GridViewColumn Header="DESCRIPTION" DisplayMemberBinding="{Binding ActivityName}" Width="200"/>
+                                                                        <GridViewColumn Header="TYPE" DisplayMemberBinding="{Binding Type}" Width="80"/>
+                                                                        <GridViewColumn Header="PROCESS" DisplayMemberBinding="{Binding Process}" Width="100"/>
                                                                         <GridViewColumn Header="TIME STARTED" DisplayMemberBinding="{Binding TimeStart}" Width="100"/>
                                                                         <GridViewColumn Header="TIME ENDED" DisplayMemberBinding="{Binding TimeEnd}" Width="100"/>
                                                                         <GridViewColumn Header="DURATION" DisplayMemberBinding="{Binding TimeElapsed}" Width="100"/>
@@ -229,9 +229,9 @@
                                                                 <GridView x:Name="GvCompleted" ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
                                                                     <GridView.Columns>
                                                                         <GridViewColumn Header="ID" DisplayMemberBinding="{Binding Id}" Width="100"/>
-                                                                        <GridViewColumn Header="DESCRIPTION" DisplayMemberBinding="{Binding Activity.ActName}" Width="200"/>
-                                                                        <GridViewColumn Header="TYPE" DisplayMemberBinding="{Binding Activity.Type}" Width="80"/>
-                                                                        <GridViewColumn Header="PROCESS" DisplayMemberBinding="{Binding Activity.Process}" Width="100"/>
+                                                                        <GridViewColumn Header="DESCRIPTION" DisplayMemberBinding="{Binding ActivityName}" Width="200"/>
+                                                                        <GridViewColumn Header="TYPE" DisplayMemberBinding="{Binding Type}" Width="80"/>
+                                                                        <GridViewColumn Header="PROCESS" DisplayMemberBinding="{Binding Process}" Width="100"/>
                                                                         <GridViewColumn Header="TIME STARTED" DisplayMemberBinding="{Binding TimeStart}" Width="100"/>
                                                                         <GridViewColumn Header="TIME ENDED" DisplayMemberBinding="{Binding TimeEnd}" Width="100"/>
                                                                         <GridViewColumn Header="DURATION" DisplayMemberBinding="{Binding TimeElapsed}" Width="100"/>

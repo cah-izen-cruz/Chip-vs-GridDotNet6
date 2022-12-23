@@ -639,12 +639,12 @@ namespace GRID
 
             //gView.AllowsColumnReorder = true;
             gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "ID", DisplayMemberBinding = new Binding("Id"), Width = 0 });
-            gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "ActId", DisplayMemberBinding = new Binding("Activity.Id"), Width = 0 });
-            gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Activity Name", DisplayMemberBinding = new Binding("Activity.ActName") });
+            gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "ActId", DisplayMemberBinding = new Binding("ActivityId"), Width = 0 });
+            gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Activity Name", DisplayMemberBinding = new Binding("ActivityName") });
             gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Time Started", DisplayMemberBinding = new Binding("TimeStart") });
             gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Duration", DisplayMemberBinding = new Binding("TimeElapsed") });
-            gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Type", DisplayMemberBinding = new Binding("Activity.Type") });
-            gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Process", DisplayMemberBinding = new Binding("Activity.Process") });
+            gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Type", DisplayMemberBinding = new Binding("Type") });
+            gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Process", DisplayMemberBinding = new Binding("Process") });
             gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Ref No.", DisplayMemberBinding = new Binding("ReferenceId") });
             gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Item Id", DisplayMemberBinding = new Binding("LOBItemId"), Width = 0 });
 
@@ -672,10 +672,7 @@ namespace GRID
 
         public void LoadCompletedActivity()
         {
-
-
             dtCompleted = new DataTable();
-
             lvClosedActivities.ItemsSource = null;
 
             var AddRF = new List<string>();
@@ -711,12 +708,12 @@ namespace GRID
             dtCompleted.Columns.Add("TimeElapsed");
             dtCompleted.Columns.Add("ReferenceId");
 
-
             gView.AllowsColumnReorder = true;
-            gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Id", DisplayMemberBinding = new Binding("Id"), Width = 0 });
-            gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Description", DisplayMemberBinding = new Binding("Activity.ActName") });
-            gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Type", DisplayMemberBinding = new Binding("Activity.Type") });
-            gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Process", DisplayMemberBinding = new Binding("Activity.Process") });
+            //gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Id", DisplayMemberBinding = new Binding("Id"), Width = 0 });
+            gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Id", DisplayMemberBinding = new Binding("Id") });
+            gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Description", DisplayMemberBinding = new Binding("ActivityName") });
+            gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Type", DisplayMemberBinding = new Binding("Type") });
+            gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Process", DisplayMemberBinding = new Binding("Process") });
             gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Time Started", DisplayMemberBinding = new Binding("TimeStart") });
             gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Time Ended", DisplayMemberBinding = new Binding("TimeEnd") });
             gView.Columns.Add(new System.Windows.Controls.GridViewColumn() { Header = "Duration", DisplayMemberBinding = new Binding("TimeElapsed") });
@@ -750,6 +747,7 @@ namespace GRID
 
 
             lvClosedActivities.View = gView;
+            lvClosedActivities.ItemsSource = null;
 
             lvClosedActivities.ItemsSource = grd.GetPerformances(ActId, 2);
 

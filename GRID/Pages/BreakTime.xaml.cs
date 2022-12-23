@@ -22,7 +22,8 @@ namespace GRID.Pages
             InitializeComponent();
             lvBreak.ItemsSource = null;
             lvBreak.ItemsSource = grd.grdData._lstBreakOrig;
-            grd.conString = "Data Source=WPEC5009GRDRP01;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
+            //grd.conString = "Data Source=WPEC5009GRDRP01;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
+            grd.conString = "Data Source=DESKTOP-A0R75AD;" + "Initial Catalog=TestDB" + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
             this.GridBreakList.Visibility = Visibility.Visible;
 
         }

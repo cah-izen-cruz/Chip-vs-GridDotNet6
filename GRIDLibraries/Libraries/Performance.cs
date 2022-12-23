@@ -24,12 +24,14 @@ namespace GRIDLibraries.Libraries
                 this.gridDbCommand.Parameters.AddWithValue("@TransDate", Strings.Format(TransDate, "MM/dd/yyyy").ToString());
                 this.gridDbCommand.Parameters.AddWithValue("@Status", Stat.ToString());
                 //this.gridDbCommand.CommandText = "SELECT DISTINCT [ActivityId],[Name] FROM vPerformanceActivity WHERE [UserId]=@UserId AND [TransDate]=@TransDate AND [Status]=@Status;";
-                this.gridDbCommand.CommandText = "SELECT DISTINCT [ActivityId],[ActName] FROM vPerformanceActivity WHERE [UserId]=@UserId AND [TransDate]=@TransDate AND [Status]=@Status;";
+                //this.gridDbCommand.CommandText = "SELECT DISTINCT [ActivityId],[ActName] FROM vPerformanceActivity WHERE [UserId]=@UserId AND [TransDate]=@TransDate AND [Status]=@Status;";
+
+                this.gridDbCommand.CommandText = "SELECT DISTINCT tblActivity.Id AS Id, tblActivity.ActName AS ActName from tblActivity INNER JOIN tblPerformance ON tblActivity.Id = tblPerformance.ActivityId WHERE tblPerformance.[UserId]=@UserId AND tblPerformance.[TransDate]=@TransDate AND tblPerformance.[Status]=@Status;";
                 var dr = this.gridDbCommand.ExecuteReader();
 
                 while (dr.Read())
                     //retList.Add(new gridActivity() { Id = (int)dr["ActivityId"], ActName = (string)dr["Name"] });
-                    retList.Add(new gridActivity() { Id = (int)dr["ActivityId"], ActName = (string)dr["ActName"] });
+                    retList.Add(new gridActivity() { Id = (int)dr["Id"], ActName = (string)dr["ActName"] });
                 dr.Close();
 
                 this.CloseDbConnection();
@@ -139,6 +141,16 @@ namespace GRIDLibraries.Libraries
 
             this.grdMutexx.WaitOne();
 
+            string query = "SELECT tblPerformance.Id, tblPerformance.UserId, tblPerformance.ActivityId, tblPerformance.TransDate, tblPerformance.Status, "
+                       + "tblPerformance.TimeStart, tblPerformance.TimeEnd, tblPerformance.ReferenceId, tblPerformance.Remarks, tblPerformance.TimeElapsed, "
+                       + "tblPerformance.IdleTime, tblPerformance.IsPaused, tblPerformance.PerfStatus, tblPerformance.LOBId, tblPerformance.LOBItemId, tblActivity.ActName, tblActivity.AHT,tblActivity.Type, "
+                       + "tblActivity.Process, tblPerfInfo.RF01, tblPerfInfo.RF02, tblPerfInfo.RF03, tblPerfInfo.RF04, tblPerfInfo.RF05, "
+                       + "tblPerfInfo.RF06, tblPerfInfo.RF07, tblPerfInfo.RF08, tblPerfInfo.RF09, tblPerfInfo.RF10, tblPerfInfo.RF11, tblPerfInfo.RF12, tblPerfInfo.RF13, tblPerfInfo.RF14, tblPerfInfo.RF15, "
+                       + "tblPerfInfo.RF16, tblPerfInfo.RF17, tblPerfInfo.RF18, tblPerfInfo.RF19, tblPerfInfo.RF20, tblPerfInfo.RF21, tblPerfInfo.RF22, tblPerfInfo.RF23, tblPerfInfo.RF24, tblPerfInfo.RF25, tblPerfInfo.RF26, "
+                       + "tblPerfInfo.RF27, tblPerfInfo.RF28, tblPerfInfo.RF29, tblPerfInfo.RF30, tblPerfInfo.RF31, tblPerfInfo.RF32, tblPerfInfo.RF33, tblPerfInfo.RF34, tblPerfInfo.RF35, tblPerfInfo.RF36, tblPerfInfo.RF37, "
+                       + "tblPerfInfo.RF38, tblPerfInfo.RF39, tblPerfInfo.RF40, tblPerfInfo.RF41, tblPerfInfo.RF42, tblPerfInfo.RF43, tblPerfInfo.RF44, tblPerfInfo.RF45, tblPerfInfo.RF46, tblPerfInfo.RF47, tblPerfInfo.RF48, tblPerfInfo.RF49, tblPerfInfo.RF50 "
+                       + "FROM(tblActivity INNER JOIN tblPerformance ON tblActivity.Id = tblPerformance.ActivityId) LEFT JOIN tblPerfInfo ON tblPerformance.Id = tblPerfInfo.PerfId";
+
             if (this.OpenDbConnection())
             {
 
@@ -147,14 +159,19 @@ namespace GRIDLibraries.Libraries
                 this.gridDbCommand.Parameters.AddWithValue("@TransDate", this.grdData.CurrentUser.TransactionDate);
                 this.gridDbCommand.Parameters.AddWithValue("@Status", Stat.ToString());
 
+
+
                 if (ActId > 0)
                 {
                     this.gridDbCommand.Parameters.AddWithValue("@ActivityId", ActId);
-                    this.gridDbCommand.CommandText = "SELECT * FROM vPERFORMANCEACTIVITY WHERE [UserId]=@UserId AND [TransDate]=@TransDate AND [Status]=@Status AND [ActivityId]=@ActivityId;";
+                    //this.gridDbCommand.CommandText = "SELECT * FROM vPERFORMANCEACTIVITY WHERE [UserId]=@UserId AND [TransDate]=@TransDate AND [Status]=@Status AND [ActivityId]=@ActivityId;";
+
+                    this.gridDbCommand.CommandText = query + " WHERE tblPerformance.[UserId]=@UserId AND tblPerformance.[TransDate]=@TransDate AND tblPerformance.[Status]=@Status AND tblPerformance.[ActivityId]=@ActivityId;";
                 }
                 else
                 {
-                    this.gridDbCommand.CommandText = "SELECT * FROM vPERFORMANCEACTIVITY WHERE [UserId]=@UserId AND [TransDate]=@TransDate AND [Status]=@Status;";
+                    //this.gridDbCommand.CommandText = "SELECT * FROM vPERFORMANCEACTIVITY WHERE [UserId]=@UserId AND [TransDate]=@TransDate AND [Status]=@Status;";
+                    this.gridDbCommand.CommandText = query + " WHERE tblPerformance.[UserId]=@UserId AND tblPerformance.[TransDate]=@TransDate AND tblPerformance.[Status]=@Status;";
                 }
 
                 var dr = this.gridDbCommand.ExecuteReader();
@@ -175,11 +192,14 @@ namespace GRIDLibraries.Libraries
                     newPerf.Status = "";
 
                     //newPerf.Activity.ActName = dr.GetString("Name");
-                    newPerf.Activity.ActName = dr.GetString("ActName");
+                    //newPerf.Activity.ActName = dr.GetString("ActName");
+                    newPerf.ActivityName = dr.GetString("ActName");
                     newPerf.Activity.AHT = dr.GetString("AHT");
-                    newPerf.Activity.Type = dr.GetString("Type");
+                    //newPerf.Activity.Type = dr.GetString("Type");
+                    newPerf.Type = dr.GetString("Type");
                     newPerf.Activity.Id = Convert.ToInt32(dr["ActivityId"]);
-                    newPerf.Activity.Process = dr.GetString("Process");
+                    //newPerf.Activity.Process = dr.GetString("Process");
+                    newPerf.Process = dr.GetString("Process");
 
 
 
