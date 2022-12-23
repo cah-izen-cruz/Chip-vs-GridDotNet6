@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -72,7 +73,7 @@ namespace GRID.Pages
             grd.grdData.TeamInfo.DBName = grd.grdData.TeamInfo.DBName;
 
             //grd.conString = "Data Source=WPEC5009GRDRP01;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
-            grd.conString = "Data Source=DESKTOP-A0R75AD;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
+            grd.conString = "Data Source=DESKTOP-A0R75AD;" + "Initial Catalog=TestDB" + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
 
             lvMyActivities.ItemsSource = null;
             lvProductivity.ItemsSource = null;
@@ -209,6 +210,7 @@ namespace GRID.Pages
 
                             try
                             {
+                                this.MainScrn.MainNavigationDisable();
                                 this.StartActivity();
                             }
 
@@ -385,7 +387,7 @@ namespace GRID.Pages
                 if (grd.grdData.CurrentActivity.Activity.ConfigInfo.Count > 0)
                 {
 
-                    if (curAct.Id == 17)
+                    if (curAct.Id ==4194)
                     {
                         this.MatDesGridQA.Visibility = Visibility.Visible;
                         this.QAWrapPanel.Visibility = Visibility.Visible;
@@ -611,7 +613,7 @@ namespace GRID.Pages
             {
                 if (grd.grdData.CurrentActivity.Activity.ConfigInfo.Count > 0)
                 {
-                    if(curStopPerf.ActivityId == 17)
+                    if(curStopPerf.ActivityId == 4194)
                     {
                         if (grd.grdData.QAQuestion.IsStopAllowed)
                         {
@@ -686,8 +688,8 @@ namespace GRID.Pages
                 }
             }
 
-      
 
+            this.MainScrn.MainNavigationEnabled();
             this.ClearWrapPanel();
 
             grd.grdData.CurrentActivity.Reset();
@@ -778,7 +780,7 @@ namespace GRID.Pages
             {
                 if (grd.grdData.CurrentActivity.Activity.ConfigInfo.Count > 0)
                 {
-                    if(curAct.Id==17)
+                    if(curAct.Id== 4194)
                     {
                         this.MatDesGridQA.Visibility = Visibility.Collapsed;
                         this.MatDesActivityList.Visibility = Visibility.Visible;
@@ -846,6 +848,10 @@ namespace GRID.Pages
                 return false;
 
             }
+
+
+            this.MainScrn.MainNavigationEnabled();
+            this.MainScrn.btnMyActivities.IsEnabled = false;
 
             this.ClearWrapPanel();
 
@@ -2944,10 +2950,10 @@ namespace GRID.Pages
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                string filename = System.IO.Path.GetFileName(files[0]);
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop) ;
+                string filename = System.IO.Path.GetFileName(files[0]) ;
 
-
+                DragDrop.DoDragDrop(this,this,DragDropEffects.Move);
 
                 for (int i = 0; i < files.Length; i++)
                 {
@@ -3377,7 +3383,7 @@ namespace GRID.Pages
 
 
                     var q = from p in grd.grdData.ActivityList
-                            where p.Id == 17
+                            where p.Id == curAct.Id
                             select p.ConfigInfo;
                     if (!(q == null))
                     {
@@ -3395,7 +3401,7 @@ namespace GRID.Pages
             if (!(curAct == null))
             {
 
-                if (curAct.Id == 17)
+                if (curAct.Id == 4194)
                 {
                     this.GridDynamicObjects.Visibility = Visibility.Collapsed;
                     this.WrapPanelMain.Visibility = Visibility.Collapsed;
@@ -3409,6 +3415,7 @@ namespace GRID.Pages
                 }
            
                 grd.grdData.CurrentActivity.Started = true;
+
                 if (grd.grdData.CurrentActivity.Id > 0)
                 {
                     grd.grdData.MainWindowAction = "CHANGE";
@@ -3464,6 +3471,8 @@ namespace GRID.Pages
                     this.MainScrn.LoadOpenActivity();
                     this.MainScrn.LoadCompletedActivity();
 
+                    
+
                     grd.grdData.CurrentActivity.Started = false;
 
                     this.GridDynamicObjects.Visibility = Visibility.Collapsed;
@@ -3510,7 +3519,9 @@ namespace GRID.Pages
                     this.MainScrn.LoadCompletedActivity();
                 }
 
-          
+                
+
+
 
                 if (grd.grdData.ScrContent.IsBreakStarted)
                     grd.grdData.ScrContent.IsBreakStarted = false;

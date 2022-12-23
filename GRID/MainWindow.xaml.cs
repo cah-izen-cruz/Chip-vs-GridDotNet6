@@ -891,7 +891,7 @@ namespace GRID
             MyDataTabGraph.IsSelected = true;
 
             //grd.conString = "Data Source=WPEC5009GRDRP01;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
-            grd.conString = "Data Source=DESKTOP-A0R75AD;" + "Initial Catalog=" + grd.grdData.TeamInfo.DBName + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
+            grd.conString = "Data Source=DESKTOP-A0R75AD;" + "Initial Catalog=TestDB" + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
 
             idleCtr = 0;
             idleTotal = 0;
@@ -1204,12 +1204,14 @@ namespace GRID
         {
             this.DashMyActivities.Visibility = Visibility.Collapsed;
             this.DashMyData.Visibility = Visibility.Visible;
+            this.btnMyActivities.IsEnabled = true;
             fContainer.Visibility = Visibility.Collapsed;
             //fContainer.Navigate(new Page1());         
         }
 
         private void btnMyActivities_Click(object sender, RoutedEventArgs e)
         {
+            this.btnMyActivities.IsEnabled = false;
             fContainer.Visibility = Visibility.Visible;
             //DoubleAnimation Animate = new DoubleAnimation();
 
@@ -1229,6 +1231,8 @@ namespace GRID
             this.DashMyActivities.Visibility = Visibility.Collapsed;
             this.DashMyData.Visibility = Visibility.Collapsed;
             fContainer.Navigate(new BreakTime());
+
+            this.btnMyActivities.IsEnabled = true;
         }
 
         private void btnSettings_Click(object sender, RoutedEventArgs e)
@@ -1237,6 +1241,8 @@ namespace GRID
             this.DashMyData.Visibility = Visibility.Collapsed;
             this.DashMyActivities.Visibility = Visibility.Collapsed;
             fContainer.Navigate(new Settings());
+
+            this.btnMyActivities.IsEnabled = true;
         }
 
 
@@ -1260,6 +1266,8 @@ namespace GRID
             this.DashMyData.Visibility = Visibility.Collapsed;
             this.DashMyActivities.Visibility = Visibility.Collapsed;
             fContainer.Navigate(new QAQuestionnaire());
+
+            this.btnMyActivities.IsEnabled = true;
 
             //this.fContainer.BeginAnimation(WidthProperty, Animate);
         }
@@ -1298,8 +1306,6 @@ namespace GRID
             Popup.IsOpen = false;
         }
 
-    
-
         private void btnLogout_Click(object sender, RoutedEventArgs e)
         {
 
@@ -1307,6 +1313,30 @@ namespace GRID
             this.DashMyData.Visibility = Visibility.Collapsed;
             this.DashMyActivities.Visibility = Visibility.Collapsed;
             fContainer.Navigate(new Page3());
+        }
+
+        public void MainNavigationDisable()
+        {
+            this.btnMyData.IsEnabled = false;
+            this.btnMyActivities.IsEnabled = false;
+            this.btnBreak.IsEnabled=   false;
+            this.btnLogout.IsEnabled= false;
+            this.btnHammer.IsEnabled = false;
+            this.btnNotification.IsEnabled = false;
+            this.btnSettings.IsEnabled=false;
+            this.btnClose.IsEnabled=false;
+        }
+
+        public void MainNavigationEnabled()
+        {
+            this.btnMyData.IsEnabled = true;
+            this.btnMyActivities.IsEnabled = true;
+            this.btnBreak.IsEnabled = true;
+            this.btnLogout.IsEnabled = true;
+            this.btnHammer.IsEnabled = true;
+            this.btnNotification.IsEnabled = true;
+            this.btnSettings.IsEnabled = true;
+            this.btnClose.IsEnabled = true;
         }
 
         private void btnCompletedRefresh_Click(object sender, RoutedEventArgs e)

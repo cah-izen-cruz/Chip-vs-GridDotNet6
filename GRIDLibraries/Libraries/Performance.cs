@@ -2,11 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.OleDb;
-using System.Data.SqlClient;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace GRIDLibraries.Libraries
 {
@@ -27,12 +23,13 @@ namespace GRIDLibraries.Libraries
                 this.gridDbCommand.Parameters.AddWithValue("@UserId", UserId);
                 this.gridDbCommand.Parameters.AddWithValue("@TransDate", Strings.Format(TransDate, "MM/dd/yyyy").ToString());
                 this.gridDbCommand.Parameters.AddWithValue("@Status", Stat.ToString());
-                this.gridDbCommand.CommandText = "SELECT DISTINCT [ActivityId],[Name] FROM vPerformanceActivity WHERE [UserId]=@UserId AND [TransDate]=@TransDate AND [Status]=@Status;";
-
+                //this.gridDbCommand.CommandText = "SELECT DISTINCT [ActivityId],[Name] FROM vPerformanceActivity WHERE [UserId]=@UserId AND [TransDate]=@TransDate AND [Status]=@Status;";
+                this.gridDbCommand.CommandText = "SELECT DISTINCT [ActivityId],[ActName] FROM vPerformanceActivity WHERE [UserId]=@UserId AND [TransDate]=@TransDate AND [Status]=@Status;";
                 var dr = this.gridDbCommand.ExecuteReader();
 
                 while (dr.Read())
-                    retList.Add(new gridActivity() { Id = (int)dr["ActivityId"], ActName = (string)dr["Name"] });
+                    //retList.Add(new gridActivity() { Id = (int)dr["ActivityId"], ActName = (string)dr["Name"] });
+                    retList.Add(new gridActivity() { Id = (int)dr["ActivityId"], ActName = (string)dr["ActName"] });
                 dr.Close();
 
                 this.CloseDbConnection();
@@ -63,8 +60,8 @@ namespace GRIDLibraries.Libraries
 
                 if (ActId > 0)
                 {
-                    //this.gridDbCommand.CommandText = @"SELECT FieldName FROM tblPerfConfig WHERE ActivityId =@Id ORDER BY [Sequence];";
-                    this.gridDbCommand.CommandText = @"SELECT FieldName FROM tblActivityConfig WHERE ActivityId =@Id ORDER BY [Sequence];";
+                    this.gridDbCommand.CommandText = @"SELECT FieldName FROM tblPerfConfig WHERE ActivityId =@Id ORDER BY [Sequence];";
+                    //this.gridDbCommand.CommandText = @"SELECT FieldName FROM tblActivityConfig WHERE ActivityId =@Id ORDER BY [Sequence];";
 
                     try
                     {
@@ -83,17 +80,17 @@ namespace GRIDLibraries.Libraries
 
                 else
                 {
-                    //this.gridDbCommand.CommandText = @"SELECT distinct TOP 1  Count(tblPerfConfig.Id) AS CountOfConfigId
-                    //                            From tblActivity INNER Join tblPerfConfig On tblActivity.Id = tblPerfConfig.ActivityId
-                    //                            Where tblActivity.Id = 0
-                    //                            Group By tblActivity.Id
-                    //                            Order By Count(tblPerfConfig.Id) DESC;";
-
-                    this.gridDbCommand.CommandText = @"SELECT distinct TOP 1  Count(tblActivityConfig.Id) AS CountOfConfigId
-                                                From tblActivity INNER Join tblActivityConfig On tblActivity.Id = tblActivityConfig.ActivityId
+                    this.gridDbCommand.CommandText = @"SELECT distinct TOP 1  Count(tblPerfConfig.Id) AS CountOfConfigId
+                                                From tblActivity INNER Join tblPerfConfig On tblActivity.Id = tblPerfConfig.ActivityId
                                                 Where tblActivity.Id = 0
                                                 Group By tblActivity.Id
-                                                Order By Count(tblActivityConfig.Id) DESC;";
+                                                Order By Count(tblPerfConfig.Id) DESC;";
+
+                    //this.gridDbCommand.CommandText = @"SELECT distinct TOP 1  Count(tblActivityConfig.Id) AS CountOfConfigId
+                    //                            From tblActivity INNER Join tblActivityConfig On tblActivity.Id = tblActivityConfig.ActivityId
+                    //                            Where tblActivity.Id = 0
+                    //                            Group By tblActivity.Id
+                    //                            Order By Count(tblActivityConfig.Id) DESC;";
 
                     int RF = 0;
                     try
@@ -177,7 +174,8 @@ namespace GRIDLibraries.Libraries
                     newPerf.Remarks = "";
                     newPerf.Status = "";
 
-                    newPerf.Activity.ActName = dr.GetString("Name");
+                    //newPerf.Activity.ActName = dr.GetString("Name");
+                    newPerf.Activity.ActName = dr.GetString("ActName");
                     newPerf.Activity.AHT = dr.GetString("AHT");
                     newPerf.Activity.Type = dr.GetString("Type");
                     newPerf.Activity.Id = Convert.ToInt32(dr["ActivityId"]);
@@ -255,7 +253,7 @@ namespace GRIDLibraries.Libraries
 
 
 
-       
+
 
 
 

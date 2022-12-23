@@ -33,10 +33,12 @@ namespace GRIDLibraries.Libraries
                     grdData.CurrentUser.EmpNo = dr.GetString("EmpNo");
                     grdData.CurrentUser.TeamId = dr.GetInt32("TeamId");
                     grdData.CurrentUser.EID = dr.GetString("EID");
-                    grdData.CurrentUser.LastName = dr.GetString("LastName");
-                    grdData.CurrentUser.FirstName = dr.GetString("FirstName");
-                    grdData.CurrentUser.MiddleName = dr.GetString("MiddleName");
-                    grdData.CurrentUser.Role = dr.GetOrdinal("RoleID");
+                    grdData.CurrentUser.LastName = dr.GetString("EmpName");
+                    //grdData.CurrentUser.LastName = dr.GetString("LastName");
+                    //grdData.CurrentUser.FirstName = dr.GetString("FirstName");
+                    //grdData.CurrentUser.MiddleName = dr.GetString("MiddleName");
+                    //grdData.CurrentUser.Role = dr.GetOrdinal("RoleID");
+                    grdData.CurrentUser.Role = dr.GetOrdinal("Role");
                     grdData.CurrentUser.SupEmpNo = dr.GetString("SupEmpNo");
                     grdData.CurrentUser.SchedTimeIn = dr.GetTimeSpan(dr.GetOrdinal("SchedTimeIn"));
                     grdData.CurrentUser.SchedTimeOut = dr.GetTimeSpan(dr.GetOrdinal("SchedTimeOut"));
@@ -109,23 +111,29 @@ namespace GRIDLibraries.Libraries
 
                 if (dr2.Read())
                 {
-                    grdData.TeamInfo.Id = dr2.GetInt32("Id");
+                    //grdData.TeamInfo.Id = dr2.GetInt32("Id");
+                    grdData.TeamInfo.Id = dr2.GetInt16("Id");
                     grdData.TeamInfo.Tower = dr2.GetString("Tower");
-                    grdData.TeamInfo.Cluster = dr2.GetString("Department");
+                    //grdData.TeamInfo.Cluster = dr2.GetString("Department");
+                    grdData.TeamInfo.Cluster = dr2.GetString("Cluster");
                     grdData.TeamInfo.Segment = dr2.GetString("Segment");
-                    grdData.TeamInfo.TeamName = dr2.GetString("Function");
+                    //grdData.TeamInfo.TeamName = dr2.GetString("Function");
+                    grdData.TeamInfo.TeamName = dr2.GetString("TeamName");
                     grdData.TeamInfo.DBName = dr2.GetString("DB");
                     grdData.TeamInfo.OffSet = (int)dr2["OffSet"];
                     grdData.TeamInfo.Server = dr2.GetString("Server");
                     grdData.TeamInfo.GlobalTeamId = 0;
                     grdData.TeamInfo.ProjectId = 0;
                     grdData.TeamInfo.TimeZone = dr2.GetString("TimeZone");
-                    grdData.TeamInfo.TowerId = dr2.GetInt32("TowerId");
-                    grdData.TeamInfo.DeptId = dr2.GetInt32("DepartmentId");
+                    //grdData.TeamInfo.TowerId = dr2.GetInt32("TowerId");
+                    //grdData.TeamInfo.DeptId = dr2.GetInt32("DepartmentId");
+                    grdData.TeamInfo.TowerId = Convert.ToInt32(dr2["ProjectId"]);
+                    grdData.TeamInfo.DeptId = Convert.ToInt32(dr2["DeptId"]);
 
                     try
                     {
-                        grdData.TeamInfo.ProjectId = dr2.GetInt32("TowerId");
+                        //grdData.TeamInfo.ProjectId = dr2.GetInt32("ProjectId");
+                        grdData.TeamInfo.ProjectId = Convert.ToInt32(dr2["ProjectId"]);
                     }
                     catch (System.IO.IOException)
                     {
@@ -133,7 +141,8 @@ namespace GRIDLibraries.Libraries
 
                     try
                     {
-                        grdData.TeamInfo.GlobalTeamId = dr2.GetInt32("GlobalTeamId");
+                        //grdData.TeamInfo.GlobalTeamId = dr2.GetInt32("GlobalTeamId");
+                        grdData.TeamInfo.GlobalTeamId = Convert.ToInt32(dr2["GlobalTeamId"]);
                     }
                     catch (System.IO.IOException)
                     {
@@ -141,8 +150,10 @@ namespace GRIDLibraries.Libraries
 
                     this.grdData.TeamInfo = grdData.TeamInfo;
 
+                    //this.conString = "Data Source=WPPHL039SQL01;" + "Initial Catalog=" + grdData.TeamInfo.DBName + "; " + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
+
                     //this.conString = "Data Source=WPEC5009GRDRP01;" + "Initial Catalog=" + grdData.TeamInfo.DBName + "; " + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
-                    this.conString = "Data Source=DESKTOP-A0R75AD;" + "Initial Catalog=" + grdData.TeamInfo.DBName + "; " + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
+                    this.conString = "Data Source=DESKTOP-A0R75AD;" + "Initial Catalog=TestDB" + ";" + "Persist Security Info=True;" + "Integrated Security=SSPI;" + "Connect Timeout=3000;";
 
                 }
 
@@ -156,27 +167,27 @@ namespace GRIDLibraries.Libraries
                 dr2.Close();
 
 
-                this.gridMainDbCommand.Parameters.Clear();
-                this.gridMainDbCommand.Parameters.AddWithValue("@UserId", this.grdData.CurrentUser.EmpNo);
-                this.gridMainDbCommand.CommandText = "SELECT [Status] FROM [dbo].[tblWithShifdateOption] WITH (NOLOCK) WHERE UserId=@UserId;";
+                //this.gridMainDbCommand.Parameters.Clear();
+                //this.gridMainDbCommand.Parameters.AddWithValue("@UserId", this.grdData.CurrentUser.EmpNo);
+                //this.gridMainDbCommand.CommandText = "SELECT [Status] FROM [dbo].[tblWithShifdateOption] WITH (NOLOCK) WHERE UserId=@UserId;";
 
-                SqlDataReader dr3;
-                try
-                {
-                    dr3 = this.gridMainDbCommand.ExecuteReader();
-                    if (dr3.Read())
-                    {
-                        this.grdData.CurrentUser.WithShifdateOption = (bool)dr3["Status"];
-                    }
-                    dr3.Close();
-                }
-                catch (Exception ex)
-                {
-                }
+                //SqlDataReader dr3;
+                //try
+                //{
+                //    dr3 = this.gridMainDbCommand.ExecuteReader();
+                //    if (dr3.Read())
+                //    {
+                //        this.grdData.CurrentUser.WithShifdateOption = (bool)dr3["Status"];
+                //    }
+                //    dr3.Close();
+                //}
+                //catch (Exception ex)
+                //{
+                //}
 
 
-                this.grdData.WFHInfo = new GridWFHinfo();
-                this.grdData.WFHInfo.Id = 0;
+                //this.grdData.WFHInfo = new GridWFHinfo();
+                //this.grdData.WFHInfo.Id = 0;
                
             }
 
@@ -184,49 +195,49 @@ namespace GRIDLibraries.Libraries
 
             if (Initialized)
             {
-                this.UpdateUserSched(this.grdData.CurrentUser.EmpNo, this.ConvertTimeZone(this.grdData.TeamInfo.OffSet).Date);
+                //this.UpdateUserSched(this.grdData.CurrentUser.EmpNo, this.ConvertTimeZone(this.grdData.TeamInfo.OffSet).Date);
             }
 
   
 
-            if (Initialized)
-            {
-                this.grdData.CurrentPerfInfo = new gridPerfInfo();
+            //if (Initialized)
+            //{
+            //    this.grdData.CurrentPerfInfo = new gridPerfInfo();
 
-                if (this.grdData.CurrentUser.OnShore == false)
-                {
-                    if (this.OpenDbConnection())
-                    {
+            //    if (this.grdData.CurrentUser.OnShore == false)
+            //    {
+            //        if (this.OpenDbConnection())
+            //        {
 
-                        this.gridDbCommand.Parameters.Clear();
-                        this.gridDbCommand.Parameters.AddWithValue("@UserId", this.grdData.CurrentUser.EmpNo);
-                        this.gridDbCommand.CommandText = "SELECT TOP (1) * FROM [dbo].[tblWFHInfo] WITH (NOLOCK) WHERE UserId=@UserId ORDER BY [TransDate] DESC, [Id] DESC;";
+            //            this.gridDbCommand.Parameters.Clear();
+            //            this.gridDbCommand.Parameters.AddWithValue("@UserId", this.grdData.CurrentUser.EmpNo);
+            //            this.gridDbCommand.CommandText = "SELECT TOP (1) * FROM [dbo].[tblWFHInfo] WITH (NOLOCK) WHERE UserId=@UserId ORDER BY [TransDate] DESC, [Id] DESC;";
 
-                        SqlDataReader dr4;
-                        try
-                        {
-                            dr4 = this.gridDbCommand.ExecuteReader();
-                            if (dr4.Read())
-                            {
-                                this.grdData.WFHInfo.Id = (Int64)dr4["Id"];
-                                this.grdData.WFHInfo.UserId =(string)dr4["UserId"];
-                                this.grdData.WFHInfo.TransDate = (DateTime)dr4["TransDate"];
-                                this.grdData.WFHInfo.IsWFH = (bool)dr4["IsWFH"];
-                                this.grdData.WFHInfo.Opt = (int)dr4["Opt"];
-                                this.grdData.WFHInfo.Other = (string)dr4["Other"];
-                            }
-                            dr4.Close();
-                        }
-                        catch (Exception ex)
-                        {
-                        }
+            //            SqlDataReader dr4;
+            //            try
+            //            {
+            //                dr4 = this.gridDbCommand.ExecuteReader();
+            //                if (dr4.Read())
+            //                {
+            //                    this.grdData.WFHInfo.Id = (Int64)dr4["Id"];
+            //                    this.grdData.WFHInfo.UserId =(string)dr4["UserId"];
+            //                    this.grdData.WFHInfo.TransDate = (DateTime)dr4["TransDate"];
+            //                    this.grdData.WFHInfo.IsWFH = (bool)dr4["IsWFH"];
+            //                    this.grdData.WFHInfo.Opt = (int)dr4["Opt"];
+            //                    this.grdData.WFHInfo.Other = (string)dr4["Other"];
+            //                }
+            //                dr4.Close();
+            //            }
+            //            catch (Exception ex)
+            //            {
+            //            }
 
-                        this.CloseDbConnection();
-                    }
+            //            this.CloseDbConnection();
+            //        }
 
-                }
+            //    }
 
-            }
+            //}
 
             grdData.ScrContent.IsInitialized = true;
             return true;

@@ -38,7 +38,9 @@ namespace GRIDLibraries.Libraries
 
                 string sql_NewQuery = "";
                 var da = new SqlDataAdapter();
-                sql_NewQuery = "SELECT A.Id,A.TeamId,A.Name as [Name],A.AHT, B.Name as [Type], A.Process,A.LOBId,A.ConfigId, A.IsPublic, A.[Status] from tblActivity A inner join tblActivityType B on A.Type = B.Id Where A.TeamId = '" + TeamId + "' AND A.[Status]=1";
+                //sql_NewQuery = "SELECT A.Id,A.TeamId,A.Name as [Name],A.AHT, B.Name as [Type], A.Process,A.LOBId,A.ConfigId, A.IsPublic, A.[Status] from tblActivity A inner join tblActivityType B on A.Type = B.Id Where A.TeamId = '" + TeamId + "' AND A.[Status]=1";
+                sql_NewQuery = "SELECT * from tblActivity Where TeamId = '" + TeamId + "' AND [Status]=1";
+
                 da = new SqlDataAdapter(sql_NewQuery, gridDbConnection);
 
                 dtActivity = new DataTable();
@@ -79,12 +81,12 @@ namespace GRIDLibraries.Libraries
                                     dtActivity.Rows[i]["Id"].ToString();
                                     break;
                             }
-                            strActivityId = "(A.[ActivityId]=" + dtActivity.Rows[i]["Id"].ToString();
+                            strActivityId = "([ActivityId]=" + dtActivity.Rows[i]["Id"].ToString();
                             //strActivityId = Conversions.ToString(Operators.ConcatenateObject("([ActivityId]=", (izen > 0), dtActivity.Rows(i).Item("ConfigId") : dtActivity.Rows(i).Item("Id")));
                         }
                         else
                         {
-                            strActivityId = strActivityId + " OR A.[ActivityId]=" + dtActivity.Rows[i]["Id"].ToString();
+                            strActivityId = strActivityId + " OR [ActivityId]=" + dtActivity.Rows[i]["Id"].ToString();
                             //strActivityId = Conversions.ToString(Operators.ConcatenateObject(strActivityId + " OR [ActivityId]=", dtActivity.Rows(i).Item("ConfigId") > 0 ? dtActivity.Rows(i).Item("ConfigId") : dtActivity.Rows(i).Item("Id")));
                         }
 
@@ -101,8 +103,9 @@ namespace GRIDLibraries.Libraries
                         {
 
                             var da = new SqlDataAdapter();
+                            da = new SqlDataAdapter("SELECT * FROM tblPerfConfig WHERE " + strActivityId + " ORDER BY [Sequence];", gridDbConnection);
                             //da = new SqlDataAdapter("SELECT * FROM tblActivityConfig WHERE " + strActivityId + " ORDER BY [Sequence];", gridDbConnection);
-                            da = new SqlDataAdapter("SELECT A.Id, A.ActivityId, A.FieldName, A.WithItem, A.IsRequired, C.Name AS ObjectType, A.Status, B.Name AS DataType, A.Sequence, A.[Desc] FROM  dbo.tblActivityConfig AS A WITH (NOLOCK) INNER JOIN    dbo.tblActivityConfigDataType AS B WITH (NOLOCK) ON A.DataType = B.Id INNER JOIN dbo.tblActivityConfigObjType AS C WITH (NOLOCK) ON A.ObjectType = C.Id WHERE  " + strActivityId + " AND (A.Status = 1) ORDER BY A.Sequence", gridDbConnection);
+                            //da = new SqlDataAdapter("SELECT A.Id, A.ActivityId, A.FieldName, A.WithItem, A.IsRequired, C.Name AS ObjectType, A.Status, B.Name AS DataType, A.Sequence, A.[Desc] FROM  dbo.tblActivityConfig AS A WITH (NOLOCK) INNER JOIN    dbo.tblActivityConfigDataType AS B WITH (NOLOCK) ON A.DataType = B.Id INNER JOIN dbo.tblActivityConfigObjType AS C WITH (NOLOCK) ON A.ObjectType = C.Id WHERE  " + strActivityId + " AND (A.Status = 1) ORDER BY A.Sequence", gridDbConnection);
 
                             //
                             dtConfig = new DataTable();
@@ -139,9 +142,9 @@ namespace GRIDLibraries.Libraries
                         {
                             case true:
                                 if (string.IsNullOrEmpty(strConfigId))                            
-                                    strConfigId = "([ActConfigId]=" + dtConfig.Rows[i]["Id"];
+                                    strConfigId = "([PerfConfigId]=" + dtConfig.Rows[i]["Id"];
                                 else
-                                    strConfigId = strConfigId + " OR [ActConfigId]=" + dtConfig.Rows[i]["Id"];
+                                    strConfigId = strConfigId + " OR [PerfConfigId]=" + dtConfig.Rows[i]["Id"];
                                 break;
 
                             case false:
@@ -157,7 +160,9 @@ namespace GRIDLibraries.Libraries
                         if (this.OpenDbConnection())
                         {
                             var da = new SqlDataAdapter();
-                            da = new SqlDataAdapter("SELECT * FROM tblActivityConfigItem WHERE " + strConfigId + " ORDER BY Id;", gridDbConnection);
+                            //da = new SqlDataAdapter("SELECT * FROM tblActivityConfigItem WHERE " + strConfigId + " ORDER BY Id;", gridDbConnection);
+                            da = new SqlDataAdapter("SELECT * FROM tblPerfConfigItem WHERE " + strConfigId + " ORDER BY Id;", gridDbConnection);
+
                             dtConfigItem = new DataTable();
                             da.SelectCommand.CommandTimeout = 1000;
                             try
@@ -186,8 +191,8 @@ namespace GRIDLibraries.Libraries
                         { 
                             hActivity.Id = (int)dtActivity.Rows[i]["Id"];
                             hActivity.TeamId = TeamId;
-                            //hActivity.ActName = (string)dtActivity.Rows[i]["ActName"];
-                            hActivity.ActName = (string)dtActivity.Rows[i]["Name"];
+                            hActivity.ActName = (string)dtActivity.Rows[i]["ActName"];
+                            //hActivity.ActName = (string)dtActivity.Rows[i]["Name"];
                             hActivity.Type = (string)dtActivity.Rows[i]["Type"];
                             hActivity.AHT = (string)dtActivity.Rows[i]["AHT"];
                             hActivity.Process = (string)dtActivity.Rows[i]["Process"];
@@ -278,7 +283,8 @@ namespace GRIDLibraries.Libraries
 
                                         var PerfConfigIdList = new List<gridPerfConfigItem>();
 
-                                        DataRow[] tempConfigItem = dtConfigItem.Select("ActConfigId=" + retListItem.Id, "Id");
+                                        //DataRow[] tempConfigItem = dtConfigItem.Select("ActConfigId=" + retListItem.Id, "Id");
+                                        DataRow[] tempConfigItem = dtConfigItem.Select("PerfConfigId=" + retListItem.Id, "Id");
 
                                         foreach (DataRow cItem in tempConfigItem)
                                         {
@@ -286,7 +292,8 @@ namespace GRIDLibraries.Libraries
                                             var PerfConfigIdListItm = new gridPerfConfigItem();
 
                                             PerfConfigIdListItm.Id = Convert.ToInt32(cItem["Id"]);
-                                            PerfConfigIdListItm.PerfConfigId = Convert.ToInt32(cItem["ActConfigId"]);
+                                            //PerfConfigIdListItm.PerfConfigId = Convert.ToInt32(cItem["ActConfigId"]);
+                                            PerfConfigIdListItm.PerfConfigId = Convert.ToInt32(cItem["PerfConfigId"]);
                                             PerfConfigIdListItm.Item = (string)cItem["Item"];
 
                                             PerfConfigIdList.Add(PerfConfigIdListItm);
